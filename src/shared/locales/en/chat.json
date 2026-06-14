@@ -1,0 +1,34 @@
+{
+  "header": {
+    "export": "Export",
+    "exportTooltip": "Export this chat as Markdown"
+  },
+  "toast": {
+    "exportedTo": "Exported to {{path}}",
+    "exportFailed": "Export failed: {{error}}"
+  },
+  "empty": {
+    "desc": "Explore local MIMIC-III clinical notes in plain language, or use the clinical support tools. The model always asks for your approval before it queries the database.",
+    "starter1": "How many notes are in each category?",
+    "starter2": "Find a radiology report that mentions pneumonia",
+    "starter3": "Give me a record summary for SUBJECT_ID 109"
+  },
+  "message": {
+    "toolResult": "Tool result",
+    "toolCallLabel": "Calling tool:",
+    "copyTooltip": "Copy message",
+    "regenerate": "Regenerate"
+  },
+  "composer": {
+    "placeholder": "Type your question (Enter to send, Shift+Enter for a new line)",
+    "placeholderHitl": "Please respond to the tool approval request above…",
+    "stop": "Stop",
+    "send": "Send",
+    "disclaimer": "All inference runs on local Ollama; every tool call needs your approval."
+  },
+  "suggestions": {
+    "followupLabel": "Suggested follow-ups"
+  },
+  "error": "Error: {{error}}",
+  "noExport": "Nothing to export in the current chat."
+}

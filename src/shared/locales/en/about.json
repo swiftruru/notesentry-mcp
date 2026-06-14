@@ -1,0 +1,40 @@
+{
+  "tagline": "A local-first explorer for MIMIC-III clinical notes — a human-in-the-loop clinical workflow built on MCP",
+  "versionBadge": "Version {{version}} · data stays on this device",
+  "intro": "NoteSentry is a fully local tool for exploring and working with clinical notes. You ask questions in plain language, and a local large language model queries a local SQLite database through Model Context Protocol (MCP) tools, then composes the answer. All inference runs on local Ollama — nothing is uploaded, no telemetry, no outbound connections — so clinical text can be explored efficiently without ever leaving the machine.",
+  "privacyTitle": "Data stays on this device",
+  "privacyDesc": "This data is governed by the PhysioNet Credentialed Data Use Agreement (DUA) and may not be shared with any third party. NoteSentry applies three layers of defense — local inference, human review, and full auditing — to safeguard both the data and clinical accountability.",
+  "principlesTitle": "Design principles",
+  "principles": {
+    "data": {
+      "title": "Data · Grounding",
+      "desc": "The model can only read real local data through MCP tools, keeping answers grounded and reducing factual hallucinations."
+    },
+    "human": {
+      "title": "Human · Review",
+      "desc": "Every tool call requires a clinician's explicit approval — the final gate on clinical decisions is never skipped."
+    },
+    "audit": {
+      "title": "Audit · Trace",
+      "desc": "The time, tool, parameters, and approval of every call are fully recorded and traceable."
+    }
+  },
+  "teamTitle": "Team",
+  "person": {
+    "initial": "P",
+    "name": "YU-RU, PAN",
+    "role": "Graduate Student · Design & Development"
+  },
+  "lab": {
+    "name": "Data Decision Analysis Laboratory",
+    "sub": "資料決策分析實驗室"
+  },
+  "school": {
+    "name": "National Taipei University of Nursing and Health Sciences",
+    "sub": "Department of Information Management"
+  },
+  "techTitle": "Tech stack",
+  "dataSource": "Data source: MIMIC-III Clinical Database (PhysioNet)",
+  "footerPre": "Made with",
+  "footerPost": "in Taipei · © 2026 YU-RU, PAN"
+}

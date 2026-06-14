@@ -1,0 +1,14 @@
+{
+  "title": "MCP 工具",
+  "summary": "· {{servers}} 個 server · {{tools}} 個工具",
+  "reconnectTooltip": "重新連線所有 MCP server",
+  "state": {
+    "connected": "已連線",
+    "connecting": "連線中",
+    "disconnected": "未連線",
+    "error": "連線錯誤"
+  },
+  "emptyServers": "尚未連上任何 MCP server。請至設定確認 Python 與腳本路徑後重新連線。",
+  "noTools": "（此 server 無工具）",
+  "noDesc": "（無說明）"
+}

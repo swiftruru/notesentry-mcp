@@ -1,0 +1,14 @@
+{
+  "title": "Audit log",
+  "desc": "Every tool call is recorded and appended to a JSONL file under the project's logs/ folder.",
+  "empty": "No audit entries yet.",
+  "col": {
+    "time": "Time",
+    "tool": "Tool",
+    "params": "Parameters",
+    "approval": "Approval"
+  },
+  "error": "Error: {{error}}",
+  "approved": "Approved",
+  "rejected": "Rejected"
+}

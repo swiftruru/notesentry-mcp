@@ -1,0 +1,59 @@
+{
+  "title": "設定",
+  "desc": "設定會儲存於專案資料夾的 config.json；變更後會自動重新連線所有 MCP server。",
+  "loading": "載入設定中…",
+  "fields": {
+    "ollamaUrl": {
+      "label": "Ollama 網址",
+      "hint": "僅允許本機位址（localhost / 127.0.0.1）。資料不可送往第三方。"
+    },
+    "model": {
+      "label": "模型名稱",
+      "hint": "需支援 tool calling，例如 qwen2.5、gpt-oss:20b。"
+    },
+    "pythonPath": {
+      "label": "Python 路徑",
+      "hint": "用來啟動所有 MCP server 的 Python 直譯器。"
+    },
+    "dbPath": {
+      "label": "SQLite 資料庫路徑",
+      "hint": "以 MIMIC_DB_PATH 傳給各 MCP server（不需資料庫的 server 會忽略）。"
+    }
+  },
+  "localWarn": "必須是本機位址，否則將被阻擋。",
+  "mcpSection": "MCP server（多 MCP 架構）",
+  "mcpSectionDesc": "每支 server 是一個獨立的 Python stdio 子行程。可勾選啟用、修改腳本路徑。",
+  "enabled": "啟用",
+  "model": {
+    "customPlaceholder": "輸入模型名稱，例如 gpt-oss:20b",
+    "useListTooltip": "改用偵測清單",
+    "listBtn": "清單",
+    "customOption": "✏️ 自訂…",
+    "detectTooltip": "重新偵測已安裝的 Ollama 模型",
+    "detecting": "偵測中",
+    "detect": "偵測",
+    "noModels": "未偵測到任何模型，請先用 ollama pull 安裝。",
+    "detectedCount_other": "偵測到 {{count}} 個本機模型；選「自訂…」可手動輸入。"
+  },
+  "test": {
+    "resultTitle": "連線測試結果",
+    "btn": "連線測試",
+    "testing": "測試中…",
+    "ollamaOk_other": "Ollama 連線正常，偵測到 {{count}} 個模型。",
+    "ollamaModelMissing": "（⚠️ 目前設定的模型「{{model}}」不在清單中）",
+    "ollamaFail": "Ollama 連線失敗：{{error}}",
+    "dbLabel": "資料庫檔",
+    "dbExists": "存在（{{path}}）",
+    "dbMissing": "找不到：{{path}}。請先用 build_db.py 建立或修正路徑。",
+    "pythonLabel": "Python",
+    "pythonFail": "無法執行：{{info}}",
+    "mcpNone": "沒有啟用的 MCP server，或重連失敗。",
+    "serverConnected_other": "已連線，{{count}} 個工具"
+  },
+  "save": {
+    "btn": "儲存並重新連線",
+    "saving": "儲存中…",
+    "ok": "已儲存並重新連線：{{connected}}/{{total}} 個 server 連上，共 {{tools}} 個工具。",
+    "partial": "已儲存，但沒有任何 server 連線成功，請檢查路徑。"
+  }
+}

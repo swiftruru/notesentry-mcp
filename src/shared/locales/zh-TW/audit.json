@@ -1,0 +1,14 @@
+{
+  "title": "稽核日誌",
+  "desc": "每次工具呼叫都會記錄，並同步寫入專案 logs/ 下的 JSONL 檔。",
+  "empty": "尚無稽核紀錄。",
+  "col": {
+    "time": "時間",
+    "tool": "工具",
+    "params": "參數",
+    "approval": "核可"
+  },
+  "error": "錯誤：{{error}}",
+  "approved": "同意",
+  "rejected": "拒絕"
+}

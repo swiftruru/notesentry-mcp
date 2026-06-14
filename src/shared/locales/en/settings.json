@@ -1,0 +1,62 @@
+{
+  "title": "Settings",
+  "desc": "Settings are saved to config.json in the project folder. Changes automatically reconnect all MCP servers.",
+  "loading": "Loading settings…",
+  "fields": {
+    "ollamaUrl": {
+      "label": "Ollama URL",
+      "hint": "Local addresses only (localhost / 127.0.0.1). Data must not be sent to any third party."
+    },
+    "model": {
+      "label": "Model name",
+      "hint": "Must support tool calling, e.g. qwen2.5, gpt-oss:20b."
+    },
+    "pythonPath": {
+      "label": "Python path",
+      "hint": "The Python interpreter used to launch all MCP servers."
+    },
+    "dbPath": {
+      "label": "SQLite database path",
+      "hint": "Passed to each MCP server via MIMIC_DB_PATH (servers that don't need a database ignore it)."
+    }
+  },
+  "localWarn": "Must be a local address, otherwise it will be blocked.",
+  "mcpSection": "MCP servers (multi-MCP architecture)",
+  "mcpSectionDesc": "Each server is an independent Python stdio subprocess. You can enable/disable and edit the script path.",
+  "enabled": "Enabled",
+  "model": {
+    "customPlaceholder": "Enter a model name, e.g. gpt-oss:20b",
+    "useListTooltip": "Use the detected list",
+    "listBtn": "List",
+    "customOption": "✏️ Custom…",
+    "detectTooltip": "Re-detect installed Ollama models",
+    "detecting": "Detecting",
+    "detect": "Detect",
+    "noModels": "No models detected. Install one with ollama pull first.",
+    "detectedCount_one": "Detected {{count}} local model; choose \"Custom…\" to type manually.",
+    "detectedCount_other": "Detected {{count}} local models; choose \"Custom…\" to type manually."
+  },
+  "test": {
+    "resultTitle": "Connection test result",
+    "btn": "Test connection",
+    "testing": "Testing…",
+    "ollamaOk_one": "Ollama connected; detected {{count}} model.",
+    "ollamaOk_other": "Ollama connected; detected {{count}} models.",
+    "ollamaModelMissing": "(⚠️ the configured model \"{{model}}\" is not in the list)",
+    "ollamaFail": "Ollama connection failed: {{error}}",
+    "dbLabel": "Database file",
+    "dbExists": "Found ({{path}})",
+    "dbMissing": "Not found: {{path}}. Build it with build_db.py or fix the path.",
+    "pythonLabel": "Python",
+    "pythonFail": "Cannot run: {{info}}",
+    "mcpNone": "No enabled MCP server, or reconnection failed.",
+    "serverConnected_one": "Connected, {{count}} tool",
+    "serverConnected_other": "Connected, {{count}} tools"
+  },
+  "save": {
+    "btn": "Save & reconnect",
+    "saving": "Saving…",
+    "ok": "Saved and reconnected: {{connected}}/{{total}} servers connected, {{tools}} tools total.",
+    "partial": "Saved, but no server connected successfully. Please check the paths."
+  }
+}

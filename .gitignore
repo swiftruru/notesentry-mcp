@@ -1,0 +1,27 @@
+node_modules
+out
+dist
+dist-electron
+.DS_Store
+*.log
+*.tsbuildinfo
+__pycache__/
+
+# 執行期產生（含本機設定、稽核紀錄、對話紀錄與匯出檔，禁止外流）
+config.json
+logs/
+conversations/
+exports/
+
+# 資料集與資料庫（受 PhysioNet DUA 規範，絕不進版控）
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+mimic_notes.db
+MIMIC-III/
+build/icon.icns
+
+# 驗證輸出（ground_truth.json 含真實病歷文字片段，受 DUA 規範，禁止進版控）
+scripts_verify/ground_truth.json
+scripts_verify/*.log

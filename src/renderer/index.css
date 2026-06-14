@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    @apply bg-white text-ink antialiased;
+    font-family: theme('fontFamily.sans');
+  }
+
+  /* 細緻的捲軸，配合醫療沉穩感 */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background-color: #c2d6d6;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #a9c4c4;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* 拖曳區（macOS hiddenInset 標題列） */
+.drag-region {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Markdown 內文排版（assistant 訊息用 .md 包裹） */
+.md {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #1c2b2d;
+  word-break: break-word;
+}
+.md > *:first-child {
+  margin-top: 0;
+}
+.md > *:last-child {
+  margin-bottom: 0;
+}
+.md p {
+  margin: 0.5rem 0;
+}
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  margin: 1rem 0 0.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #0d5c63;
+}
+.md h1 {
+  font-size: 1.25rem;
+}
+.md h2 {
+  font-size: 1.125rem;
+}
+.md h3 {
+  font-size: 1rem;
+}
+.md ul,
+.md ol {
+  margin: 0.5rem 0;
+  padding-left: 1.4rem;
+}
+.md ul {
+  list-style: disc;
+}
+.md ol {
+  list-style: decimal;
+}
+.md li {
+  margin: 0.2rem 0;
+}
+.md a {
+  color: #247b7b;
+  text-decoration: underline;
+}
+.md blockquote {
+  margin: 0.5rem 0;
+  border-left: 3px solid #247b7b;
+  padding-left: 0.75rem;
+  color: #5a6b6d;
+}
+.md hr {
+  margin: 1rem 0;
+  border: 0;
+  border-top: 1px solid #d4e4e4;
+}
+.md table {
+  margin: 0.5rem 0;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  display: block;
+  overflow-x: auto;
+}
+.md th,
+.md td {
+  border: 1px solid #d4e4e4;
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+}
+.md th {
+  background: #eaf3f3;
+  font-weight: 600;
+}
+.md strong {
+  font-weight: 700;
+}

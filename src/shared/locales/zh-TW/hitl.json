@@ -1,0 +1,10 @@
+{
+  "title": "人類覆核",
+  "subtitle": "模型要求查詢本機資料庫，需要你核可後才會執行。",
+  "toolLabel": "工具",
+  "source": "來源：{{server}}",
+  "paramsLabel": "參數",
+  "noParams": "（無參數）",
+  "reject": "拒絕",
+  "approve": "同意並執行"
+}

@@ -1,0 +1,34 @@
+{
+  "header": {
+    "export": "匯出",
+    "exportTooltip": "匯出此對話為 Markdown"
+  },
+  "toast": {
+    "exportedTo": "已匯出至 {{path}}",
+    "exportFailed": "匯出失敗：{{error}}"
+  },
+  "empty": {
+    "desc": "以自然語言探索本機 MIMIC-III 臨床紀錄，或使用臨床輔助工具。模型每次查詢資料庫前都會先請你核可。",
+    "starter1": "各類別各有多少筆紀錄？",
+    "starter2": "找一篇提到 pneumonia 的放射科報告",
+    "starter3": "幫我看 SUBJECT_ID 109 的紀錄摘要"
+  },
+  "message": {
+    "toolResult": "工具結果",
+    "toolCallLabel": "要求呼叫工具：",
+    "copyTooltip": "複製訊息",
+    "regenerate": "重新生成"
+  },
+  "composer": {
+    "placeholder": "輸入你的問題（Enter 送出，Shift+Enter 換行）",
+    "placeholderHitl": "請先處理上方的工具核可請求…",
+    "stop": "停止",
+    "send": "送出",
+    "disclaimer": "所有推論走本機 Ollama；每次工具呼叫都需你親自核可。"
+  },
+  "suggestions": {
+    "followupLabel": "建議接著問"
+  },
+  "error": "發生錯誤：{{error}}",
+  "noExport": "目前沒有可匯出的對話內容。"
+}

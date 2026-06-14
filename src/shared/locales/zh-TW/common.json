@@ -1,0 +1,36 @@
+{
+  "app": {
+    "name": "NoteSentry",
+    "subtitle": "本機 MIMIC-III 探索助理"
+  },
+  "nav": {
+    "chat": "對話",
+    "tools": "工具",
+    "audit": "稽核",
+    "settings": "設定",
+    "about": "關於"
+  },
+  "badge": {
+    "local": "資料全程留在本機",
+    "localTooltip": "所有推論走本機 Ollama，資料不上傳、不外流、不遙測。"
+  },
+  "language": {
+    "self": "繁體中文",
+    "short": "中",
+    "switchTooltip": "切換語言"
+  },
+  "actions": {
+    "confirm": "確認",
+    "cancel": "取消",
+    "delete": "刪除",
+    "rename": "重新命名",
+    "copy": "複製",
+    "copied": "已複製"
+  },
+  "time": {
+    "justNow": "剛剛",
+    "minutesAgo_other": "{{count}} 分鐘前",
+    "hoursAgo_other": "{{count}} 小時前",
+    "daysAgo_other": "{{count}} 天前"
+  }
+}

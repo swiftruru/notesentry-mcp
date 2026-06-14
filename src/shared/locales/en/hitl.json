@@ -1,0 +1,10 @@
+{
+  "title": "Human review",
+  "subtitle": "The model is requesting to query the local database. It will run only after your approval.",
+  "toolLabel": "Tool",
+  "source": "From: {{server}}",
+  "paramsLabel": "Parameters",
+  "noParams": "(no parameters)",
+  "reject": "Reject",
+  "approve": "Approve & run"
+}

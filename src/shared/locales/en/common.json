@@ -1,0 +1,39 @@
+{
+  "app": {
+    "name": "NoteSentry",
+    "subtitle": "Local MIMIC-III notes explorer"
+  },
+  "nav": {
+    "chat": "Chat",
+    "tools": "Tools",
+    "audit": "Audit",
+    "settings": "Settings",
+    "about": "About"
+  },
+  "badge": {
+    "local": "Data stays on this device",
+    "localTooltip": "All inference runs on local Ollama. Nothing is uploaded, shared, or sent for telemetry."
+  },
+  "language": {
+    "self": "English",
+    "short": "EN",
+    "switchTooltip": "Switch language"
+  },
+  "actions": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "rename": "Rename",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo_one": "{{count}} minute ago",
+    "minutesAgo_other": "{{count}} minutes ago",
+    "hoursAgo_one": "{{count}} hour ago",
+    "hoursAgo_other": "{{count}} hours ago",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago"
+  }
+}

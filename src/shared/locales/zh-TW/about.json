@@ -1,0 +1,40 @@
+{
+  "tagline": "本機端 MIMIC-III 臨床紀錄探索助理 · 以 MCP 架構整合人機協作的臨床流程",
+  "versionBadge": "版本 {{version}} · 資料全程留在本機",
+  "intro": "NoteSentry 是一套完全在本機運作的臨床紀錄探索與輔助工具。使用者以自然語言提問，由本機的大型語言模型透過 Model Context Protocol（MCP）工具查詢本機 SQLite 資料庫，並把結果整理成回答。所有推論一律走本機 Ollama，過程不上傳、不遙測、不對外連線——讓臨床文本在不離開本機的前提下，仍能被高效探索與運用。",
+  "privacyTitle": "資料全程留在本機",
+  "privacyDesc": "本資料受 PhysioNet Credentialed 資料使用協議（DUA）規範，禁止傳給任何第三方。NoteSentry 以「地端推論、人類覆核、完整稽核」三層防線確保資料安全與臨床責任。",
+  "principlesTitle": "設計原則",
+  "principles": {
+    "data": {
+      "title": "資料層 · 接地",
+      "desc": "LLM 只能透過 MCP 工具查詢本機真實資料，輸出有所本，降低事實性幻覺。"
+    },
+    "human": {
+      "title": "人類層 · 覆核",
+      "desc": "每一次工具呼叫都需醫護人員親自核可，臨床決策的最後一關不可省。"
+    },
+    "audit": {
+      "title": "稽核層 · 留痕",
+      "desc": "每次呼叫的時間、工具、參數與核可結果完整記錄，全程可追溯。"
+    }
+  },
+  "teamTitle": "開發團隊",
+  "person": {
+    "initial": "潘",
+    "name": "潘昱如",
+    "role": "研究生 · 設計與開發"
+  },
+  "lab": {
+    "name": "資料決策分析實驗室",
+    "sub": "Data Decision Analysis Laboratory"
+  },
+  "school": {
+    "name": "國立臺北護理健康大學",
+    "sub": "資訊管理系所"
+  },
+  "techTitle": "技術堆疊",
+  "dataSource": "資料來源：MIMIC-III Clinical Database（PhysioNet）",
+  "footerPre": "以",
+  "footerPost": "打造於臺北 · © 2026 潘昱如"
+}

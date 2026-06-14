@@ -1,0 +1,14 @@
+{
+  "title": "MCP tools",
+  "summary": "· {{servers}} servers · {{tools}} tools",
+  "reconnectTooltip": "Reconnect all MCP servers",
+  "state": {
+    "connected": "Connected",
+    "connecting": "Connecting",
+    "disconnected": "Disconnected",
+    "error": "Connection error"
+  },
+  "emptyServers": "No MCP server connected. Check the Python and script paths in Settings, then reconnect.",
+  "noTools": "(this server has no tools)",
+  "noDesc": "(no description)"
+}

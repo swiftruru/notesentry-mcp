@@ -1,0 +1,25 @@
+{
+  "export": {
+    "defaultTitle": "Conversation",
+    "header": "NoteSentry conversation export (data stays on this device)",
+    "exportedAt": "Exported at: {{time}}",
+    "model": "Model: {{model}}",
+    "messageCount": "Messages: {{count}}",
+    "user": "🧑 User",
+    "assistant": "🤖 Assistant",
+    "toolCall": "🔧 Calling tool: `{{name}}`",
+    "toolResult": "📊 Tool result",
+    "footer": "Exported by NoteSentry. All data is local; please handle it per the PhysioNet DUA."
+  },
+  "error": {
+    "ollamaNotLocal": "Ollama address {{host}} is not local. To keep data on-device, only localhost / 127.0.0.1 are allowed.",
+    "ollamaUrlInvalid": "Invalid Ollama address format.",
+    "ollamaBlocked": "Ollama address is not local and was blocked.",
+    "toolServerNotFound": "Cannot find the MCP server for tool {{name}}, or it is not connected.",
+    "toolError": "The tool reported an error",
+    "mcpNotConnected": "MCP is not connected"
+  },
+  "env": {
+    "runnable": "runnable"
+  }
+}

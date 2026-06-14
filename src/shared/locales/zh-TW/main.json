@@ -1,0 +1,25 @@
+{
+  "export": {
+    "defaultTitle": "對話",
+    "header": "NoteSentry 對話匯出（資料全程留在本機）",
+    "exportedAt": "匯出時間：{{time}}",
+    "model": "模型：{{model}}",
+    "messageCount": "訊息數：{{count}}",
+    "user": "🧑 使用者",
+    "assistant": "🤖 助理",
+    "toolCall": "🔧 要求呼叫工具：`{{name}}`",
+    "toolResult": "📊 工具結果",
+    "footer": "由 NoteSentry 匯出。所有資料皆來自本機，請依 PhysioNet DUA 規範妥善保管。"
+  },
+  "error": {
+    "ollamaNotLocal": "Ollama 位址 {{host}} 非本機。為符合資料不外流規範，僅允許 localhost / 127.0.0.1。",
+    "ollamaUrlInvalid": "Ollama 位址格式無效。",
+    "ollamaBlocked": "Ollama 位址非本機，已阻擋。",
+    "toolServerNotFound": "找不到工具 {{name}} 所屬的 MCP server，或尚未連線",
+    "toolError": "工具回報錯誤",
+    "mcpNotConnected": "MCP 尚未連線"
+  },
+  "env": {
+    "runnable": "可執行"
+  }
+}
