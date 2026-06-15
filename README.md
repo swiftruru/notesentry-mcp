@@ -102,6 +102,28 @@ Japanese), just add a `src/shared/locales/ja/` folder of JSON files — the top�
 picks it up automatically, **with no changes to any component code**. Each locale's
 `common.json` provides `language.self` / `language.short` for the toggle's display name.
 
+## Productivity & UX
+
+- **System health bar**: a header indicator (Ollama / model / MCP / database / Python) that
+  auto‑checks on startup and after saving settings. Click it for per‑item status with actionable
+  hints, a re‑check, and a jump to Settings; a startup banner surfaces the top problem so failures
+  are never silent.
+- **Dark mode**: a header theme toggle (system / light / dark), remembered across launches and
+  following the OS in system mode.
+- **Command palette (`⌘K` / `Ctrl+K`)**: search every command — new chat, switch views, export,
+  reconnect MCP, re‑check health, theme, language — plus a **jump‑to‑conversation** section.
+- **Keyboard shortcuts**: `⌘N` new chat · `⌘1–5` switch views · `⌘,` settings · `⌘E` export ·
+  `Esc` stops generation / closes the palette.
+- **HITL approval dialog**: `Enter` approves, `Esc` rejects, focus is trapped, and tool arguments
+  are pretty‑printed.
+- **Audit tools**: search + filter (all / approved / rejected / errors), expand a row for the full
+  arguments, result summary and session id, and export the log as `.jsonl`.
+- **Global toasts** (saved / exported / reconnected / deleted), smart auto‑scroll with a
+  "scroll to latest" button, and retry on error bubbles.
+- **Window memory & collapsible sidebar**: the window remembers its size/position; the conversation
+  list collapses to widen the chat — toggle in the chat header, or click the active **Chat** rail icon.
+- **Accessibility**: respects `prefers-reduced-motion`; nav and dialogs carry proper roles/labels.
+
 ## Architecture
 
 - **Main process** (`src/main`): holds every "touches data / network" capability — launching
