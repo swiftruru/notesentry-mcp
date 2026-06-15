@@ -14,7 +14,7 @@
     "starter3": "What note categories are in the database, and how many of each?",
     "starter4": "Record summary for SUBJECT_ID 109: admissions, date range, and most recent notes",
     "starter5": "Find radiology reports that mention pneumonia and show the matching snippets",
-    "starter6": "What is SUBJECT_ID 99999999 allergic to?"
+    "starter6": "Patient record summary for SUBJECT_ID 99999999: admissions, date range, recent notes"
   },
   "message": {
     "toolResult": "Tool result",

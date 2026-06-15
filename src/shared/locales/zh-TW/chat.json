@@ -14,7 +14,7 @@
     "starter3": "資料庫裡有哪些臨床紀錄類別？各有多少筆？",
     "starter4": "SUBJECT_ID 109 的紀錄摘要：住院次數、日期範圍、最近幾筆紀錄",
     "starter5": "在放射科報告裡找出提到 pneumonia 的紀錄，給我命中片段",
-    "starter6": "SUBJECT_ID 99999999 這位病患對什麼藥物過敏？"
+    "starter6": "SUBJECT_ID 99999999 的病患紀錄摘要：住院次數、日期範圍、最近幾筆紀錄"
   },
   "message": {
     "toolResult": "工具結果",
