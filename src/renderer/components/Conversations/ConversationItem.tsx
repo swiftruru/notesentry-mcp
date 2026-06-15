@@ -67,20 +67,27 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
 
   return (
     <div
-      onClick={() => void load(meta.id)}
       className={cn(
-        'group relative flex cursor-pointer flex-col gap-0.5 rounded-md px-2.5 py-2 transition-colors',
+        'group relative rounded-md transition-colors',
         active ? 'bg-card' : 'hover:bg-card/60'
       )}
     >
-      <div className="flex items-center gap-1.5">
-        <MessageSquare
-          className={cn('h-3.5 w-3.5 shrink-0', active ? 'text-brand' : 'text-ink-muted')}
-        />
-        <span className="min-w-0 flex-1 truncate text-sm text-ink">{meta.title}</span>
-        {/* hover 操作 */}
-        {!confirmDel && (
-          <div className="hidden shrink-0 items-center gap-0.5 group-hover:flex">
+      {/* 全區主要動作：載入對話（鍵盤可聚焦、Enter/空白開啟、整列任意處點擊也會觸發）。 */}
+      <button
+        onClick={() => void load(meta.id)}
+        aria-label={t('conversations:openConversation', { title: meta.title })}
+        className="absolute inset-0 z-0 cursor-pointer rounded-md"
+      />
+      {/* 內容疊在按鈕上方；pointer-events-none 讓點擊穿透到底層按鈕，動作鈕再各自 pointer-events-auto。 */}
+      <div className="pointer-events-none relative z-10 flex flex-col gap-0.5 px-2.5 py-2">
+        <div className="flex items-center gap-1.5">
+          <MessageSquare
+            className={cn('h-3.5 w-3.5 shrink-0', active ? 'text-brand' : 'text-ink-muted')}
+          />
+          <span className="min-w-0 flex-1 truncate text-sm text-ink">{meta.title}</span>
+          {/* hover 或鍵盤聚焦該列時顯示的操作 */}
+          {!confirmDel && (
+            <div className="pointer-events-auto hidden shrink-0 items-center gap-0.5 group-hover:flex group-focus-within:flex">
             <button
               onClick={(e) => {
                 e.stopPropagation()
@@ -131,9 +138,10 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
           </div>
         )}
       </div>
-      <span className="pl-5 text-[11px] text-ink-muted">
-        {formatRelative(meta.updatedAt, t)}
-      </span>
+        <span className="pl-5 text-[11px] text-ink-muted">
+          {formatRelative(meta.updatedAt, t)}
+        </span>
+      </div>
     </div>
   )
 }

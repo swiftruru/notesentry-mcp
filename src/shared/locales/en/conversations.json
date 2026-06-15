@@ -2,6 +2,7 @@
   "newChat": "New chat",
   "newChatTitle": "New chat",
   "listLabel": "Conversation list",
+  "openConversation": "Open conversation: {{title}}",
   "searchPlaceholder": "Search chats…",
   "emptySearch": "No matching chats",
   "emptyInitial": "No chats yet — click \"New chat\" to start",

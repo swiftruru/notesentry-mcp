@@ -2,6 +2,7 @@
   "newChat": "新對話",
   "newChatTitle": "新對話",
   "listLabel": "對話清單",
+  "openConversation": "開啟對話：{{title}}",
   "searchPlaceholder": "搜尋對話…",
   "emptySearch": "找不到符合的對話",
   "emptyInitial": "尚無對話，點「新對話」開始",
