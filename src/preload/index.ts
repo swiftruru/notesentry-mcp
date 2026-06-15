@@ -34,6 +34,7 @@ const api: NoteSentryApi = {
   listModels: () => ipcRenderer.invoke(IPC.OLLAMA_MODELS),
   checkEnvironment: () => ipcRenderer.invoke(IPC.ENV_CHECK),
   listAudit: () => ipcRenderer.invoke(IPC.AUDIT_LIST),
+  exportAudit: (entries) => ipcRenderer.invoke(IPC.AUDIT_EXPORT, entries),
 
   listConversations: () => ipcRenderer.invoke(IPC.CONV_LIST),
   loadConversation: (id: string) => ipcRenderer.invoke(IPC.CONV_LOAD, id),

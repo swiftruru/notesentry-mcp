@@ -2,11 +2,34 @@
   "title": "Audit log",
   "desc": "Every tool call is recorded and appended to a JSONL file under the project's logs/ folder.",
   "empty": "No audit entries yet.",
+  "noMatch": "No entries match your filters.",
+  "count_one": "{{count}} entry",
+  "count_other": "{{count}} entries",
+  "searchPlaceholder": "Search tool / params / error…",
+  "export": "Export",
+  "filter": {
+    "all": "All",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "error": "Errors"
+  },
   "col": {
     "time": "Time",
     "tool": "Tool",
     "params": "Parameters",
     "approval": "Approval"
+  },
+  "detail": {
+    "fullParams": "Full parameters",
+    "result": "Result summary",
+    "session": "Session",
+    "errorLabel": "Error",
+    "noResult": "(no result summary)",
+    "expandHint": "Click to expand full details"
+  },
+  "toast": {
+    "exported": "Audit exported to {{path}}",
+    "failed": "Export failed: {{error}}"
   },
   "error": "Error: {{error}}",
   "approved": "Approved",

@@ -102,6 +102,7 @@ interface AppState {
   newConversation: () => void
   exportMarkdown: () => Promise<ExportResult>
   exportCurrentChat: () => Promise<void>
+  exportAudit: () => Promise<void>
   reconnectMcp: () => Promise<void>
   setTheme: (mode: ThemeMode) => void
   setLanguage: (lng: string) => void
@@ -395,6 +396,14 @@ export const useAppStore = create<AppState>((set, get) => {
       if (res.saved) get().pushToast(i18n.t('chat:toast.exportedTo', { path: res.path }))
       else if (res.error)
         get().pushToast(i18n.t('chat:toast.exportFailed', { error: res.error }), 'error')
+    },
+
+    // 匯出稽核紀錄為 JSONL（目前載入的項目）。
+    exportAudit: async () => {
+      const res = await window.api.exportAudit(get().audit)
+      if (res.saved) get().pushToast(i18n.t('audit:toast.exported', { path: res.path }))
+      else if (res.error)
+        get().pushToast(i18n.t('audit:toast.failed', { error: res.error }), 'error')
     },
 
     // 重新連線 MCP + 更新工具/狀態 + 回饋（工具頁與命令面板共用）。

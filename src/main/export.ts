@@ -1,7 +1,7 @@
 import { dialog, BrowserWindow, app } from 'electron'
 import { writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
-import { Conversation, ExportResult } from '@shared/types'
+import { AuditEntry, Conversation, ExportResult } from '@shared/types'
 import { loadConfig, saveConfig } from './config/configStore'
 import { tMain } from './i18n'
 
@@ -98,6 +98,44 @@ export async function exportConversationMarkdown(
     if (res.canceled || !res.filePath) return { saved: false, canceled: true }
     writeFileSync(res.filePath, md, 'utf-8')
     // 記住這次選的資料夾，下次從這裡開始。
+    saveConfig({ ...loadConfig(), lastExportDir: dirname(res.filePath) })
+    return { saved: true, path: res.filePath }
+  } catch (err) {
+    return { saved: false, error: err instanceof Error ? err.message : String(err) }
+  }
+}
+
+/** 匯出稽核紀錄為 JSONL（每行一筆）：跳出「另存新檔」，沿用 lastExportDir 與測試路徑。 */
+export async function exportAuditJsonl(
+  entries: AuditEntry[],
+  win: BrowserWindow | null
+): Promise<ExportResult> {
+  try {
+    const jsonl = entries.map((e) => JSON.stringify(e)).join('\n') + (entries.length ? '\n' : '')
+    const d = new Date()
+    const fname = `notesentry-audit-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.jsonl`
+
+    const testDir = process.env.NS_EXPORT_TEST_DIR
+    if (testDir) {
+      const p = join(testDir, fname)
+      writeFileSync(p, jsonl, 'utf-8')
+      return { saved: true, path: p }
+    }
+
+    const cfg = loadConfig()
+    const remembered = cfg.lastExportDir && existsSync(cfg.lastExportDir) ? cfg.lastExportDir : null
+    const startDir = remembered ?? app.getPath('documents')
+    const opts = {
+      title: tMain('main.export.auditTitle'),
+      defaultPath: join(startDir, fname),
+      filters: [{ name: 'JSON Lines', extensions: ['jsonl'] }],
+      properties: ['createDirectory', 'showOverwriteConfirmation'] as Array<
+        'createDirectory' | 'showOverwriteConfirmation'
+      >
+    }
+    const res = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts)
+    if (res.canceled || !res.filePath) return { saved: false, canceled: true }
+    writeFileSync(res.filePath, jsonl, 'utf-8')
     saveConfig({ ...loadConfig(), lastExportDir: dirname(res.filePath) })
     return { saved: true, path: res.filePath }
   } catch (err) {

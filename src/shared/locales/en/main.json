@@ -1,6 +1,7 @@
 {
   "export": {
     "defaultTitle": "Conversation",
+    "auditTitle": "Export audit log as JSONL",
     "header": "NoteSentry conversation export (data stays on this device)",
     "exportedAt": "Exported at: {{time}}",
     "model": "Model: {{model}}",

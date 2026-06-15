@@ -1,6 +1,7 @@
 {
   "export": {
     "defaultTitle": "對話",
+    "auditTitle": "匯出稽核紀錄為 JSONL",
     "header": "NoteSentry 對話匯出（資料全程留在本機）",
     "exportedAt": "匯出時間：{{time}}",
     "model": "模型：{{model}}",

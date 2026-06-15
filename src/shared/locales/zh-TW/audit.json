@@ -2,11 +2,33 @@
   "title": "稽核日誌",
   "desc": "每次工具呼叫都會記錄，並同步寫入專案 logs/ 下的 JSONL 檔。",
   "empty": "尚無稽核紀錄。",
+  "noMatch": "沒有符合條件的紀錄。",
+  "count_other": "{{count}} 筆",
+  "searchPlaceholder": "搜尋工具名／參數／錯誤…",
+  "export": "匯出",
+  "filter": {
+    "all": "全部",
+    "approved": "已核可",
+    "rejected": "已拒絕",
+    "error": "錯誤"
+  },
   "col": {
     "time": "時間",
     "tool": "工具",
     "params": "參數",
     "approval": "核可"
+  },
+  "detail": {
+    "fullParams": "完整參數",
+    "result": "結果摘要",
+    "session": "Session",
+    "errorLabel": "錯誤",
+    "noResult": "（無結果摘要）",
+    "expandHint": "點擊展開完整內容"
+  },
+  "toast": {
+    "exported": "已匯出稽核至 {{path}}",
+    "failed": "匯出失敗：{{error}}"
   },
   "error": "錯誤：{{error}}",
   "approved": "同意",

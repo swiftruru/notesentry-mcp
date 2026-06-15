@@ -16,7 +16,7 @@ import { loadConfig, saveConfig } from './config/configStore'
 import { listAudit } from './audit/auditLog'
 import { generateTitle, listModels, suggestFollowups } from './ollama/ollamaClient'
 import { checkEnvironment } from './diagnostics'
-import { exportConversationMarkdown } from './export'
+import { exportConversationMarkdown, exportAuditJsonl } from './export'
 import {
   listConversations,
   loadConversation,
@@ -113,6 +113,9 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
 
   // --- 稽核 ---
   ipcMain.handle(IPC.AUDIT_LIST, async () => listAudit())
+  ipcMain.handle(IPC.AUDIT_EXPORT, async (_e, entries: AuditEntry[]) =>
+    exportAuditJsonl(entries, getWindow())
+  )
 
   // --- 對話紀錄 ---
   ipcMain.handle(IPC.CONV_LIST, async () => listConversations())
