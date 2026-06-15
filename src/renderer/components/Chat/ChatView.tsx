@@ -73,7 +73,7 @@ export function ChatView(): React.JSX.Element {
             aria-label={
               sidebarCollapsed ? t('conversations:expandSidebar') : t('conversations:collapseSidebar')
             }
-            className="shrink-0 text-ink-muted transition-colors hover:text-brand"
+            className="shrink-0 rounded-md border border-border p-1.5 text-ink-muted transition-colors hover:bg-card hover:text-brand"
           >
             {sidebarCollapsed ? (
               <PanelLeftOpen className="h-4 w-4" />
