@@ -6,6 +6,7 @@
   "emptyInitial": "No chats yet — click \"New chat\" to start",
   "collapseSidebar": "Collapse sidebar",
   "expandSidebar": "Expand sidebar",
+  "toggleSidebarHint": "Chat (click again to toggle the list)",
   "toast": {
     "deleted": "Conversation deleted",
     "renamed": "Renamed"

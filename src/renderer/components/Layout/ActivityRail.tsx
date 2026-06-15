@@ -23,16 +23,22 @@ export function ActivityRail(): React.JSX.Element {
   const { t } = useTranslation('common')
   const view = useAppStore((s) => s.view)
   const setView = useAppStore((s) => s.setView)
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar)
 
   const renderBtn = (it: RailItem): React.JSX.Element => {
     const Icon = it.icon
     const active = view === it.key
     const label = t(`nav.${it.key}`)
+    // 「對話」圖示：不在對話頁→進入；已在對話頁→收合/展開對話清單（同 VS Code 行為）。
+    const onClick = (): void => {
+      if (it.key === 'chat' && view === 'chat') toggleSidebar()
+      else setView(it.key)
+    }
     return (
       <button
         key={it.key}
-        onClick={() => setView(it.key)}
-        title={label}
+        onClick={onClick}
+        title={it.key === 'chat' && active ? t('conversations:toggleSidebarHint') : label}
         aria-label={label}
         aria-current={active ? 'page' : undefined}
         className={cn(

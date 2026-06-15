@@ -6,6 +6,7 @@
   "emptyInitial": "尚無對話，點「新對話」開始",
   "collapseSidebar": "收合側邊欄",
   "expandSidebar": "展開側邊欄",
+  "toggleSidebarHint": "對話（再按一次收合／展開清單）",
   "toast": {
     "deleted": "已刪除對話",
     "renamed": "已重新命名"
