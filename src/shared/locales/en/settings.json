@@ -21,6 +21,7 @@
     }
   },
   "localWarn": "Must be a local address, otherwise it will be blocked.",
+  "mcpScriptLabel": "{{name}} script path",
   "mcpSection": "MCP servers (multi-MCP architecture)",
   "mcpSectionDesc": "Each server is an independent Python stdio subprocess. You can enable/disable and edit the script path.",
   "enabled": "Enabled",

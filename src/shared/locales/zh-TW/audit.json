@@ -24,7 +24,8 @@
     "session": "Session",
     "errorLabel": "錯誤",
     "noResult": "（無結果摘要）",
-    "expandHint": "點擊展開完整內容"
+    "expandHint": "點擊展開完整內容",
+    "expandRow": "展開／收合 {{tool}} 的詳細內容"
   },
   "toast": {
     "exported": "已匯出稽核至 {{path}}",

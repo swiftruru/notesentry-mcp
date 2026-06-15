@@ -85,6 +85,7 @@ export function AuditView(): React.JSX.Element {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
+              aria-label={t('searchPlaceholder')}
               className="h-8 pl-8 text-xs"
             />
           </div>
@@ -121,6 +122,7 @@ export function AuditView(): React.JSX.Element {
                   <button
                     onClick={() => toggle(key)}
                     aria-expanded={open}
+                    aria-label={t('detail.expandRow', { tool: e.toolName })}
                     className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-card/50"
                   >
                     {open ? (

@@ -41,6 +41,7 @@ export function Composer(): React.JSX.Element {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKeyDown}
           disabled={disabled}
+          aria-label={t('composer.inputLabel')}
           placeholder={
             pendingHitl ? t('composer.placeholderHitl') : t('composer.placeholder')
           }
@@ -48,7 +49,13 @@ export function Composer(): React.JSX.Element {
           style={{ height: 'auto' }}
         />
         {isStreaming ? (
-          <Button variant="danger" size="icon" onClick={abort} title={t('composer.stop')}>
+          <Button
+            variant="danger"
+            size="icon"
+            onClick={abort}
+            title={t('composer.stop')}
+            aria-label={t('composer.stop')}
+          >
             <Square className="h-4 w-4" />
           </Button>
         ) : (
@@ -57,6 +64,7 @@ export function Composer(): React.JSX.Element {
             onClick={submit}
             disabled={disabled || !text.trim()}
             title={t('composer.send')}
+            aria-label={t('composer.send')}
           >
             <SendHorizonal className="h-4 w-4" />
           </Button>

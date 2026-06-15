@@ -21,6 +21,7 @@
     }
   },
   "localWarn": "必須是本機位址，否則將被阻擋。",
+  "mcpScriptLabel": "{{name}} 腳本路徑",
   "mcpSection": "MCP server（多 MCP 架構）",
   "mcpSectionDesc": "每支 server 是一個獨立的 Python stdio 子行程。可勾選啟用、修改腳本路徑。",
   "enabled": "啟用",

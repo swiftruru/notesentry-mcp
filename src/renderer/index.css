@@ -27,7 +27,8 @@
     --card: 25 42 43;
     --card-foreground: 226 237 236;
     --ink: 226 237 236;
-    --ink-muted: 143 170 169;
+    /* 調亮以在 card/surface 上達 WCAG AA（原 143 170 169 於 card 上約 3.5:1） */
+    --ink-muted: 170 192 191;
     --border: 38 64 63;
     --ring: 63 169 160;
     --brand: 60 169 160;
@@ -45,6 +46,12 @@
   body {
     @apply bg-canvas text-ink antialiased;
     font-family: theme('fontFamily.sans');
+  }
+
+  /* 全域鍵盤焦點可見：所有互動元素都有清楚的焦點外框（低特異性，元件可覆寫）。 */
+  :where(a, button, input, textarea, select, [tabindex]:not([tabindex='-1'])):focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 2px;
   }
 
   /* 尊重「減少動態效果」系統偏好 */

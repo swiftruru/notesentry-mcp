@@ -35,6 +35,14 @@ const namespaces = Array.from(
 
 const FALLBACK = 'zh-TW'
 
+/** locale 代碼 → BCP47 語言標籤（給螢幕報讀器用的 <html lang>）。 */
+const BCP47: Record<string, string> = { 'zh-TW': 'zh-Hant', en: 'en' }
+
+/** 同步 document.documentElement.lang，讓報讀器以正確語言朗讀。 */
+export function applyHtmlLang(lng: string): void {
+  if (typeof document !== 'undefined') document.documentElement.lang = BCP47[lng] ?? lng
+}
+
 export async function initI18n(language?: string): Promise<typeof i18n> {
   await i18n.use(initReactI18next).init({
     resources: resources as never,

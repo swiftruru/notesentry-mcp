@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { initI18n } from './i18n'
+import i18n, { initI18n, applyHtmlLang } from './i18n'
 import { applyTheme } from './lib/theme'
 import './index.css'
 
@@ -17,6 +17,7 @@ async function bootstrap(): Promise<void> {
     applyTheme('system')
   }
   await initI18n(language)
+  applyHtmlLang(i18n.language)
 
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>

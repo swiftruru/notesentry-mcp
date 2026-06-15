@@ -48,12 +48,8 @@ export function MessageList(): React.JSX.Element {
 
   return (
     <div className="relative min-h-0 flex-1 overflow-hidden">
-      <div
-        ref={scrollRef}
-        onScroll={onScroll}
-        className="h-full overflow-y-auto px-6 py-6"
-        aria-live="polite"
-      >
+      <ChatStatusAnnouncer />
+      <div ref={scrollRef} onScroll={onScroll} className="h-full overflow-y-auto px-6 py-6">
         <div className="mx-auto flex max-w-3xl flex-col gap-5">
           {messages.length === 0 && !isStreaming && <EmptyState />}
 
@@ -103,6 +99,32 @@ export function MessageList(): React.JSX.Element {
           {t('scrollToLatest')}
         </button>
       )}
+    </div>
+  )
+}
+
+/**
+ * 螢幕報讀器的聊天狀態播報：只播報高階狀態（生成中／已回覆／需要核可），
+ * 不把每個串流 token 都念出來（那會讓報讀器無法使用）。
+ */
+function ChatStatusAnnouncer(): React.JSX.Element {
+  const { t } = useTranslation('chat')
+  const isStreaming = useAppStore((s) => s.isStreaming)
+  const pendingHitl = useAppStore((s) => s.pendingHitl)
+  const [msg, setMsg] = useState('')
+  const prevStreaming = useRef(false)
+
+  useEffect(() => {
+    if (pendingHitl) setMsg(t('a11y.approvalNeeded'))
+    else if (isStreaming) setMsg(t('a11y.generating'))
+    else if (prevStreaming.current) setMsg(t('a11y.replied'))
+    else setMsg('')
+    prevStreaming.current = isStreaming
+  }, [isStreaming, pendingHitl, t])
+
+  return (
+    <div className="sr-only" role="status" aria-live="polite">
+      {msg}
     </div>
   )
 }

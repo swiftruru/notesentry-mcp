@@ -197,6 +197,7 @@ export function SettingsView(): React.JSX.Element {
                 <Input
                   value={srv.scriptPath}
                   placeholder="./server.py"
+                  aria-label={t('mcpScriptLabel', { name: srv.name })}
                   onChange={(e) => updateServer(idx, { scriptPath: e.target.value })}
                 />
               </div>
@@ -352,6 +353,7 @@ function ModelSelect({
             autoFocus
             value={value}
             placeholder={t('model.customPlaceholder')}
+            aria-label={t('model.customPlaceholder')}
             onChange={(e) => onChange(e.target.value)}
             className="min-w-0 flex-1"
           />

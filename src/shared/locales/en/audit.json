@@ -25,7 +25,8 @@
     "session": "Session",
     "errorLabel": "Error",
     "noResult": "(no result summary)",
-    "expandHint": "Click to expand full details"
+    "expandHint": "Click to expand full details",
+    "expandRow": "Toggle details for {{tool}}"
   },
   "toast": {
     "exported": "Audit exported to {{path}}",

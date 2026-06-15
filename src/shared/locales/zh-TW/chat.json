@@ -23,6 +23,7 @@
   },
   "scrollToLatest": "捲到最新",
   "composer": {
+    "inputLabel": "問題輸入框",
     "placeholder": "輸入你的問題（Enter 送出，Shift+Enter 換行）",
     "placeholderHitl": "請先處理上方的工具核可請求…",
     "stop": "停止",
@@ -31,6 +32,11 @@
   },
   "suggestions": {
     "followupLabel": "建議接著問"
+  },
+  "a11y": {
+    "generating": "正在生成回覆…",
+    "replied": "已回覆。",
+    "approvalNeeded": "需要你核可工具呼叫。"
   },
   "error": "發生錯誤：{{error}}",
   "noExport": "目前沒有可匯出的對話內容。"

@@ -50,9 +50,15 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKey}
           onBlur={commit}
+          aria-label={t('actions.rename')}
           className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none"
         />
-        <button onClick={commit} className="text-emerald-600" title={t('actions.confirm')}>
+        <button
+          onClick={commit}
+          className="text-emerald-600"
+          title={t('actions.confirm')}
+          aria-label={t('actions.confirm')}
+        >
           <Check className="h-3.5 w-3.5" />
         </button>
       </div>
@@ -83,6 +89,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
               }}
               className="rounded p-0.5 text-ink-muted hover:bg-surface hover:text-brand"
               title={t('actions.rename')}
+              aria-label={t('actions.rename')}
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
@@ -93,6 +100,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
               }}
               className="rounded p-0.5 text-ink-muted hover:bg-surface hover:text-red-600"
               title={t('actions.delete')}
+              aria-label={t('actions.delete')}
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -116,6 +124,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
               }}
               className="rounded p-0.5 text-ink-muted hover:bg-surface"
               title={t('actions.cancel')}
+              aria-label={t('actions.cancel')}
             >
               <X className="h-3.5 w-3.5" />
             </button>

@@ -65,7 +65,11 @@ export function HealthStatus(): React.JSX.Element {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 animate-fade-in rounded-xl border border-border bg-surface p-2 shadow-xl">
+        <div
+          role="dialog"
+          aria-label={t('title')}
+          className="absolute right-0 top-full z-50 mt-2 w-80 animate-fade-in rounded-xl border border-border bg-surface p-2 shadow-xl"
+        >
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
               {t('title')}

@@ -89,9 +89,15 @@ export function ChatView(): React.JSX.Element {
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKey}
               onBlur={commit}
+              aria-label={t('common:actions.rename')}
               className="rounded border border-ring bg-surface px-2 py-1 text-sm text-ink outline-none"
             />
-            <button onClick={commit} className="text-emerald-600" title={t('common:actions.confirm')}>
+            <button
+              onClick={commit}
+              className="text-emerald-600"
+              title={t('common:actions.confirm')}
+              aria-label={t('common:actions.confirm')}
+            >
               <Check className="h-4 w-4" />
             </button>
           </div>
@@ -106,6 +112,7 @@ export function ChatView(): React.JSX.Element {
                 }}
                 className="text-ink-muted hover:text-brand"
                 title={t('common:actions.rename')}
+                aria-label={t('common:actions.rename')}
               >
                 <Pencil className="h-3.5 w-3.5" />
               </button>

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import i18n from '@/i18n'
+import i18n, { applyHtmlLang } from '@/i18n'
 import { applyTheme } from '@/lib/theme'
 import {
   AppConfig,
@@ -438,9 +438,10 @@ export const useAppStore = create<AppState>((set, get) => {
       set((s) => ({ config: s.config ? { ...s.config, theme: mode } : s.config }))
     },
 
-    // 語言切換：i18n + 存設定（LanguageToggle 與命令面板共用）。
+    // 語言切換：i18n + 存設定 + 同步 <html lang>（LanguageToggle 與命令面板共用）。
     setLanguage: (lng) => {
       void i18n.changeLanguage(lng)
+      applyHtmlLang(lng)
       void window.api.setLanguage(lng)
     },
 

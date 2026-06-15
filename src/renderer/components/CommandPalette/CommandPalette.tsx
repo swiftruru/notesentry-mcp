@@ -119,6 +119,9 @@ export function CommandPalette(): React.JSX.Element | null {
     } else if (e.key === 'Escape') {
       e.preventDefault()
       setOpen(false)
+    } else if (e.key === 'Tab') {
+      // 焦點鎖定：面板內唯一可聚焦的是輸入框，攔住 Tab 不讓焦點跑到背景。
+      e.preventDefault()
     }
   }
 
@@ -149,11 +152,17 @@ export function CommandPalette(): React.JSX.Element | null {
             }}
             onKeyDown={onKeyDown}
             placeholder={t('placeholder')}
+            aria-label={t('placeholder')}
+            role="combobox"
+            aria-expanded={true}
+            aria-controls="cmdk-listbox"
+            aria-autocomplete="list"
+            aria-activedescendant={items.length > 0 ? `cmdk-opt-${selClamped}` : undefined}
             className="w-full bg-transparent py-3 text-sm text-ink outline-none placeholder:text-ink-muted"
           />
         </div>
 
-        <div className="max-h-80 overflow-y-auto p-1.5">
+        <div id="cmdk-listbox" role="listbox" aria-label={t('title')} className="max-h-80 overflow-y-auto p-1.5">
           {items.length === 0 && (
             <div className="px-3 py-6 text-center text-xs text-ink-muted">{t('empty')}</div>
           )}
@@ -166,7 +175,7 @@ export function CommandPalette(): React.JSX.Element | null {
                 const active = idx === selClamped
                 const myIdx = idx
                 return (
-                  <Row key={c.id} active={active} onClick={() => run(myIdx)}>
+                  <Row key={c.id} id={`cmdk-opt-${myIdx}`} active={active} onClick={() => run(myIdx)}>
                     <Icon className="h-4 w-4 shrink-0 text-brand" />
                     <span className="min-w-0 flex-1 truncate">{c.label}</span>
                     {c.hint && <kbd className="shrink-0 rounded border border-border bg-card px-1.5 py-0.5 text-[10px] font-medium text-ink-muted">{c.hint}</kbd>}
@@ -183,7 +192,7 @@ export function CommandPalette(): React.JSX.Element | null {
                 const active = idx === selClamped
                 const myIdx = idx
                 return (
-                  <Row key={c.id} active={active} onClick={() => run(myIdx)}>
+                  <Row key={c.id} id={`cmdk-opt-${myIdx}`} active={active} onClick={() => run(myIdx)}>
                     <MessagesSquare className="h-4 w-4 shrink-0 text-ink-muted" />
                     <span className="min-w-0 flex-1 truncate">{c.title}</span>
                   </Row>
@@ -213,8 +222,8 @@ function Section({
   children: React.ReactNode
 }): React.JSX.Element {
   return (
-    <div className="mb-1">
-      <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-ink-muted">
+    <div role="group" aria-label={label} className="mb-1">
+      <div aria-hidden="true" className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-ink-muted">
         {label}
       </div>
       {children}
@@ -223,16 +232,22 @@ function Section({
 }
 
 function Row({
+  id,
   active,
   onClick,
   children
 }: {
+  id: string
   active: boolean
   onClick: () => void
   children: React.ReactNode
 }): React.JSX.Element {
   return (
     <button
+      id={id}
+      role="option"
+      aria-selected={active}
+      tabIndex={-1}
       onClick={onClick}
       className={cn(
         'flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-ink transition-colors',

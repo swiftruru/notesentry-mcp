@@ -23,6 +23,7 @@
   },
   "scrollToLatest": "Scroll to latest",
   "composer": {
+    "inputLabel": "Message input",
     "placeholder": "Type your question (Enter to send, Shift+Enter for a new line)",
     "placeholderHitl": "Please respond to the tool approval request above…",
     "stop": "Stop",
@@ -31,6 +32,11 @@
   },
   "suggestions": {
     "followupLabel": "Suggested follow-ups"
+  },
+  "a11y": {
+    "generating": "Generating a reply…",
+    "replied": "Reply ready.",
+    "approvalNeeded": "A tool call needs your approval."
   },
   "error": "Error: {{error}}",
   "noExport": "Nothing to export in the current chat."

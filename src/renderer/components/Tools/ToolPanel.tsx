@@ -49,6 +49,7 @@ export function ToolPanel(): React.JSX.Element {
           onClick={reconnect}
           disabled={reconnecting}
           title={t('reconnectTooltip')}
+          aria-label={t('reconnectTooltip')}
         >
           <RefreshCw className={`h-4 w-4 ${reconnecting ? 'animate-spin' : ''}`} />
         </Button>
