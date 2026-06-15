@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Monitor, Sun, Moon } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
-import { applyTheme } from '@/lib/theme'
 import type { ThemeMode } from '@shared/types'
 
 const ORDER: ThemeMode[] = ['system', 'light', 'dark']
@@ -11,13 +10,11 @@ const ICON = { system: Monitor, light: Sun, dark: Moon }
 export function ThemeToggle(): React.JSX.Element {
   const { t } = useTranslation('common')
   const theme = useAppStore((s) => s.config?.theme ?? 'system')
+  const setTheme = useAppStore((s) => s.setTheme)
   const Icon = ICON[theme]
 
   const cycle = (): void => {
-    const next = ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length]
-    applyTheme(next)
-    void window.api.setTheme(next)
-    useAppStore.setState((s) => ({ config: s.config ? { ...s.config, theme: next } : s.config }))
+    setTheme(ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length])
   }
 
   return (

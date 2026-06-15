@@ -1,17 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { Languages } from 'lucide-react'
 import { SUPPORTED, languageMeta } from '@/i18n'
+import { useAppStore } from '@/store/useAppStore'
 
 /** 右上角單一語言切換鈕：點一下循環到下一個語言（2 語為切換、3+ 語為循環）。 */
 export function LanguageToggle(): React.JSX.Element {
   const { t, i18n } = useTranslation('common')
+  const setLanguage = useAppStore((s) => s.setLanguage)
   const current = i18n.language
   const idx = SUPPORTED.indexOf(current)
   const next = SUPPORTED[(idx + 1) % SUPPORTED.length] ?? SUPPORTED[0]
 
   const cycle = (): void => {
-    void i18n.changeLanguage(next)
-    void window.api.setLanguage(next)
+    setLanguage(next)
   }
 
   return (

@@ -17,24 +17,14 @@ export function ToolPanel(): React.JSX.Element {
   const { t } = useTranslation('tools')
   const tools = useAppStore((s) => s.tools)
   const mcpServers = useAppStore((s) => s.mcpServers)
-  const setMcpStatus = useAppStore((s) => s._setMcpStatus)
-  const setTools = useAppStore((s) => s._setTools)
   const setView = useAppStore((s) => s.setView)
+  const reconnectMcp = useAppStore((s) => s.reconnectMcp)
   const [reconnecting, setReconnecting] = useState(false)
-
-  const pushToast = useAppStore((s) => s.pushToast)
 
   const reconnect = async (): Promise<void> => {
     setReconnecting(true)
     try {
-      const status = await window.api.reconnectMcp()
-      setMcpStatus(status)
-      setTools(await window.api.listTools())
-      const connected = status.filter((s) => s.state === 'connected').length
-      pushToast(
-        t('toast.reconnected', { connected, total: status.length, count: status.length }),
-        connected > 0 ? 'success' : 'info'
-      )
+      await reconnectMcp()
     } finally {
       setReconnecting(false)
     }

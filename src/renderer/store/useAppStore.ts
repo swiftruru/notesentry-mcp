@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import i18n from '@/i18n'
+import { applyTheme } from '@/lib/theme'
 import {
   AppConfig,
   AuditEntry,
@@ -10,6 +11,7 @@ import {
   ExportResult,
   HitlRequestEvent,
   McpServerStatus,
+  ThemeMode,
   ToolInfo
 } from '@shared/types'
 
@@ -60,6 +62,7 @@ interface AppState {
   view: ViewKey
   health: HealthState
   toasts: Toast[]
+  paletteOpen: boolean
 
   // 進行中的對話
   activeId: string | null
@@ -86,6 +89,7 @@ interface AppState {
 
   // actions
   setView: (v: ViewKey) => void
+  setPaletteOpen: (open: boolean) => void
   refreshHealth: () => Promise<void>
   pushToast: (msg: string, kind?: Toast['kind']) => void
   dismissToast: (id: string) => void
@@ -97,6 +101,10 @@ interface AppState {
 
   newConversation: () => void
   exportMarkdown: () => Promise<ExportResult>
+  exportCurrentChat: () => Promise<void>
+  reconnectMcp: () => Promise<void>
+  setTheme: (mode: ThemeMode) => void
+  setLanguage: (lng: string) => void
   loadConversation: (id: string) => Promise<void>
   renameConversation: (id: string, title: string) => Promise<void>
   deleteConversation: (id: string) => Promise<void>
@@ -212,6 +220,7 @@ export const useAppStore = create<AppState>((set, get) => {
     view: 'chat',
     health: EMPTY_HEALTH,
     toasts: [],
+    paletteOpen: false,
 
     activeId: null,
     activeCreatedAt: 0,
@@ -232,6 +241,7 @@ export const useAppStore = create<AppState>((set, get) => {
     config: null,
 
     setView: (v) => set({ view: v }),
+    setPaletteOpen: (open) => set({ paletteOpen: open }),
 
     pushToast: (msg, kind = 'success') => {
       const id = uiId('toast')
@@ -377,6 +387,43 @@ export const useAppStore = create<AppState>((set, get) => {
         messages
       }
       return window.api.exportMarkdown(conv)
+    },
+
+    // 匯出 + 統一回饋（聊天頁、Mod+E、命令面板共用）。
+    exportCurrentChat: async () => {
+      const res = await get().exportMarkdown()
+      if (res.saved) get().pushToast(i18n.t('chat:toast.exportedTo', { path: res.path }))
+      else if (res.error)
+        get().pushToast(i18n.t('chat:toast.exportFailed', { error: res.error }), 'error')
+    },
+
+    // 重新連線 MCP + 更新工具/狀態 + 回饋（工具頁與命令面板共用）。
+    reconnectMcp: async () => {
+      const status = await window.api.reconnectMcp()
+      get()._setMcpStatus(status)
+      get()._setTools(await window.api.listTools())
+      const connected = status.filter((s) => s.state === 'connected').length
+      get().pushToast(
+        i18n.t('tools:toast.reconnected', {
+          connected,
+          total: status.length,
+          count: status.length
+        }),
+        connected > 0 ? 'success' : 'info'
+      )
+    },
+
+    // 主題切換：套用 .dark class + 存設定 + 更新 config（ThemeToggle 與命令面板共用）。
+    setTheme: (mode) => {
+      applyTheme(mode)
+      void window.api.setTheme(mode)
+      set((s) => ({ config: s.config ? { ...s.config, theme: mode } : s.config }))
+    },
+
+    // 語言切換：i18n + 存設定（LanguageToggle 與命令面板共用）。
+    setLanguage: (lng) => {
+      void i18n.changeLanguage(lng)
+      void window.api.setLanguage(lng)
     },
 
     loadConversation: async (id) => {

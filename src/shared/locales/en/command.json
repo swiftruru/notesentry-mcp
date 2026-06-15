@@ -1,0 +1,25 @@
+{
+  "title": "Command palette",
+  "placeholder": "Type a command or conversation title…",
+  "openTooltip": "Command palette",
+  "empty": "No matching commands",
+  "section": {
+    "commands": "Commands",
+    "conversations": "Jump to conversation"
+  },
+  "cmd": {
+    "newChat": "New chat",
+    "goChat": "Go to: Chat",
+    "goTools": "Go to: Tools",
+    "goAudit": "Go to: Audit",
+    "goSettings": "Go to: Settings",
+    "goAbout": "Go to: About",
+    "export": "Export current chat (Markdown)",
+    "reconnect": "Reconnect MCP",
+    "recheck": "Re-check system status",
+    "themeSystem": "Theme: System",
+    "themeLight": "Theme: Light",
+    "themeDark": "Theme: Dark",
+    "language": "Switch language: {{lang}}"
+  }
+}

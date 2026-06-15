@@ -1,0 +1,25 @@
+{
+  "title": "命令面板",
+  "placeholder": "輸入指令或對話標題…",
+  "openTooltip": "命令面板",
+  "empty": "找不到符合的指令",
+  "section": {
+    "commands": "指令",
+    "conversations": "跳到對話"
+  },
+  "cmd": {
+    "newChat": "新對話",
+    "goChat": "前往：對話",
+    "goTools": "前往：工具",
+    "goAudit": "前往：稽核",
+    "goSettings": "前往：設定",
+    "goAbout": "前往：關於",
+    "export": "匯出目前對話（Markdown）",
+    "reconnect": "重新連線 MCP",
+    "recheck": "重新檢查系統狀態",
+    "themeSystem": "主題：跟隨系統",
+    "themeLight": "主題：淺色",
+    "themeDark": "主題：深色",
+    "language": "切換語言：{{lang}}"
+  }
+}

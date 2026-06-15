@@ -18,13 +18,12 @@ export function ChatView(): React.JSX.Element {
   const hasMessages = useAppStore((s) => s.messages.length > 0)
   const rename = useAppStore((s) => s.renameConversation)
   const newConversation = useAppStore((s) => s.newConversation)
-  const exportMarkdown = useAppStore((s) => s.exportMarkdown)
+  const exportCurrentChat = useAppStore((s) => s.exportCurrentChat)
 
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(title)
   const [bannerDismissed, setBannerDismissed] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const pushToast = useAppStore((s) => s.pushToast)
 
   const { t: tHealth } = useTranslation('health')
   const health = useAppStore((s) => s.health)
@@ -36,11 +35,7 @@ export function ChatView(): React.JSX.Element {
       ? primaryProblem(health, model, tHealth)
       : null
 
-  const doExport = async (): Promise<void> => {
-    const res = await exportMarkdown()
-    if (res.saved) pushToast(t('toast.exportedTo', { path: res.path }))
-    else if (res.error) pushToast(t('toast.exportFailed', { error: res.error }), 'error')
-  }
+  const doExport = (): Promise<void> => exportCurrentChat()
 
   useEffect(() => {
     if (editing) inputRef.current?.select()

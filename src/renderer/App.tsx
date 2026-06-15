@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAppStore } from './store/useAppStore'
+import { useAppStore, ViewKey } from './store/useAppStore'
 import { ActivityRail } from './components/Layout/ActivityRail'
 import { LanguageToggle } from './components/Layout/LanguageToggle'
 import { ConversationList } from './components/Conversations/ConversationList'
@@ -12,6 +12,8 @@ import { ToolPanel } from './components/Tools/ToolPanel'
 import { LocalBadge } from './components/Layout/LocalBadge'
 import { HealthStatus } from './components/Layout/HealthStatus'
 import { ThemeToggle } from './components/Layout/ThemeToggle'
+import { CommandButton } from './components/Layout/CommandButton'
+import { CommandPalette } from './components/CommandPalette/CommandPalette'
 import { Toaster } from './components/ui/Toaster'
 
 export default function App(): React.JSX.Element {
@@ -36,14 +38,40 @@ export default function App(): React.JSX.Element {
     return () => unsubs.forEach((u) => u())
   }, [init])
 
-  // 全域 Esc：生成中按 Esc 停止生成（HITL 開啟時讓核可框自己處理 Esc）。
+  // 全域快捷鍵（mac ⌘、其他 Ctrl）。讀寫一律走 getState，避免 stale closure。
   useEffect(() => {
+    const VIEWS: ViewKey[] = ['chat', 'tools', 'audit', 'settings', 'about']
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key !== 'Escape') return
+      const mod = e.metaKey || e.ctrlKey
       const s = useAppStore.getState()
-      if (s.isStreaming && !s.pendingHitl) {
+
+      // ⌘K：任何時候開／關命令面板。
+      if (mod && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault()
-        void s.abort()
+        s.setPaletteOpen(!s.paletteOpen)
+        return
+      }
+      // 面板開啟時，其餘按鍵交給面板自身處理（Esc 由面板關閉）。
+      if (s.paletteOpen) return
+
+      if (mod && (e.key === 'n' || e.key === 'N')) {
+        e.preventDefault()
+        s.newConversation()
+      } else if (mod && e.key === ',') {
+        e.preventDefault()
+        s.setView('settings')
+      } else if (mod && (e.key === 'e' || e.key === 'E')) {
+        e.preventDefault()
+        if (s.messages.length > 0) void s.exportCurrentChat()
+      } else if (mod && e.key >= '1' && e.key <= '5') {
+        e.preventDefault()
+        s.setView(VIEWS[Number(e.key) - 1])
+      } else if (e.key === 'Escape') {
+        // 生成中按 Esc 停止（HITL 開啟時讓核可框自己處理）。
+        if (s.isStreaming && !s.pendingHitl) {
+          e.preventDefault()
+          void s.abort()
+        }
       }
     }
     window.addEventListener('keydown', onKey)
@@ -61,6 +89,7 @@ export default function App(): React.JSX.Element {
           </span>
         </span>
         <div className="flex items-center gap-2">
+          <CommandButton />
           <HealthStatus />
           <ThemeToggle />
           <LanguageToggle />
@@ -108,6 +137,7 @@ export default function App(): React.JSX.Element {
       </div>
 
       <Toaster />
+      <CommandPalette />
     </div>
   )
 }
