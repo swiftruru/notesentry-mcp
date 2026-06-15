@@ -1,6 +1,8 @@
 import { memo, useState, type ReactNode } from 'react'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
+import rehypeSanitize from 'rehype-sanitize'
 import rehypeHighlight from 'rehype-highlight'
 import { Check, Copy } from 'lucide-react'
 import 'highlight.js/styles/github-dark.css'
@@ -71,7 +73,9 @@ function MarkdownImpl({ content }: { content: string }): React.JSX.Element {
     <div className="md">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        // rehypeRaw 把模型輸出的原生 HTML（如表格儲存格內的 <br> 換行）解析成真正的節點，
+        // rehypeSanitize 再清掉任何危險標籤/屬性（保留 <br>、表格與 language-* 以利語法高亮）。
+        rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
         components={components}
       >
         {content}
