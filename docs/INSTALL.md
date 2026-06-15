@@ -80,9 +80,9 @@ in Step 5. Keep this file local; it must never be committed or uploaded.
 
 ### Linux
 
-- **AppImage**: `chmod +x NoteSentry-linux-x64.AppImage` then run it.
+- **AppImage**: `chmod +x NoteSentry-linux-x86_64.AppImage` then run it.
   (If it complains about FUSE, install `libfuse2`, or run with `--appimage-extract-and-run`.)
-- **Debian/Ubuntu**: `sudo apt install ./NoteSentry-linux-x64.deb`
+- **Debian/Ubuntu**: `sudo apt install ./NoteSentry-linux-amd64.deb`
 
 ## Step 5 — First launch & configuration
 

@@ -52,7 +52,7 @@ download the **latest** version:
 &nbsp;
 [![Download for Windows](https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-setup-x64.exe)
 &nbsp;
-[![Download for Linux](https://img.shields.io/badge/Download-Linux-E95420?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.AppImage)
+[![Download for Linux](https://img.shields.io/badge/Download-Linux-E95420?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x86_64.AppImage)
 
 <sub>macOS button = Apple Silicon `.dmg` · Windows = installer · Linux = AppImage · other variants below</sub>
 
@@ -63,7 +63,7 @@ download the **latest** version:
 | macOS · Apple Silicon | [`.dmg`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.dmg) · [`.zip`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.zip) |
 | macOS · Intel | [`.dmg`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-x64.dmg) · [`.zip`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-x64.zip) |
 | Windows · x64 | [installer `.exe`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-setup-x64.exe) · [portable `.exe`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-portable-x64.exe) |
-| Linux · x64 | [`.AppImage`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.AppImage) · [`.deb`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.deb) |
+| Linux · x64 | [`.AppImage`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x86_64.AppImage) · [`.deb`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-amd64.deb) |
 
 > The app itself ships with the MCP server scripts bundled. You still need
 > [Ollama](https://ollama.com) and Python 3 (`pip install "mcp[cli]"`) installed, plus a

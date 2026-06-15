@@ -49,7 +49,7 @@
 &nbsp;
 [![下載 Windows 版](https://img.shields.io/badge/下載-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-setup-x64.exe)
 &nbsp;
-[![下載 Linux 版](https://img.shields.io/badge/下載-Linux-E95420?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.AppImage)
+[![下載 Linux 版](https://img.shields.io/badge/下載-Linux-E95420?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x86_64.AppImage)
 
 <sub>macOS 按鈕＝Apple Silicon `.dmg`／Windows＝安裝版／Linux＝AppImage，其餘版本見下表</sub>
 
@@ -60,7 +60,7 @@
 | macOS · Apple Silicon | [`.dmg`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.dmg) · [`.zip`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.zip) |
 | macOS · Intel | [`.dmg`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-x64.dmg) · [`.zip`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-x64.zip) |
 | Windows · x64 | [安裝版 `.exe`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-setup-x64.exe) · [免安裝 `.exe`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-portable-x64.exe) |
-| Linux · x64 | [`.AppImage`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.AppImage) · [`.deb`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.deb) |
+| Linux · x64 | [`.AppImage`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x86_64.AppImage) · [`.deb`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-amd64.deb) |
 
 > App 已內附 MCP server 腳本，但仍需自行安裝 [Ollama](https://ollama.com) 與
 > Python 3（`pip install "mcp[cli]"`），並用你自己的 credentialed MIMIC‑III 資料

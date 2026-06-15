@@ -77,9 +77,9 @@ python3 build_db.py --csv /路徑/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 
 ### Linux
 
-- **AppImage**:`chmod +x NoteSentry-linux-x64.AppImage` 後執行。
+- **AppImage**:`chmod +x NoteSentry-linux-x86_64.AppImage` 後執行。
   (若提示缺 FUSE,安裝 `libfuse2`,或用 `--appimage-extract-and-run` 執行。)
-- **Debian/Ubuntu**:`sudo apt install ./NoteSentry-linux-x64.deb`
+- **Debian/Ubuntu**:`sudo apt install ./NoteSentry-linux-amd64.deb`
 
 ## 步驟 5 —— 首次啟動與設定
 
