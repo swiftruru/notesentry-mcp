@@ -42,14 +42,28 @@ turns the results into an answer.
 > 📖 **New here? Follow the [Installation & First‑Run Guide](docs/INSTALL.md)** —
 > it walks you from a fresh machine to a working app (Ollama, Python, database, settings).
 
-Prebuilt installers for **macOS / Windows / Linux** are attached to each
-[release](https://github.com/swiftruru/notesentry-mcp/releases):
+Prebuilt installers for **macOS / Windows / Linux** are attached to every
+[release](https://github.com/swiftruru/notesentry-mcp/releases). The buttons below always
+download the **latest** version:
 
-| Platform | Files |
+<div align="center">
+
+[![Download for macOS](https://img.shields.io/badge/Download-macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.dmg)
+&nbsp;
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-setup-x64.exe)
+&nbsp;
+[![Download for Linux](https://img.shields.io/badge/Download-Linux-E95420?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.AppImage)
+
+<sub>macOS button = Apple Silicon `.dmg` · Windows = installer · Linux = AppImage · other variants below</sub>
+
+</div>
+
+| Platform | Direct download (always latest) |
 | --- | --- |
-| macOS | `.dmg` (installer) · `.zip` — Apple Silicon (`arm64`) and Intel (`x64`) |
-| Windows | `.exe` (NSIS installer) · portable `.exe` (`x64`) |
-| Linux | `.AppImage` · `.deb` (`x64`) |
+| macOS · Apple Silicon | [`.dmg`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.dmg) · [`.zip`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-arm64.zip) |
+| macOS · Intel | [`.dmg`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-x64.dmg) · [`.zip`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-mac-x64.zip) |
+| Windows · x64 | [installer `.exe`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-setup-x64.exe) · [portable `.exe`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-win-portable-x64.exe) |
+| Linux · x64 | [`.AppImage`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.AppImage) · [`.deb`](https://github.com/swiftruru/notesentry-mcp/releases/latest/download/NoteSentry-linux-x64.deb) |
 
 > The app itself ships with the MCP server scripts bundled. You still need
 > [Ollama](https://ollama.com) and Python 3 (`pip install "mcp[cli]"`) installed, plus a

@@ -1,7 +1,7 @@
 {
   "name": "notesentry",
   "productName": "NoteSentry",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "本機端 MIMIC-III 臨床紀錄探索助理（資料全程留在本機）",
   "main": "./out/main/index.js",
   "author": "YU-RU, PAN",
@@ -58,6 +58,7 @@
     "mac": {
       "icon": "build/icon.png",
       "category": "public.app-category.medical",
+      "artifactName": "${productName}-mac-${arch}.${ext}",
       "target": [
         {
           "target": "dmg",
@@ -76,7 +77,8 @@
       ]
     },
     "dmg": {
-      "title": "${productName} ${version}"
+      "title": "${productName} ${version}",
+      "artifactName": "${productName}-mac-${arch}.${ext}"
     },
     "win": {
       "icon": "build/icon.png",
@@ -98,12 +100,17 @@
     "nsis": {
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName}-win-setup-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-win-portable-${arch}.${ext}"
     },
     "linux": {
       "icon": "build/icon.png",
       "category": "Science",
       "maintainer": "YU-RU, PAN",
+      "artifactName": "${productName}-linux-${arch}.${ext}",
       "target": [
         "AppImage",
         "deb"

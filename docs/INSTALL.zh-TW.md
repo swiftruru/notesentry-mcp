@@ -64,22 +64,22 @@ python3 build_db.py --csv /路徑/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 
 ### macOS
 
-1. 下載 `NoteSentry-0.1.1-arm64.dmg`(Apple 晶片)或 `NoteSentry-0.1.1.dmg`(Intel)。
+1. 下載 `NoteSentry-mac-arm64.dmg`(Apple 晶片)或 `NoteSentry-mac-x64.dmg`(Intel)。
 2. 開啟 `.dmg`,把 **NoteSentry** 拖進「應用程式」。
 3. 這版是 **ad‑hoc 簽章**(無付費 Apple 憑證),首次開啟會被 Gatekeeper 擋下。請對 App
    **按右鍵 → 打開 → 打開**(只需一次)。若仍被擋:系統設定 → 隱私權與安全性 →「仍要打開」。
 
 ### Windows
 
-1. 下載 `NoteSentry-Setup-0.1.1.exe`(安裝版)或 `NoteSentry-0.1.1.exe`(免安裝)。
+1. 下載 `NoteSentry-win-setup-x64.exe`(安裝版)或 `NoteSentry-win-portable-x64.exe`(免安裝)。
 2. App 未簽章,SmartScreen 可能跳警告:點 **其他資訊 → 仍要執行**。
 3. 安裝版可選安裝資料夾;免安裝版直接執行、不需安裝。
 
 ### Linux
 
-- **AppImage**:`chmod +x NoteSentry-0.1.1.AppImage` 後執行。
+- **AppImage**:`chmod +x NoteSentry-linux-x64.AppImage` 後執行。
   (若提示缺 FUSE,安裝 `libfuse2`,或用 `--appimage-extract-and-run` 執行。)
-- **Debian/Ubuntu**:`sudo apt install ./notesentry_0.1.1_amd64.deb`
+- **Debian/Ubuntu**:`sudo apt install ./NoteSentry-linux-x64.deb`
 
 ## 步驟 5 —— 首次啟動與設定
 

@@ -66,7 +66,7 @@ in Step 5. Keep this file local; it must never be committed or uploaded.
 
 ### macOS
 
-1. Download `NoteSentry-0.1.1-arm64.dmg` (Apple Silicon) or `NoteSentry-0.1.1.dmg` (Intel).
+1. Download `NoteSentry-mac-arm64.dmg` (Apple Silicon) or `NoteSentry-mac-x64.dmg` (Intel).
 2. Open the `.dmg` and drag **NoteSentry** to Applications.
 3. The build is **ad‑hoc signed** (no paid Apple certificate), so the first launch is blocked
    by Gatekeeper. **Right‑click the app → Open → Open** (only needed once). If still blocked:
@@ -74,15 +74,15 @@ in Step 5. Keep this file local; it must never be committed or uploaded.
 
 ### Windows
 
-1. Download `NoteSentry-Setup-0.1.1.exe` (installer) or `NoteSentry-0.1.1.exe` (portable).
+1. Download `NoteSentry-win-setup-x64.exe` (installer) or `NoteSentry-win-portable-x64.exe` (portable).
 2. The app is unsigned, so SmartScreen may warn: click **More info → Run anyway**.
 3. The installer lets you choose the install folder; the portable `.exe` runs without installing.
 
 ### Linux
 
-- **AppImage**: `chmod +x NoteSentry-0.1.1.AppImage` then run it.
+- **AppImage**: `chmod +x NoteSentry-linux-x64.AppImage` then run it.
   (If it complains about FUSE, install `libfuse2`, or run with `--appimage-extract-and-run`.)
-- **Debian/Ubuntu**: `sudo apt install ./notesentry_0.1.1_amd64.deb`
+- **Debian/Ubuntu**: `sudo apt install ./NoteSentry-linux-x64.deb`
 
 ## Step 5 — First launch & configuration
 
