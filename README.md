@@ -122,7 +122,12 @@ picks it up automatically, **with no changes to any component code**. Each local
   "scroll to latest" button, and retry on error bubbles.
 - **Window memory & collapsible sidebar**: the window remembers its size/position; the conversation
   list collapses to widen the chat — toggle in the chat header, or click the active **Chat** rail icon.
-- **Accessibility**: respects `prefers-reduced-motion`; nav and dialogs carry proper roles/labels.
+- **Demo starter prompts**: a new chat offers one‑click sample questions that each exercise a real
+  tool (triage vitals, SOAP drafting, data queries, and a deliberately‑missing record).
+- **Accessibility**: keyboard‑visible focus on every control, accessible names on icon buttons and
+  inputs, `<html lang>` synced to the UI language, a screen‑reader status region for streaming
+  (instead of reading every token), a combobox/listbox command palette, keyboard‑operable
+  conversation rows, semantic landmarks, WCAG‑AA dark contrast, and `prefers-reduced-motion`.
 
 ## Architecture
 
