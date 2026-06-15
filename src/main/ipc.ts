@@ -35,8 +35,13 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
     if (win && !win.isDestroyed()) win.webContents.send(channel, payload)
   }
 
-  // MCP 狀態變化即時推給渲染端。
-  onMcpStatus((s: McpServerStatus[]) => send(IPC.EVT_MCP_STATUS, s))
+  // MCP 狀態變化即時推給渲染端，連同「當下的工具清單」一起推。
+  // （啟動時 connectMcp 是非同步完成的；init() 當下工具還沒連好會被快照成空，
+  //  之後狀態變「已連線」時必須把工具一併推回，否則工具頁要手動重整才會出現。）
+  onMcpStatus((s: McpServerStatus[]) => {
+    send(IPC.EVT_MCP_STATUS, s)
+    send(IPC.EVT_TOOLS_UPDATED, getTools())
+  })
 
   // --- 對話：跑 agent 迴圈 ---
   ipcMain.handle(IPC.CHAT_SEND, async (_e, payload: ChatSendPayload) => {
