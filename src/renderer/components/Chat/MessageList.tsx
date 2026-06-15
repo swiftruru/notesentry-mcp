@@ -149,7 +149,14 @@ function EmptyState(): React.JSX.Element {
       <p className="mt-1 max-w-md text-sm text-ink-muted">{t('empty.desc')}</p>
       <div className="mt-5 w-full max-w-md">
         <SuggestionChips
-          items={[t('empty.starter1'), t('empty.starter2'), t('empty.starter3')]}
+          items={[
+            t('empty.starter1'),
+            t('empty.starter2'),
+            t('empty.starter3'),
+            t('empty.starter4'),
+            t('empty.starter5'),
+            t('empty.starter6')
+          ]}
         />
       </div>
     </div>

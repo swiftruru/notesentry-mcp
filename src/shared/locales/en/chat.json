@@ -8,10 +8,13 @@
     "exportFailed": "Export failed: {{error}}"
   },
   "empty": {
-    "desc": "Explore local MIMIC-III clinical notes in plain language, or use the clinical support tools. The model always asks for your approval before it queries the database.",
-    "starter1": "How many notes are in each category?",
-    "starter2": "Find a radiology report that mentions pneumonia",
-    "starter3": "Give me a record summary for SUBJECT_ID 109"
+    "desc": "Explore local MIMIC-III clinical notes in plain language, or use the clinical support tools. Click a sample below to start; the model always asks for your approval before it queries the database.",
+    "starter1": "65-year-old man with chest pain and cold sweats; BP 85/50, HR 132, SpO2 91% — assess the vital signs and suggest a TTAS triage level",
+    "starter2": "Expand into a SOAP note draft: 60-year-old woman, epigastric pain for 3 hours, nausea, suspected gallstones, stable vital signs",
+    "starter3": "What note categories are in the database, and how many of each?",
+    "starter4": "Record summary for SUBJECT_ID 109: admissions, date range, and most recent notes",
+    "starter5": "Find radiology reports that mention pneumonia and show the matching snippets",
+    "starter6": "What is SUBJECT_ID 99999999 allergic to?"
   },
   "message": {
     "toolResult": "Tool result",
