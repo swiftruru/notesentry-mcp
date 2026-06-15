@@ -17,8 +17,11 @@
     "toolResult": "Tool result",
     "toolCallLabel": "Calling tool:",
     "copyTooltip": "Copy message",
-    "regenerate": "Regenerate"
+    "regenerate": "Regenerate",
+    "retry": "Retry",
+    "dismiss": "Dismiss"
   },
+  "scrollToLatest": "Scroll to latest",
   "composer": {
     "placeholder": "Type your question (Enter to send, Shift+Enter for a new line)",
     "placeholderHitl": "Please respond to the tool approval request above…",

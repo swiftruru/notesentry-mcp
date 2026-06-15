@@ -6,5 +6,6 @@
   "paramsLabel": "參數",
   "noParams": "（無參數）",
   "reject": "拒絕",
-  "approve": "同意並執行"
+  "approve": "同意並執行",
+  "kbdHint": "Enter 核可 · Esc 拒絕"
 }

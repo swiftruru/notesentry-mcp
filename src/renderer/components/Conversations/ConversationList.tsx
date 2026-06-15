@@ -25,7 +25,7 @@ export function ConversationList(): React.JSX.Element {
   }, [q, setSearch])
 
   return (
-    <div className="flex h-full w-72 shrink-0 flex-col border-r border-border bg-white">
+    <div className="flex h-full w-72 shrink-0 flex-col border-r border-border bg-surface">
       <div className="space-y-2 p-3">
         <Button className="w-full" onClick={newConversation}>
           <Plus className="h-4 w-4" />

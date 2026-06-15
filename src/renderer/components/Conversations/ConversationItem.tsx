@@ -43,7 +43,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
 
   if (editing) {
     return (
-      <div className="flex items-center gap-1 rounded-md border border-ring bg-white px-2 py-1.5">
+      <div className="flex items-center gap-1 rounded-md border border-ring bg-surface px-2 py-1.5">
         <input
           ref={inputRef}
           value={draft}
@@ -81,7 +81,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
                 setDraft(meta.title)
                 setEditing(true)
               }}
-              className="rounded p-0.5 text-ink-muted hover:bg-white hover:text-brand"
+              className="rounded p-0.5 text-ink-muted hover:bg-surface hover:text-brand"
               title={t('actions.rename')}
             >
               <Pencil className="h-3.5 w-3.5" />
@@ -91,7 +91,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
                 e.stopPropagation()
                 setConfirmDel(true)
               }}
-              className="rounded p-0.5 text-ink-muted hover:bg-white hover:text-red-600"
+              className="rounded p-0.5 text-ink-muted hover:bg-surface hover:text-red-600"
               title={t('actions.delete')}
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -114,7 +114,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
                 e.stopPropagation()
                 setConfirmDel(false)
               }}
-              className="rounded p-0.5 text-ink-muted hover:bg-white"
+              className="rounded p-0.5 text-ink-muted hover:bg-surface"
               title={t('actions.cancel')}
             >
               <X className="h-3.5 w-3.5" />

@@ -25,6 +25,7 @@ export const IPC = {
   CONV_EXPORT_MD: 'conv:exportMd',
   CHAT_SUGGEST: 'chat:suggest',
   LANG_SET: 'lang:set',
+  THEME_SET: 'theme:set',
 
   // main -> renderer（send / on）
   EVT_CHAT_TOKEN: 'evt:chat:token',
@@ -60,9 +61,13 @@ export interface AppConfig {
   mcpServers: McpServerConfig[]
   /** 介面與模型回答的語言（locale 代碼，如 zh-TW / en）；用 string 以利擴充第三語言 */
   language?: string
+  /** 介面主題：light / dark / system（跟隨作業系統） */
+  theme?: ThemeMode
   /** 上次匯出 Markdown 所選的資料夾（記住偏好，非設定頁欄位） */
   lastExportDir?: string
 }
+
+export type ThemeMode = 'light' | 'dark' | 'system'
 
 export const DEFAULT_CONFIG: AppConfig = {
   ollamaUrl: 'http://localhost:11434',
@@ -71,6 +76,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   pythonPath: 'python3',
   dbPath: './mimic_notes.db',
   language: 'zh-TW',
+  theme: 'system',
   mcpServers: [
     {
       id: 'mimic',
@@ -247,6 +253,7 @@ export interface NoteSentryApi {
   getConfig: () => Promise<AppConfig>
   setConfig: (config: AppConfig) => Promise<AppConfig>
   setLanguage: (language: string) => Promise<void>
+  setTheme: (theme: ThemeMode) => Promise<void>
   listModels: () => Promise<string[]>
   checkEnvironment: () => Promise<EnvCheck>
   listAudit: () => Promise<AuditEntry[]>

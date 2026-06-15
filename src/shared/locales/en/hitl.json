@@ -6,5 +6,6 @@
   "paramsLabel": "Parameters",
   "noParams": "(no parameters)",
   "reject": "Reject",
-  "approve": "Approve & run"
+  "approve": "Approve & run",
+  "kbdHint": "Enter to approve · Esc to reject"
 }

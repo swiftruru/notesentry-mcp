@@ -10,5 +10,8 @@
   },
   "emptyServers": "尚未連上任何 MCP server。請至設定確認 Python 與腳本路徑後重新連線。",
   "noTools": "（此 server 無工具）",
-  "noDesc": "（無說明）"
+  "noDesc": "（無說明）",
+  "toast": {
+    "reconnected_other": "已重新連線：{{connected}}/{{total}} 個 server"
+  }
 }

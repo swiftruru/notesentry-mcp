@@ -80,7 +80,7 @@ export function AboutView(): React.JSX.Element {
               return (
                 <div
                   key={p.key}
-                  className="rounded-lg border border-border bg-white p-4 transition-colors hover:border-brand/40"
+                  className="rounded-lg border border-border bg-surface p-4 transition-colors hover:border-brand/40"
                 >
                   <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-md bg-card text-brand">
                     <Icon className="h-4 w-4" />
@@ -139,7 +139,7 @@ export function AboutView(): React.JSX.Element {
             {TECH.map((tech) => (
               <span
                 key={tech}
-                className="rounded-full border border-border bg-white px-3 py-1 text-xs text-ink-muted"
+                className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-ink-muted"
               >
                 {tech}
               </span>

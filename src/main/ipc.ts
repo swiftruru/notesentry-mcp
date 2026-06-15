@@ -100,6 +100,11 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
     saveConfig({ ...loadConfig(), language })
   })
 
+  // --- 主題（只存設定，不重連 MCP） ---
+  ipcMain.handle(IPC.THEME_SET, async (_e, theme: AppConfig['theme']) => {
+    saveConfig({ ...loadConfig(), theme })
+  })
+
   // --- 模型偵測 ---
   ipcMain.handle(IPC.OLLAMA_MODELS, async () => listModels())
 

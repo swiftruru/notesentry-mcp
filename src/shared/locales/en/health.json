@@ -1,0 +1,36 @@
+{
+  "title": "System status",
+  "level": {
+    "ok": "Healthy",
+    "warn": "Attention",
+    "error": "Problem",
+    "unknown": "Checking"
+  },
+  "items": {
+    "ollama": "Ollama",
+    "model": "Model",
+    "mcp": "MCP servers",
+    "db": "Database",
+    "python": "Python"
+  },
+  "ollamaOk_one": "Connected ({{count}} model)",
+  "ollamaOk_other": "Connected ({{count}} models)",
+  "ollamaFail": "Connection failed: {{error}}",
+  "ollamaFailShort": "Can't reach Ollama — make sure it's running",
+  "modelOk": "\"{{model}}\" available",
+  "modelMissing": "\"{{model}}\" not installed — run `ollama pull` first",
+  "modelUnknown": "Not yet verified",
+  "mcpStatus_one": "{{connected}}/{{total}} server connected",
+  "mcpStatus_other": "{{connected}}/{{total}} servers connected",
+  "mcpNone": "No server connected — check the Python and script paths",
+  "dbOk": "Found",
+  "dbMissing": "Not found: {{path}} — build it with build_db.py",
+  "pythonOk": "Runnable ({{info}})",
+  "pythonFail": "Cannot run: {{info}}",
+  "recheck": "Re-check",
+  "checking": "Checking…",
+  "openSettings": "Open Settings",
+  "bannerPrefix": "Problem detected: ",
+  "bannerCta": "Open Settings",
+  "dismiss": "Dismiss"
+}

@@ -8,7 +8,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-lg border border-border bg-white shadow-sm',
+        'rounded-lg border border-border bg-surface shadow-sm',
         className
       )}
       {...props}
@@ -38,7 +38,7 @@ export const Input = React.forwardRef<
   <input
     ref={ref}
     className={cn(
-      'flex h-9 w-full rounded-md border border-border bg-white px-3 py-1 text-sm text-ink placeholder:text-ink-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
+      'flex h-9 w-full rounded-md border border-border bg-surface px-3 py-1 text-sm text-ink placeholder:text-ink-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
       className
     )}
     {...props}
@@ -53,7 +53,7 @@ export const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      'flex w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 resize-none',
+      'flex w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 resize-none',
       className
     )}
     {...props}

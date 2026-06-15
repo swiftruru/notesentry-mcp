@@ -24,7 +24,7 @@ export function SuggestionChips({
             key={q}
             disabled={disabled}
             onClick={() => void send(q)}
-            className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-3 py-1.5 text-xs text-ink transition-colors hover:border-brand hover:bg-card disabled:opacity-50"
+            className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-ink transition-colors hover:border-brand hover:bg-card disabled:opacity-50"
           >
             <Sparkles className="h-3 w-3 text-brand-accent" />
             {q}

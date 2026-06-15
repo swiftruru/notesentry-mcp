@@ -3,5 +3,9 @@
   "newChatTitle": "New chat",
   "searchPlaceholder": "Search chats…",
   "emptySearch": "No matching chats",
-  "emptyInitial": "No chats yet — click \"New chat\" to start"
+  "emptyInitial": "No chats yet — click \"New chat\" to start",
+  "toast": {
+    "deleted": "Conversation deleted",
+    "renamed": "Renamed"
+  }
 }

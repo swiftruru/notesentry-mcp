@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { Badge } from '@/components/ui/primitives'
 import { Button } from '@/components/ui/button'
-import { Wrench, RefreshCw, Circle, Server } from 'lucide-react'
+import { Wrench, RefreshCw, Circle, Server, Settings } from 'lucide-react'
 import { McpConnState, ToolInfo } from '@shared/types'
 import { useState } from 'react'
 
@@ -19,7 +19,10 @@ export function ToolPanel(): React.JSX.Element {
   const mcpServers = useAppStore((s) => s.mcpServers)
   const setMcpStatus = useAppStore((s) => s._setMcpStatus)
   const setTools = useAppStore((s) => s._setTools)
+  const setView = useAppStore((s) => s.setView)
   const [reconnecting, setReconnecting] = useState(false)
+
+  const pushToast = useAppStore((s) => s.pushToast)
 
   const reconnect = async (): Promise<void> => {
     setReconnecting(true)
@@ -27,6 +30,11 @@ export function ToolPanel(): React.JSX.Element {
       const status = await window.api.reconnectMcp()
       setMcpStatus(status)
       setTools(await window.api.listTools())
+      const connected = status.filter((s) => s.state === 'connected').length
+      pushToast(
+        t('toast.reconnected', { connected, total: status.length, count: status.length }),
+        connected > 0 ? 'success' : 'info'
+      )
     } finally {
       setReconnecting(false)
     }
@@ -58,8 +66,12 @@ export function ToolPanel(): React.JSX.Element {
 
       <div className="flex-1 space-y-3 overflow-y-auto px-3 pb-3">
         {mcpServers.length === 0 && (
-          <div className="px-1 py-6 text-center text-xs text-ink-muted">
-            {t('emptyServers')}
+          <div className="flex flex-col items-center gap-3 px-1 py-8 text-center text-xs text-ink-muted">
+            <span className="max-w-xs">{t('emptyServers')}</span>
+            <Button variant="outline" size="sm" onClick={() => setView('settings')}>
+              <Settings className="h-3.5 w-3.5" />
+              {t('health:openSettings')}
+            </Button>
           </div>
         )}
 
@@ -96,7 +108,7 @@ export function ToolPanel(): React.JSX.Element {
                   const props = (tool.inputSchema?.properties as Record<string, unknown>) ?? {}
                   const paramNames = Object.keys(props)
                   return (
-                    <div key={tool.name} className="rounded border border-border bg-white p-2.5">
+                    <div key={tool.name} className="rounded border border-border bg-surface p-2.5">
                       <div className="font-mono text-xs font-semibold text-brand">{tool.name}</div>
                       <p className="mt-1 text-[11px] leading-relaxed text-ink-muted">
                         {tool.description || t('noDesc')}

@@ -15,8 +15,51 @@ import {
 
 export type ViewKey = 'chat' | 'tools' | 'audit' | 'settings' | 'about'
 
+export type HealthLevel = 'ok' | 'warn' | 'error' | 'unknown'
+
+/** 系統健康狀態（由既有診斷 IPC 彙整，常駐顯示於標題列）。 */
+export interface HealthState {
+  ollama: { ok: boolean; error?: string; models: string[]; modelPresent: boolean }
+  db: { exists: boolean; path: string }
+  python: { ok: boolean; info: string }
+  mcp: { connected: number; total: number }
+  level: HealthLevel
+  checkedAt: number
+}
+
+const EMPTY_HEALTH: HealthState = {
+  ollama: { ok: false, models: [], modelPresent: false },
+  db: { exists: false, path: '' },
+  python: { ok: false, info: '' },
+  mcp: { connected: 0, total: 0 },
+  level: 'unknown',
+  checkedAt: 0
+}
+
+/** 由各項事實彙整總體等級：Ollama 連不上 / 無 server 連上 → error；模型缺、DB 缺、Python 不可用 → warn。 */
+function computeHealthLevel(f: {
+  ollamaOk: boolean
+  modelPresent: boolean
+  dbExists: boolean
+  pythonOk: boolean
+  connected: number
+  total: number
+}): HealthLevel {
+  if (!f.ollamaOk || f.total === 0 || f.connected === 0) return 'error'
+  if (!f.modelPresent || !f.dbExists || !f.pythonOk) return 'warn'
+  return 'ok'
+}
+
+export interface Toast {
+  id: string
+  msg: string
+  kind: 'success' | 'error' | 'info'
+}
+
 interface AppState {
   view: ViewKey
+  health: HealthState
+  toasts: Toast[]
 
   // 進行中的對話
   activeId: string | null
@@ -43,6 +86,10 @@ interface AppState {
 
   // actions
   setView: (v: ViewKey) => void
+  refreshHealth: () => Promise<void>
+  pushToast: (msg: string, kind?: Toast['kind']) => void
+  dismissToast: (id: string) => void
+  dismissMessage: (id: string) => void
   send: (text: string) => Promise<void>
   abort: () => Promise<void>
   regenerate: () => Promise<void>
@@ -163,6 +210,8 @@ export const useAppStore = create<AppState>((set, get) => {
 
   return {
     view: 'chat',
+    health: EMPTY_HEALTH,
+    toasts: [],
 
     activeId: null,
     activeCreatedAt: 0,
@@ -183,6 +232,53 @@ export const useAppStore = create<AppState>((set, get) => {
     config: null,
 
     setView: (v) => set({ view: v }),
+
+    pushToast: (msg, kind = 'success') => {
+      const id = uiId('toast')
+      set((s) => ({ toasts: [...s.toasts, { id, msg, kind }] }))
+      setTimeout(() => set((s) => ({ toasts: s.toasts.filter((x) => x.id !== id) })), 4000)
+    },
+    dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter((x) => x.id !== id) })),
+    dismissMessage: (id) => set((s) => ({ messages: s.messages.filter((m) => m.id !== id) })),
+
+    refreshHealth: async () => {
+      const cfg = get().config
+      const model = cfg?.model ?? ''
+      // 重用既有診斷 IPC，並行檢查；任何一項失敗都不影響其他項。
+      const [modelsRes, envRes, mcpRes] = await Promise.allSettled([
+        window.api.listModels(),
+        window.api.checkEnvironment(),
+        window.api.getMcpStatus()
+      ])
+      const ollamaOk = modelsRes.status === 'fulfilled'
+      const models = ollamaOk ? modelsRes.value : []
+      const ollamaError =
+        modelsRes.status === 'rejected'
+          ? String((modelsRes.reason as Error)?.message ?? modelsRes.reason)
+          : undefined
+      const modelPresent = ollamaOk && !!model && models.includes(model)
+      const env = envRes.status === 'fulfilled' ? envRes.value : null
+      const servers = mcpRes.status === 'fulfilled' ? mcpRes.value : get().mcpServers
+      const connected = servers.filter((s) => s.state === 'connected').length
+      const total = servers.length
+      set({
+        health: {
+          ollama: { ok: ollamaOk, error: ollamaError, models, modelPresent },
+          db: { exists: env?.dbExists ?? false, path: env?.dbPath ?? cfg?.dbPath ?? '' },
+          python: { ok: env?.pythonOk ?? false, info: env?.pythonInfo ?? '' },
+          mcp: { connected, total },
+          level: computeHealthLevel({
+            ollamaOk,
+            modelPresent,
+            dbExists: env?.dbExists ?? false,
+            pythonOk: env?.pythonOk ?? false,
+            connected,
+            total
+          }),
+          checkedAt: Date.now()
+        }
+      })
+    },
 
     send: async (text) => {
       const trimmed = text.trim()
@@ -323,12 +419,14 @@ export const useAppStore = create<AppState>((set, get) => {
       // 手動改名後即固定，不再被自動標題覆寫。
       if (id === get().activeId) set({ title: t, titleIsAuto: false })
       await get().refreshConversations()
+      get().pushToast(i18n.t('conversations:toast.renamed'))
     },
 
     deleteConversation: async (id) => {
       await window.api.deleteConversation(id)
       set((s) => ({ conversations: s.conversations.filter((c) => c.id !== id) }))
       if (id === get().activeId) get().newConversation()
+      get().pushToast(i18n.t('conversations:toast.deleted'))
     },
 
     setSearch: async (q) => {
@@ -394,7 +492,28 @@ export const useAppStore = create<AppState>((set, get) => {
 
     _setTools: (t) => set({ tools: t }),
 
-    _setMcpStatus: (s) => set({ mcpServers: s }),
+    _setMcpStatus: (s) => {
+      // MCP 狀態變動時順手更新健康狀態的 mcp 部分與總體等級
+      // （沿用上次已知的 Ollama/DB/Python 事實；尚未檢查過則維持 unknown，待 refreshHealth 補齊）。
+      const connected = s.filter((srv) => srv.state === 'connected').length
+      const total = s.length
+      set((st) => {
+        const h = st.health
+        const mcp = { connected, total }
+        const level =
+          h.checkedAt === 0
+            ? h.level
+            : computeHealthLevel({
+                ollamaOk: h.ollama.ok,
+                modelPresent: h.ollama.modelPresent,
+                dbExists: h.db.exists,
+                pythonOk: h.python.ok,
+                connected,
+                total
+              })
+        return { mcpServers: s, health: { ...h, mcp, level } }
+      })
+    },
 
     init: async () => {
       const [config, tools, mcpServers, audit, conversations] = await Promise.all([
@@ -405,6 +524,8 @@ export const useAppStore = create<AppState>((set, get) => {
         window.api.listConversations()
       ])
       set({ config, tools, mcpServers, audit, conversations })
+      // 啟動即主動健檢（Ollama / 模型 / MCP / DB / Python），結果顯示於標題列狀態列。
+      void get().refreshHealth()
     }
   }
 })

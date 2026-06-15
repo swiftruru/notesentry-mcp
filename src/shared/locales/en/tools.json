@@ -10,5 +10,9 @@
   },
   "emptyServers": "No MCP server connected. Check the Python and script paths in Settings, then reconnect.",
   "noTools": "(this server has no tools)",
-  "noDesc": "(no description)"
+  "noDesc": "(no description)",
+  "toast": {
+    "reconnected_one": "Reconnected: {{connected}}/{{total}} server",
+    "reconnected_other": "Reconnected: {{connected}}/{{total}} servers"
+  }
 }

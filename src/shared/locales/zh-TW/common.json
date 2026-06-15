@@ -19,6 +19,12 @@
     "short": "中",
     "switchTooltip": "切換語言"
   },
+  "theme": {
+    "tooltip": "主題：{{mode}}（點擊切換）",
+    "system": "跟隨系統",
+    "light": "淺色",
+    "dark": "深色"
+  },
   "actions": {
     "confirm": "確認",
     "cancel": "取消",

@@ -42,6 +42,7 @@ function normalize(raw: Record<string, unknown>): AppConfig {
     dbPath: merged.dbPath,
     mcpServers: merged.mcpServers,
     language: merged.language ?? DEFAULT_CONFIG.language,
+    theme: merged.theme ?? DEFAULT_CONFIG.theme,
     // 保留「上次匯出資料夾」偏好（undefined 會被 JSON.stringify 自動略過）。
     lastExportDir: merged.lastExportDir
   }

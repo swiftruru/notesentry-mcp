@@ -10,6 +10,9 @@ import { SettingsView } from './components/Settings/SettingsView'
 import { AboutView } from './components/About/AboutView'
 import { ToolPanel } from './components/Tools/ToolPanel'
 import { LocalBadge } from './components/Layout/LocalBadge'
+import { HealthStatus } from './components/Layout/HealthStatus'
+import { ThemeToggle } from './components/Layout/ThemeToggle'
+import { Toaster } from './components/ui/Toaster'
 
 export default function App(): React.JSX.Element {
   const { t } = useTranslation('common')
@@ -33,10 +36,24 @@ export default function App(): React.JSX.Element {
     return () => unsubs.forEach((u) => u())
   }, [init])
 
+  // 全域 Esc：生成中按 Esc 停止生成（HITL 開啟時讓核可框自己處理 Esc）。
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key !== 'Escape') return
+      const s = useAppStore.getState()
+      if (s.isStreaming && !s.pendingHitl) {
+        e.preventDefault()
+        void s.abort()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   return (
     <div className="flex h-screen flex-col bg-card/40">
       {/* 標題列 */}
-      <header className="drag-region flex h-12 shrink-0 items-center justify-between border-b border-border bg-white pl-20 pr-4">
+      <header className="drag-region flex h-12 shrink-0 items-center justify-between border-b border-border bg-surface pl-20 pr-4">
         <span className="text-sm font-bold tracking-tight text-ink">
           NoteSentry
           <span className="ml-2 text-xs font-normal text-ink-muted">
@@ -44,6 +61,8 @@ export default function App(): React.JSX.Element {
           </span>
         </span>
         <div className="flex items-center gap-2">
+          <HealthStatus />
+          <ThemeToggle />
           <LanguageToggle />
           <LocalBadge />
         </div>
@@ -55,14 +74,14 @@ export default function App(): React.JSX.Element {
         {view === 'chat' && (
           <>
             <ConversationList />
-            <main className="min-w-0 flex-1 bg-white">
+            <main className="min-w-0 flex-1 bg-surface">
               <ChatView />
             </main>
           </>
         )}
 
         {view === 'tools' && (
-          <main className="min-w-0 flex-1 bg-white">
+          <main className="min-w-0 flex-1 bg-surface">
             <div className="mx-auto h-full max-w-2xl">
               <ToolPanel />
             </div>
@@ -70,23 +89,25 @@ export default function App(): React.JSX.Element {
         )}
 
         {view === 'audit' && (
-          <main className="min-w-0 flex-1 bg-white">
+          <main className="min-w-0 flex-1 bg-surface">
             <AuditView />
           </main>
         )}
 
         {view === 'settings' && (
-          <main className="min-w-0 flex-1 bg-white">
+          <main className="min-w-0 flex-1 bg-surface">
             <SettingsView />
           </main>
         )}
 
         {view === 'about' && (
-          <main className="min-w-0 flex-1 bg-white">
+          <main className="min-w-0 flex-1 bg-surface">
             <AboutView />
           </main>
         )}
       </div>
+
+      <Toaster />
     </div>
   )
 }

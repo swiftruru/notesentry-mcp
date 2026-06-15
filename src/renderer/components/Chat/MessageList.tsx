@@ -1,20 +1,39 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { MessageBubble } from './MessageBubble'
 import { Markdown } from '@/components/Markdown/Markdown'
 import { SuggestionChips } from './Suggestions'
-import { Bot, Stethoscope } from 'lucide-react'
+import { Bot, Stethoscope, ChevronDown } from 'lucide-react'
 
 export function MessageList(): React.JSX.Element {
+  const { t } = useTranslation('chat')
   const messages = useAppStore((s) => s.messages)
   const streaming = useAppStore((s) => s.streaming)
   const isStreaming = useAppStore((s) => s.isStreaming)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  // 只在「已貼近底部」時才自動捲動，避免使用者往上讀舊訊息時被硬拉到底。
+  const atBottomRef = useRef(true)
+  const [showJump, setShowJump] = useState(false)
+
+  const onScroll = (): void => {
+    const el = scrollRef.current
+    if (!el) return
+    const near = el.scrollHeight - el.scrollTop - el.clientHeight < 80
+    atBottomRef.current = near
+    setShowJump(!near)
+  }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (atBottomRef.current) bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, streaming])
+
+  const jumpToLatest = (): void => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    atBottomRef.current = true
+    setShowJump(false)
+  }
 
   const showThinking = isStreaming && (!streaming || streaming.content === '')
 
@@ -28,9 +47,15 @@ export function MessageList(): React.JSX.Element {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-6">
-      <div className="mx-auto flex max-w-3xl flex-col gap-5">
-        {messages.length === 0 && !isStreaming && <EmptyState />}
+    <div className="relative min-h-0 flex-1 overflow-hidden">
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        className="h-full overflow-y-auto px-6 py-6"
+        aria-live="polite"
+      >
+        <div className="mx-auto flex max-w-3xl flex-col gap-5">
+          {messages.length === 0 && !isStreaming && <EmptyState />}
 
         {messages.map((m) => (
           <MessageBubble
@@ -46,7 +71,7 @@ export function MessageList(): React.JSX.Element {
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-secondary text-white">
               <Bot className="h-4 w-4" />
             </div>
-            <div className="min-w-0 max-w-[80%] rounded-2xl rounded-tl-sm border border-border bg-white px-4 py-2.5">
+            <div className="min-w-0 max-w-[80%] rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-2.5">
               <Markdown content={streaming.content} />
             </div>
           </div>
@@ -65,8 +90,19 @@ export function MessageList(): React.JSX.Element {
           </div>
         )}
 
-        <div ref={bottomRef} />
+          <div ref={bottomRef} />
+        </div>
       </div>
+
+      {showJump && (
+        <button
+          onClick={jumpToLatest}
+          className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-ink shadow-md transition-colors hover:bg-card"
+        >
+          <ChevronDown className="h-3.5 w-3.5" />
+          {t('scrollToLatest')}
+        </button>
+      )}
     </div>
   )
 }

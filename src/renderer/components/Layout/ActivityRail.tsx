@@ -33,9 +33,11 @@ export function ActivityRail(): React.JSX.Element {
         key={it.key}
         onClick={() => setView(it.key)}
         title={label}
+        aria-label={label}
+        aria-current={active ? 'page' : undefined}
         className={cn(
           'flex h-11 w-11 flex-col items-center justify-center gap-0.5 rounded-lg text-[10px] transition-colors',
-          active ? 'bg-white text-brand' : 'text-white/70 hover:bg-white/10 hover:text-white'
+          active ? 'bg-surface text-brand' : 'text-white/70 hover:bg-white/10 hover:text-white'
         )}
       >
         <Icon className="h-[18px] w-[18px]" />

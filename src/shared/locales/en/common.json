@@ -19,6 +19,12 @@
     "short": "EN",
     "switchTooltip": "Switch language"
   },
+  "theme": {
+    "tooltip": "Theme: {{mode}} (click to switch)",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "actions": {
     "confirm": "Confirm",
     "cancel": "Cancel",

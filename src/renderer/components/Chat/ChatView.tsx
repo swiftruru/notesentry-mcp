@@ -7,7 +7,8 @@ import { ApprovalDialog } from '@/components/Hitl/ApprovalDialog'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store/useAppStore'
 import { DEFAULT_CONVERSATION_TITLE } from '@shared/types'
-import { Pencil, Plus, Check, Download } from 'lucide-react'
+import { primaryProblem } from '@/lib/health'
+import { Pencil, Plus, Check, Download, AlertTriangle, Settings, X } from 'lucide-react'
 
 export function ChatView(): React.JSX.Element {
   const { t } = useTranslation('chat')
@@ -21,14 +22,24 @@ export function ChatView(): React.JSX.Element {
 
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(title)
-  const [toast, setToast] = useState<string | null>(null)
+  const [bannerDismissed, setBannerDismissed] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const pushToast = useAppStore((s) => s.pushToast)
+
+  const { t: tHealth } = useTranslation('health')
+  const health = useAppStore((s) => s.health)
+  const model = useAppStore((s) => s.config?.model ?? '')
+  const setView = useAppStore((s) => s.setView)
+  // 啟動橫幅：只在真的有錯誤、聊天還空著、且使用者未關閉時出現。
+  const problem =
+    health.level === 'error' && !hasMessages && !bannerDismissed
+      ? primaryProblem(health, model, tHealth)
+      : null
 
   const doExport = async (): Promise<void> => {
     const res = await exportMarkdown()
-    if (res.saved) setToast(t('toast.exportedTo', { path: res.path }))
-    else if (res.error) setToast(t('toast.exportFailed', { error: res.error }))
-    if (res.saved || res.error) setTimeout(() => setToast(null), 4000)
+    if (res.saved) pushToast(t('toast.exportedTo', { path: res.path }))
+    else if (res.error) pushToast(t('toast.exportFailed', { error: res.error }), 'error')
   }
 
   useEffect(() => {
@@ -56,7 +67,7 @@ export function ChatView(): React.JSX.Element {
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKey}
               onBlur={commit}
-              className="rounded border border-ring bg-white px-2 py-1 text-sm text-ink outline-none"
+              className="rounded border border-ring bg-surface px-2 py-1 text-sm text-ink outline-none"
             />
             <button onClick={commit} className="text-emerald-600" title={t('common:actions.confirm')}>
               <Check className="h-4 w-4" />
@@ -98,9 +109,30 @@ export function ChatView(): React.JSX.Element {
         </div>
       </div>
 
-      {toast && (
-        <div className="animate-fade-in border-b border-border bg-emerald-50 px-6 py-2 text-xs text-emerald-700">
-          {toast}
+      {problem && (
+        <div className="flex animate-fade-in items-center gap-3 border-b border-amber-200 bg-amber-50 px-6 py-2.5 text-xs text-amber-800">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
+          <span className="min-w-0 flex-1">
+            <span className="font-semibold">{tHealth('bannerPrefix')}</span>
+            {problem}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setView('settings')}
+            className="shrink-0 text-amber-800 hover:text-amber-900"
+          >
+            <Settings className="h-3.5 w-3.5" />
+            {tHealth('bannerCta')}
+          </Button>
+          <button
+            onClick={() => setBannerDismissed(true)}
+            title={tHealth('dismiss')}
+            aria-label={tHealth('dismiss')}
+            className="shrink-0 text-amber-500 hover:text-amber-700"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
 

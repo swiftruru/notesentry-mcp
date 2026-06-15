@@ -57,14 +57,7 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
   }
 
   if (role === 'system') {
-    return (
-      <div className="flex animate-fade-in justify-center">
-        <div className="flex items-center gap-2 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
-          <AlertTriangle className="h-3.5 w-3.5" />
-          {message.content}
-        </div>
-      </div>
-    )
+    return <SystemError id={message.id} content={message.content} />
   }
 
   // assistant
@@ -75,7 +68,7 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
       </Avatar>
       <div className="min-w-0 max-w-[80%] space-y-2">
         {message.content && (
-          <div className="rounded-2xl rounded-tl-sm border border-border bg-white px-4 py-2.5">
+          <div className="rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-2.5">
             <Markdown content={message.content} />
           </div>
         )}
@@ -141,6 +134,38 @@ function MessageActions({
           {t('message.regenerate')}
         </button>
       )}
+    </div>
+  )
+}
+
+function SystemError({ id, content }: { id: string; content: string }): React.JSX.Element {
+  const { t } = useTranslation('chat')
+  const regenerate = useAppStore((s) => s.regenerate)
+  const dismissMessage = useAppStore((s) => s.dismissMessage)
+  const isStreaming = useAppStore((s) => s.isStreaming)
+
+  return (
+    <div className="flex animate-fade-in flex-col items-center gap-1.5">
+      <div className="flex items-center gap-2 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
+        <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+        {content}
+      </div>
+      <div className="flex items-center gap-1 text-ink-muted">
+        <button
+          onClick={() => void regenerate()}
+          disabled={isStreaming}
+          className="flex items-center gap-1 rounded px-1.5 py-1 text-[11px] hover:bg-card hover:text-ink disabled:opacity-40"
+        >
+          <RefreshCw className="h-3 w-3" />
+          {t('message.retry')}
+        </button>
+        <button
+          onClick={() => dismissMessage(id)}
+          className="rounded px-1.5 py-1 text-[11px] hover:bg-card hover:text-ink"
+        >
+          {t('message.dismiss')}
+        </button>
+      </div>
     </div>
   )
 }

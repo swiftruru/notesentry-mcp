@@ -32,7 +32,7 @@ export function Composer(): React.JSX.Element {
   }
 
   return (
-    <div className="border-t border-border bg-white px-6 py-4">
+    <div className="border-t border-border bg-surface px-6 py-4">
       <div className="mx-auto flex max-w-3xl items-end gap-2">
         <Textarea
           ref={taRef}

@@ -5,22 +5,26 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // NoteSentry 醫療專業配色
+        // NoteSentry 醫療專業配色（以 CSS 變數驅動，支援 light/dark 切換，見 index.css）
         brand: {
-          DEFAULT: '#0D5C63', // 主色
-          secondary: '#247B7B', // 次色
-          accent: '#E6B17E' // 點綴
+          DEFAULT: 'rgb(var(--brand) / <alpha-value>)', // 主色
+          secondary: 'rgb(var(--brand-secondary) / <alpha-value>)', // 次色
+          accent: 'rgb(var(--brand-accent) / <alpha-value>)' // 點綴
         },
+        // 面板/卡片表面（取代直接用 bg-white）
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        // App 整體背景
+        canvas: 'rgb(var(--canvas) / <alpha-value>)',
         card: {
-          DEFAULT: '#EAF3F3', // 卡片底
-          foreground: '#1C2B2D'
+          DEFAULT: 'rgb(var(--card) / <alpha-value>)', // 卡片底
+          foreground: 'rgb(var(--card-foreground) / <alpha-value>)'
         },
         ink: {
-          DEFAULT: '#1C2B2D', // 主文字
-          muted: '#5A6B6D' // 次要文字
+          DEFAULT: 'rgb(var(--ink) / <alpha-value>)', // 主文字
+          muted: 'rgb(var(--ink-muted) / <alpha-value>)' // 次要文字
         },
-        border: '#D4E4E4',
-        ring: '#247B7B'
+        border: 'rgb(var(--border) / <alpha-value>)',
+        ring: 'rgb(var(--ring) / <alpha-value>)'
       },
       borderRadius: {
         lg: '0.75rem',

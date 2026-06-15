@@ -73,19 +73,16 @@ export function SettingsView(): React.JSX.Element {
       const status = await window.api.getMcpStatus()
       setMcpStatus(status)
       setTools(await window.api.listTools())
+      // 設定變更後重跑健康檢查，更新標題列狀態列。
+      void useAppStore.getState().refreshHealth()
       const connected = status.filter((s) => s.state === 'connected')
       const totalTools = connected.reduce((n, s) => n + s.toolCount, 0)
-      setResult({
-        ok: connected.length > 0,
-        msg:
-          connected.length > 0
-            ? t('save.ok', {
-                connected: connected.length,
-                total: status.length,
-                tools: totalTools
-              })
-            : t('save.partial')
-      })
+      const msg =
+        connected.length > 0
+          ? t('save.ok', { connected: connected.length, total: status.length, tools: totalTools })
+          : t('save.partial')
+      setResult({ ok: connected.length > 0, msg })
+      useAppStore.getState().pushToast(msg, connected.length > 0 ? 'success' : 'info')
     } catch (err) {
       setResult({ ok: false, msg: err instanceof Error ? err.message : String(err) })
     } finally {
@@ -382,7 +379,7 @@ function ModelSelect({
             if (e.target.value === CUSTOM) setCustom(true)
             else onChange(e.target.value)
           }}
-          className="h-9 min-w-0 flex-1 rounded-md border border-border bg-white px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-9 min-w-0 flex-1 rounded-md border border-border bg-surface px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {options.map((m) => (
             <option key={m} value={m}>

@@ -3,8 +3,36 @@
 @tailwind utilities;
 
 @layer base {
+  /* 語意色以 CSS 變數驅動（空白分隔 RGB，配合 Tailwind 的 rgb(var()/<alpha>)）。
+     淺色為預設；.dark 覆寫即整體切深色，元件 class 名不必改。 */
   :root {
     color-scheme: light;
+    --canvas: 238 245 245;
+    --surface: 255 255 255;
+    --card: 234 243 243;
+    --card-foreground: 28 43 45;
+    --ink: 28 43 45;
+    --ink-muted: 90 107 109;
+    --border: 212 228 228;
+    --ring: 36 123 123;
+    --brand: 13 92 99;
+    --brand-secondary: 36 123 123;
+    --brand-accent: 230 177 126;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --canvas: 11 20 21;
+    --surface: 17 30 31;
+    --card: 25 42 43;
+    --card-foreground: 226 237 236;
+    --ink: 226 237 236;
+    --ink-muted: 143 170 169;
+    --border: 38 64 63;
+    --ring: 63 169 160;
+    --brand: 60 169 160;
+    --brand-secondary: 84 186 177;
+    --brand-accent: 230 177 126;
   }
 
   html,
@@ -15,8 +43,20 @@
   }
 
   body {
-    @apply bg-white text-ink antialiased;
+    @apply bg-canvas text-ink antialiased;
     font-family: theme('fontFamily.sans');
+  }
+
+  /* 尊重「減少動態效果」系統偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   /* 細緻的捲軸，配合醫療沉穩感 */
@@ -48,7 +88,7 @@
 .md {
   font-size: 0.875rem;
   line-height: 1.7;
-  color: #1c2b2d;
+  color: rgb(var(--ink));
   word-break: break-word;
 }
 .md > *:first-child {
@@ -67,7 +107,7 @@
   margin: 1rem 0 0.5rem;
   font-weight: 700;
   line-height: 1.3;
-  color: #0d5c63;
+  color: rgb(var(--brand));
 }
 .md h1 {
   font-size: 1.25rem;
@@ -93,19 +133,19 @@
   margin: 0.2rem 0;
 }
 .md a {
-  color: #247b7b;
+  color: rgb(var(--brand-secondary));
   text-decoration: underline;
 }
 .md blockquote {
   margin: 0.5rem 0;
-  border-left: 3px solid #247b7b;
+  border-left: 3px solid rgb(var(--brand-secondary));
   padding-left: 0.75rem;
-  color: #5a6b6d;
+  color: rgb(var(--ink-muted));
 }
 .md hr {
   margin: 1rem 0;
   border: 0;
-  border-top: 1px solid #d4e4e4;
+  border-top: 1px solid rgb(var(--border));
 }
 .md table {
   margin: 0.5rem 0;
@@ -116,12 +156,12 @@
 }
 .md th,
 .md td {
-  border: 1px solid #d4e4e4;
+  border: 1px solid rgb(var(--border));
   padding: 0.35rem 0.6rem;
   text-align: left;
 }
 .md th {
-  background: #eaf3f3;
+  background: rgb(var(--card));
   font-weight: 600;
 }
 .md strong {
