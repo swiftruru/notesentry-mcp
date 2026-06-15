@@ -37,6 +37,9 @@
 
 ## 下載
 
+> 📖 **第一次使用？請看[安裝與首次使用指引](docs/INSTALL.zh-TW.md)** ——
+> 從全新電腦一路帶你設定到可用（Ollama、Python、資料庫、設定）。
+
 每個 [release](https://github.com/swiftruru/notesentry-mcp/releases) 都附上
 **macOS / Windows / Linux** 三平台的安裝檔：
 

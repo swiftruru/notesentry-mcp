@@ -66,7 +66,8 @@ export interface AppConfig {
 
 export const DEFAULT_CONFIG: AppConfig = {
   ollamaUrl: 'http://localhost:11434',
-  model: 'qwen2.5',
+  // 預設用工具呼叫最穩定的模型（與 README/安裝指引一致）；較低階機器可在設定改 qwen2.5。
+  model: 'gpt-oss:20b',
   pythonPath: 'python3',
   dbPath: './mimic_notes.db',
   language: 'zh-TW',

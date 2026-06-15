@@ -39,6 +39,9 @@ turns the results into an answer.
 
 ## Download
 
+> 📖 **New here? Follow the [Installation & First‑Run Guide](docs/INSTALL.md)** —
+> it walks you from a fresh machine to a working app (Ollama, Python, database, settings).
+
 Prebuilt installers for **macOS / Windows / Linux** are attached to each
 [release](https://github.com/swiftruru/notesentry-mcp/releases):
 
