@@ -1,0 +1,46 @@
+name: Release
+
+# 推送 vX.Y.Z 標籤時，於三個平台各自原生建置安裝檔並上傳到對應的 GitHub Release。
+# macOS → dmg/zip（arm64 + x64）；Windows → nsis 安裝檔 + portable（x64）；Linux → AppImage + deb。
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch: # 也可在 Actions 頁手動觸發
+
+permissions:
+  contents: write # 建立/上傳 Release 需要
+
+jobs:
+  release:
+    name: Build ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: windows-latest
+            platform: win
+          - os: ubuntu-latest
+            platform: linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer/main (electron-vite)
+        run: npm run build
+
+      - name: Package & publish (${{ matrix.platform }})
+        run: npx --no-install electron-builder --${{ matrix.platform }} --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # CI 上無 Apple 開發者憑證 → 關閉自動簽章，改用 ad-hoc 簽章（仍可執行）。
+          CSC_IDENTITY_AUTO_DISCOVERY: false

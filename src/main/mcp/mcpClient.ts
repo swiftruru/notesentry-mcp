@@ -1,7 +1,8 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { ToolInfo, McpServerStatus, McpServerConfig } from '@shared/types'
-import { loadConfig, resolveProjectPath } from '../config/configStore'
+import { loadConfig } from '../config/configStore'
+import { resolveDataPath, resolveResourcePath } from '../paths'
 import { tMain } from '../i18n'
 
 // 管理「多個」Python MCP server 子行程的連線（對應簡報的多 MCP 架構）。
@@ -73,7 +74,8 @@ async function connectOne(config: McpServerConfig, dbPath: string): Promise<void
   try {
     const transport = new StdioClientTransport({
       command: loadConfig().pythonPath,
-      args: [resolveProjectPath(config.scriptPath)],
+      // 腳本是內附唯讀資源（打包後在 resourcesPath；開發在專案根）。
+      args: [resolveResourcePath(config.scriptPath)],
       env: {
         ...(process.env as Record<string, string>),
         MIMIC_DB_PATH: dbPath,
@@ -130,7 +132,8 @@ async function closeOne(id: string): Promise<void> {
 export async function connectMcp(): Promise<McpServerStatus[]> {
   await disconnectMcp()
   const cfg = loadConfig()
-  const dbPath = resolveProjectPath(cfg.dbPath)
+  // DB 是使用者資料（打包後預設在 userData；可於設定填絕對路徑）。
+  const dbPath = resolveDataPath(cfg.dbPath)
   const enabled = cfg.mcpServers.filter((s) => s.enabled)
   // 並行連線各 server。
   await Promise.all(enabled.map((s) => connectOne(s, dbPath)))

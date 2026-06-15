@@ -1,13 +1,16 @@
 import { appendFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve, join } from 'node:path'
 import { AuditEntry } from '@shared/types'
-import { getProjectRoot } from '../config/configStore'
+import { getDataRoot } from '../paths'
 
-// 稽核日誌一律寫在專案資料夾 ./logs 下，每天一個 JSONL 檔。
-const LOG_DIR = resolve(getProjectRoot(), 'logs')
+// 稽核日誌寫在資料根 ./logs 下（開發＝專案根、打包＝userData），每天一個 JSONL 檔。
+function logDir(): string {
+  return resolve(getDataRoot(), 'logs')
+}
 
 function ensureDir(): void {
-  if (!existsSync(LOG_DIR)) mkdirSync(LOG_DIR, { recursive: true })
+  const dir = logDir()
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
 }
 
 function fileForTs(ts: number): string {
@@ -15,7 +18,7 @@ function fileForTs(ts: number): string {
   const yyyy = d.getFullYear()
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const dd = String(d.getDate()).padStart(2, '0')
-  return join(LOG_DIR, `audit-${yyyy}-${mm}-${dd}.jsonl`)
+  return join(logDir(), `audit-${yyyy}-${mm}-${dd}.jsonl`)
 }
 
 // 記憶體環形緩衝，供 UI 快速取用（落地仍以 JSONL 為準）。
@@ -54,13 +57,14 @@ export function listAudit(): AuditEntry[] {
   if (ring.length > 0) return [...ring]
   try {
     ensureDir()
-    const files = readdirSync(LOG_DIR)
+    const dir = logDir()
+    const files = readdirSync(dir)
       .filter((f) => f.startsWith('audit-') && f.endsWith('.jsonl'))
       .sort()
     const entries: AuditEntry[] = []
     // 只回補最近兩個檔，避免啟動時讀過多。
     for (const f of files.slice(-2)) {
-      const lines = readFileSync(join(LOG_DIR, f), 'utf-8').split('\n').filter(Boolean)
+      const lines = readFileSync(join(dir, f), 'utf-8').split('\n').filter(Boolean)
       for (const line of lines) {
         try {
           entries.push(JSON.parse(line))

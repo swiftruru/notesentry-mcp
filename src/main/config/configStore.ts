@@ -1,22 +1,22 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
-import { resolve, isAbsolute } from 'node:path'
+import { resolve } from 'node:path'
 import { AppConfig, DEFAULT_CONFIG } from '@shared/types'
+import { getDataRoot, resolveDataPath } from '../paths'
 
-// 設定檔一律寫在「專案資料夾內」（符合 DUA：資料不離開本機/專案）。
-// 開發時 cwd 即專案根；打包後以執行檔旁的目錄為基準。
-const PROJECT_ROOT = process.cwd()
-const CONFIG_PATH = resolve(PROJECT_ROOT, 'config.json')
+// 設定檔寫在「資料根」內（開發＝專案根、打包＝userData）；皆在本機、符合 DUA。
+function configPath(): string {
+  return resolve(getDataRoot(), 'config.json')
+}
 
 let cache: AppConfig | null = null
 
-/** 把設定中的相對路徑換算成相對於專案根的絕對路徑（供子行程/DB 使用） */
+/** 把設定中的相對 DB/資料路徑換算成相對於資料根的絕對路徑（供子行程/DB 使用） */
 export function resolveProjectPath(p: string): string {
-  if (!p) return p
-  return isAbsolute(p) ? p : resolve(PROJECT_ROOT, p)
+  return resolveDataPath(p)
 }
 
 export function getProjectRoot(): string {
-  return PROJECT_ROOT
+  return getDataRoot()
 }
 
 /** 正規化（含舊版單一 mcpScriptPath → mcpServers 陣列的遷移） */
@@ -49,9 +49,10 @@ function normalize(raw: Record<string, unknown>): AppConfig {
 
 export function loadConfig(): AppConfig {
   if (cache) return cache
-  if (existsSync(CONFIG_PATH)) {
+  const path = configPath()
+  if (existsSync(path)) {
     try {
-      const raw = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'))
+      const raw = JSON.parse(readFileSync(path, 'utf-8'))
       cache = normalize(raw)
     } catch (err) {
       console.error('[config] 讀取 config.json 失敗，改用預設值：', err)
@@ -67,7 +68,7 @@ export function loadConfig(): AppConfig {
 export function saveConfig(config: AppConfig): AppConfig {
   cache = normalize(config as unknown as Record<string, unknown>)
   try {
-    writeFileSync(CONFIG_PATH, JSON.stringify(cache, null, 2), 'utf-8')
+    writeFileSync(configPath(), JSON.stringify(cache, null, 2), 'utf-8')
   } catch (err) {
     console.error('[config] 寫入 config.json 失敗：', err)
   }

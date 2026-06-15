@@ -33,7 +33,23 @@
 
 > **資料全程留在本機。** 本資料受 PhysioNet Credentialed DUA 規範，禁止外流：
 > 所有推論一律走本機 Ollama；每次工具呼叫前都需你親自核可（HITL）；不上傳、
-> 不遙測、不寫到專案資料夾以外。
+> 不遙測，所有 App 資料（設定、日誌、對話）都只存在你本機。
+
+## 下載
+
+每個 [release](https://github.com/swiftruru/notesentry-mcp/releases) 都附上
+**macOS / Windows / Linux** 三平台的安裝檔：
+
+| 平台 | 檔案 |
+| --- | --- |
+| macOS | `.dmg`（安裝檔）· `.zip` —— Apple Silicon（`arm64`）與 Intel（`x64`） |
+| Windows | `.exe`（NSIS 安裝檔）· 免安裝 `.exe`（`x64`） |
+| Linux | `.AppImage` · `.deb`（`x64`） |
+
+> App 已內附 MCP server 腳本，但仍需自行安裝 [Ollama](https://ollama.com) 與
+> Python 3（`pip install "mcp[cli]"`），並用你自己的 credentialed MIMIC‑III 資料
+> 建立 `mimic_notes.db`——見[先決條件](#先決條件)。macOS 版為 ad‑hoc 簽章（無付費
+> Apple 憑證），首次開啟請用**右鍵 → 打開**。
 
 ## 聊天介面功能
 

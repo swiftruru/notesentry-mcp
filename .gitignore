@@ -8,10 +8,12 @@ dist-electron
 __pycache__/
 
 # 執行期產生（含本機設定、稽核紀錄、對話紀錄與匯出檔，禁止外流）
-config.json
-logs/
-conversations/
-exports/
+# 一律「錨定根目錄」（前導斜線），以免誤傷 src 內的同名原始碼資料夾
+# （例如 src/main/conversations/）。
+/config.json
+/logs/
+/conversations/
+/exports/
 
 # 資料集與資料庫（受 PhysioNet DUA 規範，絕不進版控）
 *.db

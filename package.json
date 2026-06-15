@@ -1,12 +1,16 @@
 {
   "name": "notesentry",
   "productName": "NoteSentry",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "本機端 MIMIC-III 臨床紀錄探索助理（資料全程留在本機）",
   "main": "./out/main/index.js",
   "author": "YU-RU, PAN",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swiftruru/notesentry-mcp.git"
+  },
   "scripts": {
     "predev": "node scripts/patch-dev-name.mjs",
     "dev": "electron-vite dev",
@@ -26,20 +30,84 @@
       "output": "dist",
       "buildResources": "build"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "swiftruru",
+        "repo": "notesentry-mcp"
+      }
+    ],
     "files": [
       "out/**/*",
       "resources/**/*"
     ],
+    "extraResources": [
+      {
+        "from": "mimic_mcp_server.py",
+        "to": "mimic_mcp_server.py"
+      },
+      {
+        "from": "clinical_support_mcp_server.py",
+        "to": "clinical_support_mcp_server.py"
+      },
+      {
+        "from": "build_db.py",
+        "to": "build_db.py"
+      }
+    ],
     "mac": {
       "icon": "build/icon.png",
-      "category": "public.app-category.medical"
+      "category": "public.app-category.medical",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "${productName} ${version}"
     },
     "win": {
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
     },
     "linux": {
       "icon": "build/icon.png",
-      "category": "Science"
+      "category": "Science",
+      "maintainer": "YU-RU, PAN",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
     }
   },
   "dependencies": {

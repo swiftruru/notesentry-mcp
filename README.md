@@ -35,7 +35,24 @@ turns the results into an answer.
 > **Data stays on this device.** This data is governed by the PhysioNet Credentialed Data
 > Use Agreement (DUA) and may not leave the machine: all inference runs on local Ollama;
 > every tool call requires your explicit approval (HITL); nothing is uploaded, no telemetry,
-> and nothing is written outside the project folder.
+> and all app data (config, logs, conversations) is stored locally on your machine.
+
+## Download
+
+Prebuilt installers for **macOS / Windows / Linux** are attached to each
+[release](https://github.com/swiftruru/notesentry-mcp/releases):
+
+| Platform | Files |
+| --- | --- |
+| macOS | `.dmg` (installer) · `.zip` — Apple Silicon (`arm64`) and Intel (`x64`) |
+| Windows | `.exe` (NSIS installer) · portable `.exe` (`x64`) |
+| Linux | `.AppImage` · `.deb` (`x64`) |
+
+> The app itself ships with the MCP server scripts bundled. You still need
+> [Ollama](https://ollama.com) and Python 3 (`pip install "mcp[cli]"`) installed, plus a
+> `mimic_notes.db` you build from your own credentialed MIMIC‑III data — see
+> [Prerequisites](#prerequisites). On macOS the build is ad‑hoc signed (no paid Apple
+> certificate), so on first launch use **right‑click → Open**.
 
 ## Chat experience
 
