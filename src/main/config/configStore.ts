@@ -43,8 +43,9 @@ function normalize(raw: Record<string, unknown>): AppConfig {
     mcpServers: merged.mcpServers,
     language: merged.language ?? DEFAULT_CONFIG.language,
     theme: merged.theme ?? DEFAULT_CONFIG.theme,
-    // 保留「上次匯出資料夾」偏好（undefined 會被 JSON.stringify 自動略過）。
-    lastExportDir: merged.lastExportDir
+    // 保留「上次匯出資料夾」與「上次視窗幾何」偏好（undefined 會被 JSON.stringify 自動略過）。
+    lastExportDir: merged.lastExportDir,
+    windowBounds: merged.windowBounds
   }
 }
 

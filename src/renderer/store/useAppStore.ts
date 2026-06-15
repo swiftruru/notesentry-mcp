@@ -63,6 +63,7 @@ interface AppState {
   health: HealthState
   toasts: Toast[]
   paletteOpen: boolean
+  sidebarCollapsed: boolean
 
   // 進行中的對話
   activeId: string | null
@@ -90,6 +91,7 @@ interface AppState {
   // actions
   setView: (v: ViewKey) => void
   setPaletteOpen: (open: boolean) => void
+  toggleSidebar: () => void
   refreshHealth: () => Promise<void>
   pushToast: (msg: string, kind?: Toast['kind']) => void
   dismissToast: (id: string) => void
@@ -222,6 +224,7 @@ export const useAppStore = create<AppState>((set, get) => {
     health: EMPTY_HEALTH,
     toasts: [],
     paletteOpen: false,
+    sidebarCollapsed: localStorage.getItem('ns.sidebarCollapsed') === '1',
 
     activeId: null,
     activeCreatedAt: 0,
@@ -243,6 +246,12 @@ export const useAppStore = create<AppState>((set, get) => {
 
     setView: (v) => set({ view: v }),
     setPaletteOpen: (open) => set({ paletteOpen: open }),
+    toggleSidebar: () =>
+      set((s) => {
+        const next = !s.sidebarCollapsed
+        localStorage.setItem('ns.sidebarCollapsed', next ? '1' : '0')
+        return { sidebarCollapsed: next }
+      }),
 
     pushToast: (msg, kind = 'success') => {
       const id = uiId('toast')

@@ -1,9 +1,9 @@
-import { app, shell, BrowserWindow, Menu, nativeImage } from 'electron'
+import { app, shell, BrowserWindow, Menu, nativeImage, screen } from 'electron'
 import type { MenuItemConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import { registerIpc, abortAllSessions } from './ipc'
 import { connectMcp, disconnectMcp } from './mcp/mcpClient'
-import { loadConfig } from './config/configStore'
+import { loadConfig, saveConfig } from './config/configStore'
 import appIconPath from '../../resources/icon.png?asset'
 
 const APP_NAME = 'NoteSentry'
@@ -11,11 +11,25 @@ const APP_NAME = 'NoteSentry'
 app.setName(APP_NAME)
 
 let mainWindow: BrowserWindow | null = null
+// 記住「非最大化時」的視窗幾何，於關閉時寫回設定。
+let lastNormalBounds: { width: number; height: number; x: number; y: number } | null = null
+
+/** 離屏防呆：座標需落在某個顯示器的工作區內才採用（避免在已拔除的螢幕上開成隱形視窗）。 */
+function isOnScreen(x: number, y: number): boolean {
+  return screen.getAllDisplays().some((d) => {
+    const a = d.workArea
+    return x >= a.x && x < a.x + a.width && y >= a.y && y < a.y + a.height
+  })
+}
 
 function createWindow(): void {
+  const saved = loadConfig().windowBounds
+  const usePos = saved?.x != null && saved?.y != null && isOnScreen(saved.x, saved.y)
+
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 860,
+    width: saved?.width ?? 1280,
+    height: saved?.height ?? 860,
+    ...(usePos ? { x: saved!.x, y: saved!.y } : {}),
     minWidth: 960,
     minHeight: 640,
     show: false,
@@ -31,6 +45,36 @@ function createWindow(): void {
       sandbox: true,
       webSecurity: true
     }
+  })
+
+  if (saved?.maximized) mainWindow.maximize()
+
+  // 追蹤非最大化的最新幾何（resize/move 只更新記憶體，不寫檔）。
+  const track = (): void => {
+    if (mainWindow && !mainWindow.isMaximized() && !mainWindow.isMinimized()) {
+      lastNormalBounds = mainWindow.getBounds()
+    }
+  }
+  mainWindow.on('resize', track)
+  mainWindow.on('move', track)
+
+  // 關閉時把視窗幾何寫回設定，下次開啟還原。
+  mainWindow.on('close', () => {
+    if (!mainWindow) return
+    // 非最大化 → 直接用目前真實幾何；最大化 → 用最後一次非最大化的幾何（避免存到全螢幕尺寸）。
+    const b = mainWindow.isMaximized()
+      ? (lastNormalBounds ?? mainWindow.getBounds())
+      : mainWindow.getBounds()
+    saveConfig({
+      ...loadConfig(),
+      windowBounds: {
+        width: b.width,
+        height: b.height,
+        x: b.x,
+        y: b.y,
+        maximized: mainWindow.isMaximized()
+      }
+    })
   })
 
   mainWindow.on('ready-to-show', () => mainWindow?.show())

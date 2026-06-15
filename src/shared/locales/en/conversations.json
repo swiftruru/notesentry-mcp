@@ -4,6 +4,8 @@
   "searchPlaceholder": "Search chats…",
   "emptySearch": "No matching chats",
   "emptyInitial": "No chats yet — click \"New chat\" to start",
+  "collapseSidebar": "Collapse sidebar",
+  "expandSidebar": "Expand sidebar",
   "toast": {
     "deleted": "Conversation deleted",
     "renamed": "Renamed"

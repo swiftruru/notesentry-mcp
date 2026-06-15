@@ -66,9 +66,20 @@ export interface AppConfig {
   theme?: ThemeMode
   /** 上次匯出 Markdown 所選的資料夾（記住偏好，非設定頁欄位） */
   lastExportDir?: string
+  /** 上次的視窗大小／位置（下次開啟還原；非設定頁欄位） */
+  windowBounds?: WindowBounds
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system'
+
+/** 視窗幾何（記住大小/位置/最大化狀態） */
+export interface WindowBounds {
+  width: number
+  height: number
+  x?: number
+  y?: number
+  maximized?: boolean
+}
 
 export const DEFAULT_CONFIG: AppConfig = {
   ollamaUrl: 'http://localhost:11434',

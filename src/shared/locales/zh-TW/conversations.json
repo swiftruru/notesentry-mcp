@@ -4,6 +4,8 @@
   "searchPlaceholder": "搜尋對話…",
   "emptySearch": "找不到符合的對話",
   "emptyInitial": "尚無對話，點「新對話」開始",
+  "collapseSidebar": "收合側邊欄",
+  "expandSidebar": "展開側邊欄",
   "toast": {
     "deleted": "已刪除對話",
     "renamed": "已重新命名"

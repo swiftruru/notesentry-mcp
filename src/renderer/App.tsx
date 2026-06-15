@@ -20,6 +20,7 @@ export default function App(): React.JSX.Element {
   const { t } = useTranslation('common')
   const view = useAppStore((s) => s.view)
   const init = useAppStore((s) => s.init)
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed)
 
   // 一次性：載入初始狀態並訂閱 main 推送的事件。
   useEffect(() => {
@@ -102,7 +103,7 @@ export default function App(): React.JSX.Element {
 
         {view === 'chat' && (
           <>
-            <ConversationList />
+            {!sidebarCollapsed && <ConversationList />}
             <main className="min-w-0 flex-1 bg-surface">
               <ChatView />
             </main>

@@ -8,7 +8,17 @@ import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store/useAppStore'
 import { DEFAULT_CONVERSATION_TITLE } from '@shared/types'
 import { primaryProblem } from '@/lib/health'
-import { Pencil, Plus, Check, Download, AlertTriangle, Settings, X } from 'lucide-react'
+import {
+  Pencil,
+  Plus,
+  Check,
+  Download,
+  AlertTriangle,
+  Settings,
+  X,
+  PanelLeftClose,
+  PanelLeftOpen
+} from 'lucide-react'
 
 export function ChatView(): React.JSX.Element {
   const { t } = useTranslation('chat')
@@ -29,6 +39,8 @@ export function ChatView(): React.JSX.Element {
   const health = useAppStore((s) => s.health)
   const model = useAppStore((s) => s.config?.model ?? '')
   const setView = useAppStore((s) => s.setView)
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed)
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar)
   // 啟動橫幅：只在真的有錯誤、聊天還空著、且使用者未關閉時出現。
   const problem =
     health.level === 'error' && !hasMessages && !bannerDismissed
@@ -54,7 +66,22 @@ export function ChatView(): React.JSX.Element {
   return (
     <div className="relative flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-border px-6 py-3">
-        {editing ? (
+        <div className="flex min-w-0 items-center gap-2">
+          <button
+            onClick={toggleSidebar}
+            title={sidebarCollapsed ? t('conversations:expandSidebar') : t('conversations:collapseSidebar')}
+            aria-label={
+              sidebarCollapsed ? t('conversations:expandSidebar') : t('conversations:collapseSidebar')
+            }
+            className="shrink-0 text-ink-muted transition-colors hover:text-brand"
+          >
+            {sidebarCollapsed ? (
+              <PanelLeftOpen className="h-4 w-4" />
+            ) : (
+              <PanelLeftClose className="h-4 w-4" />
+            )}
+          </button>
+          {editing ? (
           <div className="flex items-center gap-2">
             <input
               ref={inputRef}
@@ -83,8 +110,9 @@ export function ChatView(): React.JSX.Element {
                 <Pencil className="h-3.5 w-3.5" />
               </button>
             )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
         <div className="flex items-center gap-1">
           {hasMessages && (
             <Button
