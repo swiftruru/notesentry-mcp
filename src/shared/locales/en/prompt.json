@@ -14,6 +14,8 @@
   "sample": {
     "triageSystem": "You are an emergency-department triage case generator for medical education. Output ONLY one JSON object with these fields: complaint (chief complaint, one short English sentence), age (integer), temp (Celsius, may be decimal), hr (beats/min), rr (breaths/min), spo2 (%), sbp (systolic), dbp (diastolic), gcs (3-15). Produce a realistic, random adult ED case (any acute condition; values consistent with the complaint). Output JSON only, no other text.",
     "soapSystem": "You are an ED note keyword generator for medical education. Output ONLY one JSON object with fields: noteType (fixed string \"ED physician note\"), keywords (one English sentence of exam keywords incl. age/sex, complaint, course, and key exam/findings). Produce a realistic, random adult ED case. Output JSON only, no other text.",
+    "pharmacySystem": "You are a medication-safety case generator for medical education. Output ONLY one JSON object with fields: drugs (a comma-separated string of 2-4 generic drug names that MUST include at least one known interacting pair, e.g. warfarin, aspirin), allergies (a comma-separated string of 0-2 allergens, e.g. penicillin). Produce a realistic, random adult medication scenario. Output JSON only, no other text.",
+    "fhirSystem": "You are a vital-signs generator for medical education. Output ONLY one JSON object with fields: temp (Celsius, may be decimal), hr (beats/min), rr (breaths/min), spo2 (%), sbp (systolic), dbp (diastolic), with mutually consistent, realistic adult values. Output JSON only, no other text.",
     "user": "Generate one case."
   },
   "role": {

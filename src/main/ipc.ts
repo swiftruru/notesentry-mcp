@@ -132,7 +132,7 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
   ipcMain.handle(IPC.CHAT_SUGGEST, async (_e, history: ChatMessage[]) =>
     suggestFollowups(history)
   )
-  ipcMain.handle(IPC.SAMPLE_GENERATE, async (_e, kind: 'triage' | 'soap') =>
+  ipcMain.handle(IPC.SAMPLE_GENERATE, async (_e, kind: 'triage' | 'soap' | 'pharmacy' | 'fhir') =>
     generateSample(kind)
   )
   ipcMain.handle(IPC.CONV_EXPORT_MD, async (_e, conv: Conversation) =>

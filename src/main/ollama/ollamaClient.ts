@@ -140,15 +140,15 @@ export async function generateTitle(
 }
 
 /**
- * 用本機 LLM 產生一個「合成範例病例」填入應用表單（檢傷／SOAP）。
+ * 用本機 LLM 產生一個「合成範例」填入應用表單（檢傷／SOAP／用藥安全／生命徵象）。
  * 要求模型只輸出 JSON；以串流取得避免 headers timeout。失敗回 null（呼叫端退回內建範例）。
  */
 export async function generateSample(
-  kind: 'triage' | 'soap'
+  kind: 'triage' | 'soap' | 'pharmacy' | 'fhir'
 ): Promise<Record<string, unknown> | null> {
   try {
     const { client, model } = makeClient()
-    const sys = tMain(kind === 'triage' ? 'prompt.sample.triageSystem' : 'prompt.sample.soapSystem')
+    const sys = tMain(`prompt.sample.${kind}System`)
     const response = await client.chat({
       model,
       stream: true,

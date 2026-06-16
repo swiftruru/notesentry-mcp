@@ -41,5 +41,28 @@
     "keywordsPlaceholder": "例：60 歲女性、上腹痛 3 小時、噁心、無發燒、腹軟、疑膽結石",
     "submit": "產生 SOAP 病歷草稿",
     "prompt": "請依 SOAP 格式，把以下急診診察關鍵字擴寫成病歷草稿（病歷類型：{{noteType}}）：{{keywords}}。僅就提供的關鍵字擴寫，缺漏處標「待補」。"
+  },
+  "pharmacy": {
+    "tab": "用藥安全（應用 C）",
+    "hint": "輸入目前用藥與已知過敏，系統會請 LLM 檢查藥物交互作用並比對過敏史；最終由醫師與藥師確認。",
+    "drugs": "目前用藥",
+    "drugsPlaceholder": "以逗號分隔，例：warfarin, aspirin",
+    "allergies": "已知過敏（可空）",
+    "allergiesPlaceholder": "以逗號分隔，例：penicillin",
+    "submit": "檢查交互作用與過敏衝突",
+    "prompt": "病患目前用藥：{{drugs}}；已知過敏：{{allergies}}。請呼叫工具檢查用藥之間的交互作用，並比對過敏史是否有衝突，最後彙整風險等級與處置建議。"
+  },
+  "fhir": {
+    "tab": "生命徵象（應用 D）",
+    "hint": "輸入生命徵象，系統會請 LLM 轉成 HL7 FHIR R4 的 Observation（含 LOINC／UCUM），示範跨系統標準交換。",
+    "temp": "體溫 °C",
+    "hr": "心跳 /分",
+    "rr": "呼吸 /分",
+    "spo2": "血氧 %",
+    "sbp": "收縮壓",
+    "dbp": "舒張壓",
+    "subjectId": "病患 ID（可空）",
+    "submit": "轉換為 FHIR Observation",
+    "prompt": "請把以下生命徵象轉換成 HL7 FHIR R4 的 Observation：{{vitals}}{{subject}}。"
   }
 }

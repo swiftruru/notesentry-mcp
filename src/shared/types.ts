@@ -292,7 +292,9 @@ export interface NoteSentryApi {
   searchConversations: (query: string) => Promise<ConversationMeta[]>
   generateTitle: (userText: string, assistantText: string) => Promise<string>
   suggestFollowups: (history: ChatMessage[]) => Promise<string[]>
-  generateSample: (kind: 'triage' | 'soap') => Promise<Record<string, unknown> | null>
+  generateSample: (
+    kind: 'triage' | 'soap' | 'pharmacy' | 'fhir'
+  ) => Promise<Record<string, unknown> | null>
   exportMarkdown: (conv: Conversation) => Promise<ExportResult>
 
   onChatToken: (cb: (e: ChatTokenEvent) => void) => () => void

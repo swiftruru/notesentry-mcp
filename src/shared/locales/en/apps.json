@@ -41,5 +41,28 @@
     "keywordsPlaceholder": "e.g. 60F, epigastric pain 3h, nausea, no fever, soft abdomen, suspected gallstones",
     "submit": "Generate SOAP draft",
     "prompt": "Using the SOAP format, expand the following emergency-department exam keywords into a note draft (note type: {{noteType}}): {{keywords}}. Only expand on what is provided; mark gaps as 'to be completed'."
+  },
+  "pharmacy": {
+    "tab": "Medication safety (App C)",
+    "hint": "Enter current medications and known allergies; the LLM checks drug interactions and cross-references allergies. The physician and pharmacist confirm.",
+    "drugs": "Current medications",
+    "drugsPlaceholder": "comma-separated, e.g. warfarin, aspirin",
+    "allergies": "Known allergies (optional)",
+    "allergiesPlaceholder": "comma-separated, e.g. penicillin",
+    "submit": "Check interactions & allergy conflicts",
+    "prompt": "Patient's current medications: {{drugs}}; known allergies: {{allergies}}. Call the tools to check for drug‑drug interactions and cross‑reference the allergy history for conflicts, then summarize the risk level and recommendations."
+  },
+  "fhir": {
+    "tab": "Vital signs (App D)",
+    "hint": "Enter vital signs; the LLM converts them into HL7 FHIR R4 Observations (with LOINC/UCUM) to demonstrate standards‑based exchange.",
+    "temp": "Temp °C",
+    "hr": "HR /min",
+    "rr": "RR /min",
+    "spo2": "SpO2 %",
+    "sbp": "Systolic",
+    "dbp": "Diastolic",
+    "subjectId": "Patient ID (optional)",
+    "submit": "Convert to FHIR Observations",
+    "prompt": "Convert the following vital signs into HL7 FHIR R4 Observations: {{vitals}}{{subject}}."
   }
 }
