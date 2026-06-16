@@ -9,6 +9,7 @@
   },
   "cmd": {
     "newChat": "新對話",
+    "goDashboard": "前往：儀表板",
     "goChat": "前往：對話",
     "goApps": "前往：應用（檢傷／SOAP）",
     "goTools": "前往：工具",

@@ -4,6 +4,7 @@ import { useAppStore, ViewKey } from './store/useAppStore'
 import { ActivityRail } from './components/Layout/ActivityRail'
 import { LanguageToggle } from './components/Layout/LanguageToggle'
 import { ConversationList } from './components/Conversations/ConversationList'
+import { DashboardView } from './components/Dashboard/DashboardView'
 import { ChatView } from './components/Chat/ChatView'
 import { AppsView } from './components/Apps/AppsView'
 import { AuditView } from './components/Audit/AuditView'
@@ -42,7 +43,7 @@ export default function App(): React.JSX.Element {
 
   // 全域快捷鍵（mac ⌘、其他 Ctrl）。讀寫一律走 getState，避免 stale closure。
   useEffect(() => {
-    const VIEWS: ViewKey[] = ['chat', 'apps', 'tools', 'audit', 'settings']
+    const VIEWS: ViewKey[] = ['dashboard', 'chat', 'apps', 'tools', 'audit', 'settings']
     const onKey = (e: KeyboardEvent): void => {
       const mod = e.metaKey || e.ctrlKey
       const s = useAppStore.getState()
@@ -65,7 +66,7 @@ export default function App(): React.JSX.Element {
       } else if (mod && (e.key === 'e' || e.key === 'E')) {
         e.preventDefault()
         if (s.messages.length > 0) void s.exportCurrentChat()
-      } else if (mod && e.key >= '1' && e.key <= '5') {
+      } else if (mod && e.key >= '1' && e.key <= '6') {
         e.preventDefault()
         s.setView(VIEWS[Number(e.key) - 1])
       } else if (e.key === 'Escape') {
@@ -101,6 +102,12 @@ export default function App(): React.JSX.Element {
 
       <div className="flex min-h-0 flex-1">
         <ActivityRail />
+
+        {view === 'dashboard' && (
+          <main className="min-w-0 flex-1 bg-surface">
+            <DashboardView />
+          </main>
+        )}
 
         {view === 'chat' && (
           <>

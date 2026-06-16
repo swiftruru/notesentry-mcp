@@ -1,0 +1,34 @@
+{
+  "title": "治理總覽",
+  "govNote": "NoteSentry 全程在本機運作：每一次 MCP 工具呼叫都需你親自核可（HITL）並寫入稽核日誌。本頁即時彙整這些治理事實。",
+  "healthTitle": "系統健康",
+  "health": {
+    "ollama": "本機 Ollama",
+    "mcp": "MCP 連線",
+    "db": "資料庫",
+    "python": "Python",
+    "recheck": "重新檢查"
+  },
+  "kpi": {
+    "totalCalls": "工具呼叫總數",
+    "approvalRate": "核可率",
+    "rejected": "已拒絕",
+    "errors": "錯誤",
+    "conversations": "對話數"
+  },
+  "toolUsage": "工具使用次數（前 8）",
+  "pillars": "各 MCP 支柱活動",
+  "pillarOther": "其他",
+  "quickTitle": "快速入口",
+  "quick": {
+    "newChat": "開新對話",
+    "apps": "臨床應用",
+    "audit": "稽核日誌",
+    "settings": "系統設定"
+  },
+  "recent": "近期工具呼叫",
+  "empty": {
+    "title": "尚無工具呼叫紀錄",
+    "desc": "開始一段對話或從「臨床應用」送出檢傷／SOAP，每次工具呼叫經你核可後就會即時彙整在這裡。"
+  }
+}

@@ -15,7 +15,7 @@ import {
   ToolInfo
 } from '@shared/types'
 
-export type ViewKey = 'chat' | 'apps' | 'tools' | 'audit' | 'settings' | 'about'
+export type ViewKey = 'dashboard' | 'chat' | 'apps' | 'tools' | 'audit' | 'settings' | 'about'
 
 export type HealthLevel = 'ok' | 'warn' | 'error' | 'unknown'
 
@@ -221,7 +221,8 @@ export const useAppStore = create<AppState>((set, get) => {
   }
 
   return {
-    view: 'chat',
+    // 開 app 即落在治理總覽；新對話等動作仍會切回 'chat'。
+    view: 'dashboard',
     health: EMPTY_HEALTH,
     toasts: [],
     paletteOpen: false,

@@ -4,6 +4,7 @@
     "subtitle": "本機 MIMIC-III 探索助理"
   },
   "nav": {
+    "dashboard": "儀表板",
     "chat": "對話",
     "apps": "應用",
     "tools": "工具",

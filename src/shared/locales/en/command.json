@@ -9,6 +9,7 @@
   },
   "cmd": {
     "newChat": "New chat",
+    "goDashboard": "Go to: Dashboard",
     "goChat": "Go to: Chat",
     "goApps": "Go to: Apps (Triage / SOAP)",
     "goTools": "Go to: Tools",

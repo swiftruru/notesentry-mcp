@@ -1,0 +1,34 @@
+{
+  "title": "Governance overview",
+  "govNote": "NoteSentry runs entirely on‑device: every MCP tool call requires your explicit approval (HITL) and is written to the audit log. This page aggregates those governance facts in real time.",
+  "healthTitle": "System health",
+  "health": {
+    "ollama": "Local Ollama",
+    "mcp": "MCP connection",
+    "db": "Database",
+    "python": "Python",
+    "recheck": "Re‑check"
+  },
+  "kpi": {
+    "totalCalls": "Total tool calls",
+    "approvalRate": "Approval rate",
+    "rejected": "Rejected",
+    "errors": "Errors",
+    "conversations": "Conversations"
+  },
+  "toolUsage": "Tool usage (top 8)",
+  "pillars": "Activity by MCP pillar",
+  "pillarOther": "Other",
+  "quickTitle": "Quick actions",
+  "quick": {
+    "newChat": "New chat",
+    "apps": "Clinical apps",
+    "audit": "Audit log",
+    "settings": "Settings"
+  },
+  "recent": "Recent tool calls",
+  "empty": {
+    "title": "No tool calls yet",
+    "desc": "Start a conversation or submit a Triage/SOAP from Clinical apps — once you approve each tool call it will be aggregated here in real time."
+  }
+}

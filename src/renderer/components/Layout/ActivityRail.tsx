@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore, ViewKey } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
 import {
+  LayoutDashboard,
   MessageSquare,
   ClipboardList,
   Wrench,
@@ -14,6 +15,7 @@ import {
 type RailItem = { key: ViewKey; icon: typeof MessageSquare }
 
 const ITEMS: RailItem[] = [
+  { key: 'dashboard', icon: LayoutDashboard },
   { key: 'chat', icon: MessageSquare },
   { key: 'apps', icon: ClipboardList },
   { key: 'tools', icon: Wrench },
