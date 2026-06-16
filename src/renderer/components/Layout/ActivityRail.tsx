@@ -51,7 +51,7 @@ export function ActivityRail(): React.JSX.Element {
         )}
       >
         <Icon className="h-[18px] w-[18px]" />
-        {label}
+        <span className="max-w-full truncate leading-none">{label}</span>
       </button>
     )
   }
