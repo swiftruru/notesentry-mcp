@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
+import { JsonBlock } from '@/components/Markdown/JsonBlock'
 import { Copy, Check, Download, LayoutGrid, Braces } from 'lucide-react'
 
 // 最小 FHIR 型別（僅取本 app 會用到的欄位）。
@@ -52,12 +53,13 @@ export function ToolResult({ content }: { content: string }): React.JSX.Element 
   const [copied, setCopied] = useState(false)
 
   const bundle = useMemo(() => detectFhirBundle(content), [content])
-  const parsed = useMemo(() => (bundle ? undefined : tryParseJson(content)), [content, bundle])
-  const pretty = useMemo(
-    () => (parsed !== undefined ? JSON.stringify(parsed, null, 2) : null),
-    [parsed]
-  )
-  const canExport = !!bundle || pretty !== null
+  // 任何合法 JSON（含 FHIR bundle）都縮排美化後交給語法高亮；非 JSON 回 null。
+  const prettyJson = useMemo(() => {
+    const obj = tryParseJson(content)
+    return obj !== undefined ? JSON.stringify(obj, null, 2) : null
+  }, [content])
+  const isJson = prettyJson !== null
+  const canExport = isJson
 
   const copy = (): void => {
     void navigator.clipboard.writeText(content)
@@ -108,9 +110,11 @@ export function ToolResult({ content }: { content: string }): React.JSX.Element 
 
       {bundle && !showRaw ? (
         <FhirBundleView bundle={bundle} />
+      ) : isJson ? (
+        <JsonBlock code={prettyJson as string} className="max-h-72" />
       ) : (
         <pre className="max-h-72 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-ink">
-          {pretty ?? content}
+          {content}
         </pre>
       )}
     </div>

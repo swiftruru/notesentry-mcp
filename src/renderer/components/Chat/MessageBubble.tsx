@@ -4,6 +4,7 @@ import { ChatMessage } from '@shared/types'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/store/useAppStore'
 import { Markdown } from '@/components/Markdown/Markdown'
+import { JsonBlock } from '@/components/Markdown/JsonBlock'
 import { ToolResult } from './ToolResult'
 import {
   Wrench,
@@ -80,9 +81,7 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
             <div className="min-w-0">
               <span className="font-semibold">{t('message.toolCallLabel')}</span>
               <span className="font-mono text-brand">{tc.name}</span>
-              <pre className="mt-1 whitespace-pre-wrap break-words font-mono text-[11px] text-ink-muted">
-                {JSON.stringify(tc.args, null, 2)}
-              </pre>
+              <JsonBlock code={JSON.stringify(tc.args, null, 2)} className="mt-1" />
             </div>
           </div>
         ))}
