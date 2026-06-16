@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { Button } from '@/components/ui/button'
 import { Input, Label } from '@/components/ui/primitives'
-import { AppConfig, McpServerStatus, EnvCheck } from '@shared/types'
+import { cn } from '@/lib/utils'
+import { AppConfig, McpServerStatus, EnvCheck, DEFAULT_CONFIG } from '@shared/types'
 import {
   Settings as SettingsIcon,
   Save,
@@ -14,7 +15,9 @@ import {
   Pencil,
   List,
   Activity,
-  Circle
+  Circle,
+  Plus,
+  Trash2
 } from 'lucide-react'
 
 type FieldKey = 'ollamaUrl' | 'model' | 'pythonPath' | 'dbPath'
@@ -27,11 +30,15 @@ const FIELDS: { key: FieldKey; placeholder: string }[] = [
   { key: 'dbPath', placeholder: './mimic_notes.db' }
 ]
 
+// 內建 server id 集合：這些可停用但不可刪除（configStore.normalize 會在存檔時自動補回）。
+const BUILTIN_IDS = new Set(DEFAULT_CONFIG.mcpServers.map((s) => s.id))
+
 export function SettingsView(): React.JSX.Element {
   const { t } = useTranslation('settings')
   const config = useAppStore((s) => s.config)
   const setMcpStatus = useAppStore((s) => s._setMcpStatus)
   const setTools = useAppStore((s) => s._setTools)
+  const liveStatus = useAppStore((s) => s.mcpServers)
   const [draft, setDraft] = useState<AppConfig | null>(config)
   const [saving, setSaving] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null)
@@ -64,7 +71,34 @@ export function SettingsView(): React.JSX.Element {
     setDraft({ ...draft, mcpServers: next })
   }
 
+  const addServer = (): void => {
+    const used = new Set(draft.mcpServers.map((s) => s.id))
+    let n = draft.mcpServers.length + 1
+    let id = `custom-${n}`
+    while (used.has(id)) {
+      n += 1
+      id = `custom-${n}`
+    }
+    setDraft({
+      ...draft,
+      mcpServers: [...draft.mcpServers, { id, name: '', scriptPath: '', enabled: true }]
+    })
+  }
+
+  const removeServer = (idx: number): void => {
+    setDraft({ ...draft, mcpServers: draft.mcpServers.filter((_, i) => i !== idx) })
+  }
+
   const save = async (): Promise<void> => {
+    // 存檔前驗證：每支 server 需有名稱與腳本路徑，且 id 不重複。
+    const ids = draft.mcpServers.map((s) => s.id)
+    const invalid =
+      draft.mcpServers.some((s) => !s.name.trim() || !s.scriptPath.trim()) ||
+      ids.length !== new Set(ids).size
+    if (invalid) {
+      useAppStore.getState().pushToast(t('mcpInvalid'), 'info')
+      return
+    }
     setSaving(true)
     setResult(null)
     try {
@@ -177,31 +211,68 @@ export function SettingsView(): React.JSX.Element {
               {t('mcpSection')}
             </Label>
             <p className="text-xs text-ink-muted">{t('mcpSectionDesc')}</p>
-            {draft.mcpServers.map((srv, idx) => (
-              <div
-                key={srv.id}
-                className="space-y-2 rounded-md border border-border bg-card/40 p-3"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-ink">{srv.name}</span>
-                  <label className="flex items-center gap-1.5 text-xs text-ink-muted">
-                    <input
-                      type="checkbox"
-                      checked={srv.enabled}
-                      onChange={(e) => updateServer(idx, { enabled: e.target.checked })}
-                      className="accent-brand"
+            {draft.mcpServers.map((srv, idx) => {
+              const builtin = BUILTIN_IDS.has(srv.id)
+              const st = liveStatus.find((s) => s.id === srv.id)
+              return (
+                <div
+                  key={srv.id}
+                  className="space-y-2 rounded-md border border-border bg-card/40 p-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={srv.name}
+                      placeholder={t('mcpNamePlaceholder')}
+                      aria-label={t('mcpNamePlaceholder')}
+                      onChange={(e) => updateServer(idx, { name: e.target.value })}
+                      className="min-w-0 flex-1"
                     />
-                    {t('enabled')}
-                  </label>
+                    <span
+                      className={cn(
+                        'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium',
+                        builtin ? 'bg-card text-ink-muted' : 'bg-brand/10 text-brand'
+                      )}
+                    >
+                      {builtin ? t('mcpBuiltin') : t('mcpCustom')}
+                    </span>
+                    {!builtin && (
+                      <button
+                        type="button"
+                        onClick={() => removeServer(idx)}
+                        title={t('mcpRemove')}
+                        aria-label={t('mcpRemove')}
+                        className="shrink-0 rounded-md p-1.5 text-ink-muted transition-colors hover:bg-red-50 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                  <Input
+                    value={srv.scriptPath}
+                    placeholder="./server.py"
+                    aria-label={t('mcpScriptLabel', { name: srv.name || srv.id })}
+                    onChange={(e) => updateServer(idx, { scriptPath: e.target.value })}
+                  />
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1.5 text-xs text-ink-muted">
+                      <input
+                        type="checkbox"
+                        checked={srv.enabled}
+                        onChange={(e) => updateServer(idx, { enabled: e.target.checked })}
+                        className="accent-brand"
+                      />
+                      {t('enabled')}
+                    </label>
+                    <ServerStatus enabled={srv.enabled} st={st} />
+                  </div>
                 </div>
-                <Input
-                  value={srv.scriptPath}
-                  placeholder="./server.py"
-                  aria-label={t('mcpScriptLabel', { name: srv.name })}
-                  onChange={(e) => updateServer(idx, { scriptPath: e.target.value })}
-                />
-              </div>
-            ))}
+              )
+            })}
+            <Button type="button" variant="outline" size="sm" onClick={addServer} className="w-full">
+              <Plus className="h-4 w-4" />
+              {t('mcpAdd')}
+            </Button>
+            <p className="text-xs text-ink-muted">{t('mcpBuiltinHint')}</p>
           </div>
 
           {/* 連線測試結果 */}
@@ -279,6 +350,36 @@ export function SettingsView(): React.JSX.Element {
         </div>
       </div>
     </div>
+  )
+}
+
+/** 每支 server 的即時連線狀態燈（讀 store 的 mcpServers，存檔/測試後即時更新）。 */
+function ServerStatus({
+  enabled,
+  st
+}: {
+  enabled: boolean
+  st?: McpServerStatus
+}): React.JSX.Element {
+  const { t } = useTranslation('settings')
+  let color = 'text-ink-muted'
+  let text = t('mcpPending')
+  if (!enabled) {
+    text = t('mcpDisabled')
+  } else if (st?.state === 'connected') {
+    color = 'text-emerald-600'
+    text = t('test.serverConnected', { count: st.toolCount })
+  } else if (st?.state === 'error') {
+    color = 'text-red-600'
+    text = st.message || st.state
+  } else if (st) {
+    text = st.state
+  }
+  return (
+    <span className={cn('flex min-w-0 items-center gap-1.5 text-xs', color)}>
+      <Circle className="h-2 w-2 shrink-0 fill-current" />
+      <span className="max-w-[14rem] truncate">{text}</span>
+    </span>
   )
 }
 
