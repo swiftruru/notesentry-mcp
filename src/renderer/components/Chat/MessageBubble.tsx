@@ -81,7 +81,7 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
             <div className="min-w-0">
               <span className="font-semibold">{t('message.toolCallLabel')}</span>
               <span className="font-mono text-brand">{tc.name}</span>
-              <JsonBlock code={JSON.stringify(tc.args, null, 2)} className="mt-1" />
+              <JsonBlock code={JSON.stringify(tc.args, null, 2)} className="mt-1" copyable />
             </div>
           </div>
         ))}
