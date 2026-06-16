@@ -21,6 +21,7 @@ import {
   Sun,
   Moon,
   Languages,
+  Compass,
   Search,
   MessagesSquare,
   CornerDownLeft
@@ -72,6 +73,7 @@ export function CommandPalette(): React.JSX.Element | null {
       { id: 'goAudit', label: t('cmd.goAudit'), hint: shortcut('5'), icon: ScrollText, keywords: ['audit', '稽核', 'log'], run: () => s.setView('audit') },
       { id: 'goSettings', label: t('cmd.goSettings'), hint: shortcut('6'), icon: Settings, keywords: ['settings', '設定', 'preferences'], run: () => s.setView('settings') },
       { id: 'goAbout', label: t('cmd.goAbout'), icon: Info, keywords: ['about', '關於'], run: () => s.setView('about') },
+      { id: 'startTour', label: t('cmd.startTour'), icon: Compass, keywords: ['tour', '導覽', '教學', 'guide', 'onboarding'], run: () => s.startTour() },
       ...(hasMessages
         ? [{ id: 'export', label: t('cmd.export'), hint: shortcut('E'), icon: Download, keywords: ['export', '匯出', 'markdown'], run: () => void s.exportCurrentChat() }]
         : []),

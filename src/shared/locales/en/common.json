@@ -10,7 +10,8 @@
     "tools": "Tools",
     "audit": "Audit",
     "settings": "Settings",
-    "about": "About"
+    "about": "About",
+    "tour": "Feature tour"
   },
   "badge": {
     "local": "Data stays on this device",

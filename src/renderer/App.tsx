@@ -16,12 +16,15 @@ import { HealthStatus } from './components/Layout/HealthStatus'
 import { ThemeToggle } from './components/Layout/ThemeToggle'
 import { CommandButton } from './components/Layout/CommandButton'
 import { CommandPalette } from './components/CommandPalette/CommandPalette'
+import { TourOverlay } from './components/Tour/TourOverlay'
 import { Toaster } from './components/ui/Toaster'
+import { Compass } from 'lucide-react'
 
 export default function App(): React.JSX.Element {
   const { t } = useTranslation('common')
   const view = useAppStore((s) => s.view)
   const init = useAppStore((s) => s.init)
+  const startTour = useAppStore((s) => s.startTour)
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed)
 
   // 一次性：載入初始狀態並訂閱 main 推送的事件。
@@ -40,6 +43,13 @@ export default function App(): React.JSX.Element {
     ]
     return () => unsubs.forEach((u) => u())
   }, [init])
+
+  // 首次啟動自動開啟特色導覽（之後可從 header 鈕／命令面板手動再開）。
+  useEffect(() => {
+    if (localStorage.getItem('ns.tourSeen') === '1') return
+    const id = window.setTimeout(() => startTour(), 700)
+    return () => clearTimeout(id)
+  }, [startTour])
 
   // 全域快捷鍵（mac ⌘、其他 Ctrl）。讀寫一律走 getState，避免 stale closure。
   useEffect(() => {
@@ -92,11 +102,22 @@ export default function App(): React.JSX.Element {
           </span>
         </span>
         <div className="flex items-center gap-2">
+          <button
+            onClick={startTour}
+            title={t('nav.tour')}
+            aria-label={t('nav.tour')}
+            className="no-drag flex h-7 items-center gap-1 rounded-md border border-border px-2 text-xs text-ink-muted transition-colors hover:bg-card hover:text-ink"
+          >
+            <Compass className="h-3.5 w-3.5" />
+            {t('nav.tour')}
+          </button>
           <CommandButton />
           <HealthStatus />
           <ThemeToggle />
           <LanguageToggle />
-          <LocalBadge />
+          <span data-tour="local">
+            <LocalBadge />
+          </span>
         </div>
       </header>
 
@@ -104,7 +125,7 @@ export default function App(): React.JSX.Element {
         <ActivityRail />
 
         {view === 'dashboard' && (
-          <main className="min-w-0 flex-1 bg-surface">
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <DashboardView />
           </main>
         )}
@@ -112,20 +133,20 @@ export default function App(): React.JSX.Element {
         {view === 'chat' && (
           <>
             {!sidebarCollapsed && <ConversationList />}
-            <main className="min-w-0 flex-1 bg-surface">
+            <main data-tour="main" className="min-w-0 flex-1 bg-surface">
               <ChatView />
             </main>
           </>
         )}
 
         {view === 'apps' && (
-          <main className="min-w-0 flex-1 bg-surface">
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <AppsView />
           </main>
         )}
 
         {view === 'tools' && (
-          <main className="min-w-0 flex-1 bg-surface">
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <div className="mx-auto h-full max-w-2xl">
               <ToolPanel />
             </div>
@@ -133,19 +154,19 @@ export default function App(): React.JSX.Element {
         )}
 
         {view === 'audit' && (
-          <main className="min-w-0 flex-1 bg-surface">
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <AuditView />
           </main>
         )}
 
         {view === 'settings' && (
-          <main className="min-w-0 flex-1 bg-surface">
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <SettingsView />
           </main>
         )}
 
         {view === 'about' && (
-          <main className="min-w-0 flex-1 bg-surface">
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <AboutView />
           </main>
         )}
@@ -153,6 +174,7 @@ export default function App(): React.JSX.Element {
 
       <Toaster />
       <CommandPalette />
+      <TourOverlay />
     </div>
   )
 }

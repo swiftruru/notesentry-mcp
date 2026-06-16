@@ -57,7 +57,10 @@ export function ActivityRail(): React.JSX.Element {
   }
 
   return (
-    <div className="flex w-14 shrink-0 flex-col items-center border-r border-border bg-brand py-3">
+    <div
+      data-tour="rail"
+      className="flex w-14 shrink-0 flex-col items-center border-r border-border bg-brand py-3"
+    >
       <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white">
         <Stethoscope className="h-5 w-5" />
       </div>

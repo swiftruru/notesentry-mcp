@@ -16,6 +16,7 @@
     "goAudit": "Go to: Audit",
     "goSettings": "Go to: Settings",
     "goAbout": "Go to: About",
+    "startTour": "Start feature tour",
     "export": "Export current chat (Markdown)",
     "reconnect": "Reconnect MCP",
     "recheck": "Re-check system status",

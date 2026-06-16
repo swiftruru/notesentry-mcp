@@ -10,7 +10,8 @@
     "tools": "工具",
     "audit": "稽核",
     "settings": "設定",
-    "about": "關於"
+    "about": "關於",
+    "tour": "特色導覽"
   },
   "badge": {
     "local": "資料全程留在本機",

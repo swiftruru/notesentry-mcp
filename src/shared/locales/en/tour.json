@@ -1,0 +1,52 @@
+{
+  "title": "Feature tour",
+  "buttons": {
+    "prev": "Back",
+    "next": "Next",
+    "done": "Done",
+    "end": "End tour"
+  },
+  "counter": "{{current}} / {{total}}",
+  "steps": [
+    {
+      "title": "Welcome to NoteSentry",
+      "desc": "A fully on-device MIMIC-III clinical-notes assistant: inference runs on local Ollama, every tool call needs your approval, and nothing is uploaded. This tour gives you a quick overview of the whole system."
+    },
+    {
+      "title": "Activity rail",
+      "desc": "Switch between Dashboard / Chat / Apps / Tools / Audit / Settings on the left — or jump with ⌘1–6."
+    },
+    {
+      "title": "Governance dashboard",
+      "desc": "See system governance at a glance: total tool calls, approval rate, per-MCP-pillar activity, and system health — aggregated live from the audit log."
+    },
+    {
+      "title": "Chat exploration",
+      "desc": "Explore clinical notes in natural language. When the model needs data it issues a tool call and asks for your approval (HITL) before it runs."
+    },
+    {
+      "title": "Clinical apps",
+      "desc": "Four structured forms, one per MCP server: Triage, SOAP note, Medication safety, and Vitals→FHIR. Load a sample or have the local LLM generate one."
+    },
+    {
+      "title": "MCP tools",
+      "desc": "Lists the connected MCP servers and their tools. Servers use the standard command/args/env config, and you can add your own."
+    },
+    {
+      "title": "Audit log",
+      "desc": "Every tool call — arguments, approval, result summary — is written to the audit log, which you can search, filter, and export."
+    },
+    {
+      "title": "Settings",
+      "desc": "Configure local Ollama, the model, Python and database paths, and manage multiple MCP servers with the connection conformance check."
+    },
+    {
+      "title": "Data stays on this device",
+      "desc": "All inference runs on local Ollama; nothing is uploaded, shared, or sent for telemetry — in line with the MIMIC-III data use agreement."
+    },
+    {
+      "title": "Tour complete",
+      "desc": "You've seen NoteSentry's main features. You can reopen this tour anytime from the tour button (top right) or the command palette (⌘K)."
+    }
+  ]
+}
