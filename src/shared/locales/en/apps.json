@@ -1,6 +1,22 @@
 {
   "title": "Clinical apps",
   "desc": "Structured input → grounded LLM reasoning → your review. The result appears in the chat, and each tool call asks for your approval.",
+  "loadSample": "Load sample",
+  "aiGenerate": "✨ AI-generate sample",
+  "generating": "Generating…",
+  "genFailed": "AI generation failed; loaded a built-in sample instead.",
+  "presets": {
+    "triage": [
+      "Chest pain with cold sweats, radiating to the left arm",
+      "High fever with chills, mildly altered consciousness, recent UTI",
+      "Sudden dyspnea and wheezing, history of asthma"
+    ],
+    "soap": [
+      "60F, epigastric pain for 3h, nausea, no fever, soft abdomen, positive Murphy's sign, suspected gallstones",
+      "25M, asthma history, dyspnea for 2h, wheezing, SpO2 90%, partial improvement after inhaler",
+      "30M, inverted left ankle during sport, lateral malleolus swelling and pain, able to bear weight, no obvious deformity"
+    ]
+  },
   "triage": {
     "tab": "Triage (App A)",
     "hint": "Enter the chief complaint and vital signs; the LLM assesses them and suggests a TTAS level. The triage nurse makes the final call.",

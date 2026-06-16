@@ -25,6 +25,7 @@ export const IPC = {
   CONV_GEN_TITLE: 'conv:genTitle',
   CONV_EXPORT_MD: 'conv:exportMd',
   CHAT_SUGGEST: 'chat:suggest',
+  SAMPLE_GENERATE: 'sample:generate',
   LANG_SET: 'lang:set',
   THEME_SET: 'theme:set',
 
@@ -291,6 +292,7 @@ export interface NoteSentryApi {
   searchConversations: (query: string) => Promise<ConversationMeta[]>
   generateTitle: (userText: string, assistantText: string) => Promise<string>
   suggestFollowups: (history: ChatMessage[]) => Promise<string[]>
+  generateSample: (kind: 'triage' | 'soap') => Promise<Record<string, unknown> | null>
   exportMarkdown: (conv: Conversation) => Promise<ExportResult>
 
   onChatToken: (cb: (e: ChatTokenEvent) => void) => () => void

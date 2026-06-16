@@ -14,7 +14,7 @@ import { resolveApproval, rejectAllPending } from './hitl/approvalBroker'
 import { connectMcp, getMcpStatus, getTools, onMcpStatus } from './mcp/mcpClient'
 import { loadConfig, saveConfig } from './config/configStore'
 import { listAudit } from './audit/auditLog'
-import { generateTitle, listModels, suggestFollowups } from './ollama/ollamaClient'
+import { generateTitle, listModels, suggestFollowups, generateSample } from './ollama/ollamaClient'
 import { checkEnvironment } from './diagnostics'
 import { exportConversationMarkdown, exportAuditJsonl } from './export'
 import {
@@ -131,6 +131,9 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
   )
   ipcMain.handle(IPC.CHAT_SUGGEST, async (_e, history: ChatMessage[]) =>
     suggestFollowups(history)
+  )
+  ipcMain.handle(IPC.SAMPLE_GENERATE, async (_e, kind: 'triage' | 'soap') =>
+    generateSample(kind)
   )
   ipcMain.handle(IPC.CONV_EXPORT_MD, async (_e, conv: Conversation) =>
     exportConversationMarkdown(conv, getWindow())

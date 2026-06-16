@@ -139,6 +139,39 @@ export async function generateTitle(
   }
 }
 
+/**
+ * 用本機 LLM 產生一個「合成範例病例」填入應用表單（檢傷／SOAP）。
+ * 要求模型只輸出 JSON；以串流取得避免 headers timeout。失敗回 null（呼叫端退回內建範例）。
+ */
+export async function generateSample(
+  kind: 'triage' | 'soap'
+): Promise<Record<string, unknown> | null> {
+  try {
+    const { client, model } = makeClient()
+    const sys = tMain(kind === 'triage' ? 'prompt.sample.triageSystem' : 'prompt.sample.soapSystem')
+    const response = await client.chat({
+      model,
+      stream: true,
+      // 高溫以增加病例多樣性（這是合成資料，不涉及臨床推論）。
+      options: { temperature: 0.9 },
+      messages: [
+        { role: 'system', content: sys },
+        { role: 'user', content: tMain('prompt.sample.user') }
+      ]
+    })
+    let raw = ''
+    for await (const part of response) raw += part.message?.content ?? ''
+    raw = raw.replace(/<think>[\s\S]*?<\/think>/gi, '')
+    const m = raw.match(/\{[\s\S]*\}/) // 取第一個 JSON 物件區塊
+    if (!m) return null
+    const obj = JSON.parse(m[0])
+    return obj && typeof obj === 'object' ? (obj as Record<string, unknown>) : null
+  } catch (err) {
+    console.error('[ollama] 產生範例病例失敗：', err)
+    return null
+  }
+}
+
 function roleLabel(role: string): string {
   if (role === 'user' || role === 'assistant' || role === 'tool') {
     return tMain(`prompt.role.${role}`)

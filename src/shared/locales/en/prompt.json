@@ -11,6 +11,11 @@
   "followup": {
     "system": "You suggest follow-up questions for a local clinical-notes assistant. Based on the conversation, propose 3 short follow-ups the user is most likely to ask next: in English, each under about 12 words, specific and answerable by the assistant's tools (e.g. counting a category, looking up a patient or ROW_ID, or full-text searching a symptom). Output only the questions, one per line — no numbering, no other text."
   },
+  "sample": {
+    "triageSystem": "You are an emergency-department triage case generator for medical education. Output ONLY one JSON object with these fields: complaint (chief complaint, one short English sentence), age (integer), temp (Celsius, may be decimal), hr (beats/min), rr (breaths/min), spo2 (%), sbp (systolic), dbp (diastolic), gcs (3-15). Produce a realistic, random adult ED case (any acute condition; values consistent with the complaint). Output JSON only, no other text.",
+    "soapSystem": "You are an ED note keyword generator for medical education. Output ONLY one JSON object with fields: noteType (fixed string \"ED physician note\"), keywords (one English sentence of exam keywords incl. age/sex, complaint, course, and key exam/findings). Produce a realistic, random adult ED case. Output JSON only, no other text.",
+    "user": "Generate one case."
+  },
   "role": {
     "user": "User",
     "assistant": "Assistant",

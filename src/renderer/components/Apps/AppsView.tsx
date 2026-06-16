@@ -4,9 +4,41 @@ import { useAppStore } from '@/store/useAppStore'
 import { Input, Textarea, Label } from '@/components/ui/primitives'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Stethoscope, FileText, Send } from 'lucide-react'
+import { Stethoscope, FileText, Send, Sparkles, ListPlus } from 'lucide-react'
 
 type Tab = 'triage' | 'soap'
+
+// 檢傷範例的生命徵象（主訴文字走 i18n presets.triage[]，索引對齊）。
+const TRIAGE_VITALS = [
+  { age: '65', temp: '36.8', hr: '132', rr: '26', spo2: '91', sbp: '85', dbp: '50', gcs: '15' },
+  { age: '78', temp: '39.5', hr: '118', rr: '24', spo2: '93', sbp: '88', dbp: '55', gcs: '13' },
+  { age: '45', temp: '37.0', hr: '110', rr: '28', spo2: '89', sbp: '130', dbp: '80', gcs: '15' }
+]
+
+/** 兩個表單共用的「載入範例 / AI 生成範例」工具列。 */
+function SampleToolbar({
+  onLoad,
+  onAi,
+  loading
+}: {
+  onLoad: () => void
+  onAi: () => void
+  loading: boolean
+}): React.JSX.Element {
+  const { t } = useTranslation('apps')
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button type="button" variant="outline" size="sm" onClick={onLoad}>
+        <ListPlus className="h-3.5 w-3.5" />
+        {t('loadSample')}
+      </Button>
+      <Button type="button" variant="secondary" size="sm" onClick={onAi} disabled={loading}>
+        <Sparkles className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
+        {loading ? t('generating') : t('aiGenerate')}
+      </Button>
+    </div>
+  )
+}
 
 export function AppsView(): React.JSX.Element {
   const { t } = useTranslation('apps')
@@ -65,6 +97,7 @@ function TabButton({
 function TriageForm(): React.JSX.Element {
   const { t } = useTranslation('apps')
   const runApp = useAppStore((s) => s.runApp)
+  const pushToast = useAppStore((s) => s.pushToast)
   const [v, setV] = useState({
     complaint: '',
     age: '',
@@ -76,8 +109,43 @@ function TriageForm(): React.JSX.Element {
     dbp: '',
     gcs: ''
   })
+  const [presetIdx, setPresetIdx] = useState(0)
+  const [genLoading, setGenLoading] = useState(false)
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setV((s) => ({ ...s, [k]: e.target.value }))
+
+  const loadPreset = (): void => {
+    const texts = t('presets.triage', { returnObjects: true }) as string[]
+    const i = presetIdx % TRIAGE_VITALS.length
+    setV({ complaint: texts[i] ?? '', ...TRIAGE_VITALS[i] })
+    setPresetIdx(i + 1)
+  }
+
+  const aiGenerate = async (): Promise<void> => {
+    setGenLoading(true)
+    try {
+      const r = await window.api.generateSample('triage')
+      if (r) {
+        const g = (k: string): string => (r[k] != null ? String(r[k]) : '')
+        setV({
+          complaint: g('complaint'),
+          age: g('age'),
+          temp: g('temp'),
+          hr: g('hr'),
+          rr: g('rr'),
+          spo2: g('spo2'),
+          sbp: g('sbp'),
+          dbp: g('dbp'),
+          gcs: g('gcs')
+        })
+      } else {
+        loadPreset()
+        pushToast(t('genFailed'), 'info')
+      }
+    } finally {
+      setGenLoading(false)
+    }
+  }
 
   const submit = (): void => {
     const vitals: string[] = []
@@ -100,6 +168,7 @@ function TriageForm(): React.JSX.Element {
   return (
     <div className="space-y-4">
       <p className="text-xs text-ink-muted">{t('triage.hint')}</p>
+      <SampleToolbar onLoad={loadPreset} onAi={() => void aiGenerate()} loading={genLoading} />
       <Field label={t('triage.complaint')}>
         <Input
           value={v.complaint}
@@ -145,17 +214,44 @@ function TriageForm(): React.JSX.Element {
 function SoapForm(): React.JSX.Element {
   const { t } = useTranslation('apps')
   const runApp = useAppStore((s) => s.runApp)
+  const pushToast = useAppStore((s) => s.pushToast)
   const [noteType, setNoteType] = useState('急診醫師病歷')
   const [keywords, setKeywords] = useState('')
+  const [presetIdx, setPresetIdx] = useState(0)
+  const [genLoading, setGenLoading] = useState(false)
 
   const submit = (): void => {
     const prompt = t('soap.prompt', { noteType, keywords: keywords.trim() })
     runApp(prompt)
   }
 
+  const loadPreset = (): void => {
+    const texts = t('presets.soap', { returnObjects: true }) as string[]
+    const i = presetIdx % texts.length
+    setKeywords(texts[i] ?? '')
+    setPresetIdx(i + 1)
+  }
+
+  const aiGenerate = async (): Promise<void> => {
+    setGenLoading(true)
+    try {
+      const r = await window.api.generateSample('soap')
+      if (r) {
+        if (r.noteType != null) setNoteType(String(r.noteType))
+        setKeywords(r.keywords != null ? String(r.keywords) : '')
+      } else {
+        loadPreset()
+        pushToast(t('genFailed'), 'info')
+      }
+    } finally {
+      setGenLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <p className="text-xs text-ink-muted">{t('soap.hint')}</p>
+      <SampleToolbar onLoad={loadPreset} onAi={() => void aiGenerate()} loading={genLoading} />
       <Field label={t('soap.noteType')}>
         <select
           value={noteType}

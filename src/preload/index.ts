@@ -46,6 +46,7 @@ const api: NoteSentryApi = {
   generateTitle: (userText: string, assistantText: string) =>
     ipcRenderer.invoke(IPC.CONV_GEN_TITLE, userText, assistantText),
   suggestFollowups: (history) => ipcRenderer.invoke(IPC.CHAT_SUGGEST, history),
+  generateSample: (kind) => ipcRenderer.invoke(IPC.SAMPLE_GENERATE, kind),
   exportMarkdown: (conv) => ipcRenderer.invoke(IPC.CONV_EXPORT_MD, conv),
 
   onChatToken: (cb) => subscribe(IPC.EVT_CHAT_TOKEN, cb),
