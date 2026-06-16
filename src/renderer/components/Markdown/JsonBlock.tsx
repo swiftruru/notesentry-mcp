@@ -36,7 +36,10 @@ export function JsonBlock({
   }
   return (
     <pre
-      className={cn('hljs overflow-auto rounded-lg p-3 font-mono text-xs leading-relaxed', className)}
+      className={cn(
+        'hljs overflow-auto rounded-lg border border-border bg-card p-3 font-mono text-xs leading-relaxed',
+        className
+      )}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )

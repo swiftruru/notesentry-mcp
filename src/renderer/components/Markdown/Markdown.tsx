@@ -5,7 +5,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeHighlight from 'rehype-highlight'
 import { Check, Copy } from 'lucide-react'
-import 'highlight.js/styles/github-dark.css'
+import './hljs-notesentry.css'
 
 /** 從 React children 遞迴抽出純文字（用於複製程式碼，含 highlight 後的 span）。 */
 function textOf(node: ReactNode): string {
@@ -28,7 +28,7 @@ function CopyButton({ text }: { text: string }): React.JSX.Element {
   return (
     <button
       onClick={copy}
-      className="absolute right-2 top-2 flex items-center gap-1 rounded bg-white/10 px-1.5 py-1 text-[11px] text-white/80 opacity-0 transition-opacity hover:bg-white/20 group-hover/code:opacity-100"
+      className="absolute right-2 top-2 flex items-center gap-1 rounded bg-ink/5 px-1.5 py-1 text-[11px] text-ink-muted opacity-0 transition-opacity hover:bg-ink/10 hover:text-ink group-hover/code:opacity-100"
       title="複製程式碼"
     >
       {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
@@ -42,7 +42,7 @@ const components: Components = {
     return (
       <div className="group/code relative my-2">
         <CopyButton text={textOf(children)} />
-        <pre className="overflow-x-auto rounded-lg bg-ink p-3 text-xs leading-relaxed text-white/90">
+        <pre className="overflow-x-auto rounded-lg border border-border bg-card p-3 text-xs leading-relaxed text-ink">
           {children}
         </pre>
       </div>

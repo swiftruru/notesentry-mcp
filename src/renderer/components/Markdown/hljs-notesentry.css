@@ -1,0 +1,101 @@
+/* NoteSentry 自訂語法高亮主題
+   淺色、配合品牌綠＋柔和粉/橘/紫的「可愛」配色；背景交給容器（.hljs 透明），
+   同時支援深色模式（.dark 覆寫需要對比的 token）。 */
+
+.hljs {
+  color: rgb(var(--ink));
+  background: transparent;
+}
+
+/* JSON 鍵、屬性、變數 → 品牌綠 */
+.hljs-attr,
+.hljs-attribute,
+.hljs-property,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: rgb(var(--brand));
+  font-weight: 600;
+}
+
+/* 函式/類別/標題 → 次品牌（teal） */
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_,
+.hljs-section,
+.hljs-name,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: rgb(var(--brand-secondary));
+}
+
+/* 字串 → 柔玫瑰 */
+.hljs-string,
+.hljs-regexp,
+.hljs-char.escape_,
+.hljs-meta .hljs-string {
+  color: #c25e7a;
+}
+
+/* 數字 → 暖橘 */
+.hljs-number,
+.hljs-deletion {
+  color: #c77d3e;
+}
+
+/* 關鍵字 / true·false·null / 型別 → 柔紫 */
+.hljs-keyword,
+.hljs-literal,
+.hljs-built_in,
+.hljs-type,
+.hljs-selector-tag {
+  color: #8a6fb0;
+}
+
+/* 加入（diff） → 柔綠 */
+.hljs-addition {
+  color: #2f8f6b;
+}
+
+/* 註解、標點、meta → 次要灰 */
+.hljs-comment,
+.hljs-quote,
+.hljs-punctuation,
+.hljs-meta {
+  color: rgb(var(--ink-muted));
+}
+.hljs-comment,
+.hljs-quote {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+
+/* 深色模式：把對比不足的柔色調亮 */
+.dark .hljs-string,
+.dark .hljs-regexp,
+.dark .hljs-char.escape_ {
+  color: #e89db4;
+}
+.dark .hljs-number,
+.dark .hljs-deletion {
+  color: #e6b17e;
+}
+.dark .hljs-keyword,
+.dark .hljs-literal,
+.dark .hljs-built_in,
+.dark .hljs-type,
+.dark .hljs-selector-tag {
+  color: #c2aee6;
+}
+.dark .hljs-addition {
+  color: #6fcf9f;
+}
