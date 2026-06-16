@@ -17,7 +17,9 @@ import {
   Activity,
   Circle,
   Plus,
-  Trash2
+  Trash2,
+  Cpu,
+  Database
 } from 'lucide-react'
 
 type FieldKey = 'ollamaUrl' | 'model' | 'pythonPath' | 'dbPath'
@@ -253,6 +255,33 @@ export function SettingsView(): React.JSX.Element {
     setTesting(false)
   }
 
+  // 單一欄位渲染（label + 輸入 + hint + localWarn），供各分組 Section 取用。
+  const renderField = (key: FieldKey): React.JSX.Element => {
+    const f = FIELDS.find((x) => x.key === key)!
+    return (
+      <div key={key} className="space-y-1.5">
+        <Label htmlFor={key}>{t(`fields.${key}.label`)}</Label>
+        {key === 'model' ? (
+          <ModelSelect value={draft.model} onChange={(v) => setDraft({ ...draft, model: v })} />
+        ) : (
+          <Input
+            id={key}
+            value={draft[key]}
+            placeholder={f.placeholder}
+            onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
+          />
+        )}
+        <p className="text-xs text-ink-muted">{t(`fields.${key}.hint`)}</p>
+        {key === 'ollamaUrl' && !localOk && (
+          <p className="flex items-center gap-1 text-xs text-red-600">
+            <AlertCircle className="h-3.5 w-3.5" />
+            {t('localWarn')}
+          </p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-b border-border px-6 py-3">
@@ -265,39 +294,19 @@ export function SettingsView(): React.JSX.Element {
 
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="mx-auto max-w-xl space-y-5">
-          {FIELDS.map((f) => (
-            <div key={f.key} className="space-y-1.5">
-              <Label htmlFor={f.key}>{t(`fields.${f.key}.label`)}</Label>
-              {f.key === 'model' ? (
-                <ModelSelect
-                  value={draft.model}
-                  onChange={(v) => setDraft({ ...draft, model: v })}
-                />
-              ) : (
-                <Input
-                  id={f.key}
-                  value={draft[f.key]}
-                  placeholder={f.placeholder}
-                  onChange={(e) => setDraft({ ...draft, [f.key]: e.target.value })}
-                />
-              )}
-              <p className="text-xs text-ink-muted">{t(`fields.${f.key}.hint`)}</p>
-              {f.key === 'ollamaUrl' && !localOk && (
-                <p className="flex items-center gap-1 text-xs text-red-600">
-                  <AlertCircle className="h-3.5 w-3.5" />
-                  {t('localWarn')}
-                </p>
-              )}
-            </div>
-          ))}
+          <Section icon={Cpu} title={t('section.inference')} desc={t('section.inferenceDesc')}>
+            {renderField('ollamaUrl')}
+            {renderField('model')}
+          </Section>
+
+          <Section icon={Database} title={t('section.runtime')} desc={t('section.runtimeDesc')}>
+            {renderField('pythonPath')}
+            {renderField('dbPath')}
+          </Section>
 
           {/* MCP server 清單 */}
-          <div className="space-y-2 pt-2">
-            <Label className="flex items-center gap-1.5">
-              <Server className="h-4 w-4 text-brand" />
-              {t('mcpSection')}
-            </Label>
-            <p className="text-xs text-ink-muted">{t('mcpSectionDesc')}</p>
+          <Section icon={Server} title={t('mcpSection')} desc={t('mcpSectionDesc')}>
+            <div className="space-y-2">
             {draft.mcpServers.map((srv, idx) => {
               const builtin = BUILTIN_IDS.has(srv.id)
               const st = liveStatus.find((s) => s.id === srv.id)
@@ -440,7 +449,8 @@ export function SettingsView(): React.JSX.Element {
                 )}
               </div>
             </div>
-          </div>
+            </div>
+          </Section>
 
           {/* 連線測試結果 */}
           {test && (
@@ -489,34 +499,66 @@ export function SettingsView(): React.JSX.Element {
             </div>
           )}
 
-          {result && (
-            <div
-              className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm ${
-                result.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
-              }`}
+        </div>
+      </div>
+
+      {/* 固定頁尾動作列：捲動時儲存鈕永遠可見 */}
+      <div className="border-t border-border bg-surface px-6 py-3">
+        <div className="mx-auto flex max-w-xl items-center gap-3">
+          {result ? (
+            <span
+              className={cn(
+                'flex min-w-0 flex-1 items-center gap-1.5 text-xs',
+                result.ok ? 'text-emerald-700' : 'text-amber-700'
+              )}
             >
               {result.ok ? (
-                <CheckCircle2 className="h-4 w-4" />
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
               ) : (
-                <AlertCircle className="h-4 w-4" />
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
               )}
-              {result.msg}
-            </div>
+              <span className="truncate">{result.msg}</span>
+            </span>
+          ) : (
+            <div className="flex-1" />
           )}
-
-          <div className="flex justify-between gap-2 pt-2">
-            <Button variant="outline" onClick={runTest} disabled={testing || saving}>
-              <Activity className={`h-4 w-4 ${testing ? 'animate-pulse' : ''}`} />
-              {testing ? t('test.testing') : t('test.btn')}
-            </Button>
-            <Button onClick={save} disabled={saving || !localOk}>
-              <Save className="h-4 w-4" />
-              {saving ? t('save.saving') : t('save.btn')}
-            </Button>
-          </div>
+          <Button variant="outline" onClick={runTest} disabled={testing || saving}>
+            <Activity className={`h-4 w-4 ${testing ? 'animate-pulse' : ''}`} />
+            {testing ? t('test.testing') : t('test.btn')}
+          </Button>
+          <Button onClick={save} disabled={saving || !localOk}>
+            <Save className="h-4 w-4" />
+            {saving ? t('save.saving') : t('save.btn')}
+          </Button>
         </div>
       </div>
     </div>
+  )
+}
+
+/** 設定分組卡片：標題列（icon + 標題 + 描述）＋內容。 */
+function Section({
+  icon: Icon,
+  title,
+  desc,
+  children
+}: {
+  icon: typeof Server
+  title: string
+  desc?: string
+  children: React.ReactNode
+}): React.JSX.Element {
+  return (
+    <section className="overflow-hidden rounded-xl border border-border bg-card/30">
+      <div className="border-b border-border px-4 py-2.5">
+        <h2 className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+          <Icon className="h-4 w-4 text-brand" />
+          {title}
+        </h2>
+        {desc && <p className="mt-0.5 text-xs text-ink-muted">{desc}</p>}
+      </div>
+      <div className="space-y-4 p-4">{children}</div>
+    </section>
   )
 }
 

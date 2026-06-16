@@ -2,6 +2,12 @@
   "title": "設定",
   "desc": "設定會儲存於專案資料夾的 config.json；變更後會自動重新連線所有 MCP server。",
   "loading": "載入設定中…",
+  "section": {
+    "inference": "本機推論",
+    "inferenceDesc": "本機 Ollama 連線與回答用的模型。",
+    "runtime": "執行環境",
+    "runtimeDesc": "啟動 MCP server 的 Python 與資料庫路徑。"
+  },
   "fields": {
     "ollamaUrl": {
       "label": "Ollama 網址",
