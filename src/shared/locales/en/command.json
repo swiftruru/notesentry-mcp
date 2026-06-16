@@ -18,6 +18,7 @@
     "goAbout": "Go to: About",
     "startTour": "Start feature tour",
     "export": "Export current chat (Markdown)",
+    "exportReport": "Export case report (Markdown)",
     "reconnect": "Reconnect MCP",
     "recheck": "Re-check system status",
     "themeSystem": "Theme: System",

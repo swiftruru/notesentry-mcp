@@ -16,7 +16,7 @@ import { loadConfig, saveConfig } from './config/configStore'
 import { listAudit } from './audit/auditLog'
 import { generateTitle, listModels, suggestFollowups, generateSample } from './ollama/ollamaClient'
 import { checkEnvironment } from './diagnostics'
-import { exportConversationMarkdown, exportAuditJsonl, saveTextFile } from './export'
+import { exportConversationMarkdown, exportAuditJsonl, saveTextFile, exportCaseReport } from './export'
 import {
   listConversations,
   loadConversation,
@@ -137,6 +137,9 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
   )
   ipcMain.handle(IPC.FILE_SAVE_TEXT, async (_e, defaultName: string, content: string) =>
     saveTextFile(defaultName, content, getWindow())
+  )
+  ipcMain.handle(IPC.CONV_EXPORT_REPORT, async (_e, conv: Conversation) =>
+    exportCaseReport(conv, getWindow())
   )
   ipcMain.handle(IPC.CONV_EXPORT_MD, async (_e, conv: Conversation) =>
     exportConversationMarkdown(conv, getWindow())

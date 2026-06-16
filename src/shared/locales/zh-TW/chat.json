@@ -1,11 +1,14 @@
 {
   "header": {
     "export": "匯出",
-    "exportTooltip": "匯出此對話為 Markdown"
+    "exportTooltip": "匯出此對話為 Markdown",
+    "report": "個案報告",
+    "reportTooltip": "把此對話整理成結構化個案報告（Markdown）"
   },
   "toast": {
     "exportedTo": "已匯出至 {{path}}",
-    "exportFailed": "匯出失敗：{{error}}"
+    "exportFailed": "匯出失敗：{{error}}",
+    "reportExported": "個案報告已匯出至 {{path}}"
   },
   "empty": {
     "desc": "以自然語言探索本機 MIMIC-III 臨床紀錄，或使用臨床輔助工具。點下方示範題即可開始；模型每次查詢資料庫前都會先請你核可。",

@@ -108,6 +108,7 @@ interface AppState {
   newConversation: () => void
   exportMarkdown: () => Promise<ExportResult>
   exportCurrentChat: () => Promise<void>
+  exportCaseReport: () => Promise<void>
   exportAudit: () => Promise<void>
   reconnectMcp: () => Promise<void>
   setTheme: (mode: ThemeMode) => void
@@ -424,6 +425,27 @@ export const useAppStore = create<AppState>((set, get) => {
     exportCurrentChat: async () => {
       const res = await get().exportMarkdown()
       if (res.saved) get().pushToast(i18n.t('chat:toast.exportedTo', { path: res.path }))
+      else if (res.error)
+        get().pushToast(i18n.t('chat:toast.exportFailed', { error: res.error }), 'error')
+    },
+
+    // 匯出結構化個案報告（聊天頁與命令面板共用）。
+    exportCaseReport: async () => {
+      const { activeId, title, messages, activeCreatedAt, config } = get()
+      if (!activeId || messages.length === 0) {
+        get().pushToast(i18n.t('chat:noExport'), 'info')
+        return
+      }
+      const conv: Conversation = {
+        id: activeId,
+        title,
+        createdAt: activeCreatedAt,
+        updatedAt: Date.now(),
+        model: config?.model,
+        messages
+      }
+      const res = await window.api.exportCaseReport(conv)
+      if (res.saved) get().pushToast(i18n.t('chat:toast.reportExported', { path: res.path }))
       else if (res.error)
         get().pushToast(i18n.t('chat:toast.exportFailed', { error: res.error }), 'error')
     },

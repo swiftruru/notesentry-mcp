@@ -15,6 +15,7 @@ import {
   Settings,
   Info,
   Download,
+  FileText,
   RefreshCw,
   Activity,
   Monitor,
@@ -75,7 +76,10 @@ export function CommandPalette(): React.JSX.Element | null {
       { id: 'goAbout', label: t('cmd.goAbout'), icon: Info, keywords: ['about', '關於'], run: () => s.setView('about') },
       { id: 'startTour', label: t('cmd.startTour'), icon: Compass, keywords: ['tour', '導覽', '教學', 'guide', 'onboarding'], run: () => s.startTour() },
       ...(hasMessages
-        ? [{ id: 'export', label: t('cmd.export'), hint: shortcut('E'), icon: Download, keywords: ['export', '匯出', 'markdown'], run: () => void s.exportCurrentChat() }]
+        ? [
+            { id: 'export', label: t('cmd.export'), hint: shortcut('E'), icon: Download, keywords: ['export', '匯出', 'markdown'], run: () => void s.exportCurrentChat() },
+            { id: 'exportReport', label: t('cmd.exportReport'), icon: FileText, keywords: ['report', '個案', '報告', 'case'], run: () => void s.exportCaseReport() }
+          ]
         : []),
       { id: 'reconnect', label: t('cmd.reconnect'), icon: RefreshCw, keywords: ['reconnect', '重連', 'mcp'], run: () => void s.reconnectMcp() },
       { id: 'recheck', label: t('cmd.recheck'), icon: Activity, keywords: ['health', '健康', '檢查', 'status'], run: () => void s.refreshHealth() },

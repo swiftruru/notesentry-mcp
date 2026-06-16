@@ -13,6 +13,7 @@ import {
   Plus,
   Check,
   Download,
+  FileText,
   AlertTriangle,
   Settings,
   X,
@@ -29,6 +30,7 @@ export function ChatView(): React.JSX.Element {
   const rename = useAppStore((s) => s.renameConversation)
   const newConversation = useAppStore((s) => s.newConversation)
   const exportCurrentChat = useAppStore((s) => s.exportCurrentChat)
+  const exportCaseReport = useAppStore((s) => s.exportCaseReport)
 
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(title)
@@ -48,6 +50,7 @@ export function ChatView(): React.JSX.Element {
       : null
 
   const doExport = (): Promise<void> => exportCurrentChat()
+  const doReport = (): Promise<void> => exportCaseReport()
 
   useEffect(() => {
     if (editing) inputRef.current?.select()
@@ -122,15 +125,26 @@ export function ChatView(): React.JSX.Element {
         </div>
         <div className="flex items-center gap-1">
           {hasMessages && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={doExport}
-              title={t('header.exportTooltip')}
-            >
-              <Download className="h-3.5 w-3.5" />
-              {t('header.export')}
-            </Button>
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={doReport}
+                title={t('header.reportTooltip')}
+              >
+                <FileText className="h-3.5 w-3.5" />
+                {t('header.report')}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={doExport}
+                title={t('header.exportTooltip')}
+              >
+                <Download className="h-3.5 w-3.5" />
+                {t('header.export')}
+              </Button>
+            </>
           )}
           <Button variant="ghost" size="sm" onClick={newConversation}>
             <Plus className="h-3.5 w-3.5" />

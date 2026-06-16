@@ -1,11 +1,14 @@
 {
   "header": {
     "export": "Export",
-    "exportTooltip": "Export this chat as Markdown"
+    "exportTooltip": "Export this chat as Markdown",
+    "report": "Case report",
+    "reportTooltip": "Turn this chat into a structured case report (Markdown)"
   },
   "toast": {
     "exportedTo": "Exported to {{path}}",
-    "exportFailed": "Export failed: {{error}}"
+    "exportFailed": "Export failed: {{error}}",
+    "reportExported": "Case report exported to {{path}}"
   },
   "empty": {
     "desc": "Explore local MIMIC-III clinical notes in plain language, or use the clinical support tools. Click a sample below to start; the model always asks for your approval before it queries the database.",
