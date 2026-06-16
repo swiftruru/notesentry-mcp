@@ -17,9 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # 釘選 macos-13：macos-latest（macos-15）的 hdiutil 在打包 .dmg 時
-          # 偶發 detach/Applications 連結失敗；macos-13 對 electron-builder DMG 較穩定。
-          - os: macos-13
+          - os: macos-latest
             platform: mac
           - os: windows-latest
             platform: win

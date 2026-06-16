@@ -85,7 +85,7 @@
       ]
     },
     "dmg": {
-      "title": "${productName} ${version}",
+      "title": "${productName}-${version}",
       "artifactName": "${productName}-mac-${arch}.${ext}"
     },
     "win": {
