@@ -6,7 +6,8 @@
     "inference": "本機推論",
     "inferenceDesc": "本機 Ollama 連線與回答用的模型。",
     "runtime": "執行環境",
-    "runtimeDesc": "啟動 MCP server 的 Python 與資料庫路徑。"
+    "runtimeDesc": "啟動 MCP server 的 Python 與資料庫路徑。",
+    "mcp": "MCP server"
   },
   "fields": {
     "ollamaUrl": {

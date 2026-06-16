@@ -4,7 +4,8 @@
     "inference": "Local inference",
     "inferenceDesc": "Local Ollama connection and the model used for answers.",
     "runtime": "Runtime",
-    "runtimeDesc": "Python interpreter and database path used to launch MCP servers."
+    "runtimeDesc": "Python interpreter and database path used to launch MCP servers.",
+    "mcp": "MCP servers"
   },
   "desc": "Settings are saved to config.json in the project folder. Changes automatically reconnect all MCP servers.",
   "loading": "Loading settings…",

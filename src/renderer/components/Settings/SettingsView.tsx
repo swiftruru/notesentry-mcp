@@ -35,6 +35,14 @@ const FIELDS: { key: FieldKey; placeholder: string }[] = [
 // 內建 server id 集合：這些可停用但不可刪除（configStore.normalize 會在存檔時自動補回）。
 const BUILTIN_IDS = new Set(DEFAULT_CONFIG.mcpServers.map((s) => s.id))
 
+// 設定分頁：依功能橫向切換，避免一頁塞太多。
+type SettingsTab = 'inference' | 'runtime' | 'mcp'
+const SETTINGS_TABS: { key: SettingsTab; icon: typeof Cpu }[] = [
+  { key: 'inference', icon: Cpu },
+  { key: 'runtime', icon: Database },
+  { key: 'mcp', icon: Server }
+]
+
 /** env 物件 ⇄ 文字（每行 KEY=VALUE）的雙向轉換。 */
 function serializeEnv(env?: Record<string, string>): string {
   return env
@@ -60,6 +68,7 @@ export function SettingsView(): React.JSX.Element {
   const setMcpStatus = useAppStore((s) => s._setMcpStatus)
   const setTools = useAppStore((s) => s._setTools)
   const liveStatus = useAppStore((s) => s.mcpServers)
+  const [tab, setTab] = useState<SettingsTab>('inference')
   const [draft, setDraft] = useState<AppConfig | null>(config)
   const [saving, setSaving] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null)
@@ -292,21 +301,51 @@ export function SettingsView(): React.JSX.Element {
         <p className="text-xs text-ink-muted">{t('desc')}</p>
       </div>
 
+      {/* 橫向分頁列（固定，不隨內容捲動） */}
+      <div className="flex gap-1 border-b border-border px-4 pt-2" role="tablist">
+        {SETTINGS_TABS.map((tb) => {
+          const Icon = tb.icon
+          const active = tab === tb.key
+          return (
+            <button
+              key={tb.key}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setTab(tb.key)}
+              className={cn(
+                'flex items-center gap-1.5 rounded-t-md px-3 py-2 text-sm font-medium transition-colors',
+                active ? 'border-b-2 border-brand text-brand' : 'text-ink-muted hover:text-ink'
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {t(`section.${tb.key}`)}
+            </button>
+          )
+        })}
+      </div>
+
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="mx-auto max-w-xl space-y-5">
-          <Section icon={Cpu} title={t('section.inference')} desc={t('section.inferenceDesc')}>
-            {renderField('ollamaUrl')}
-            {renderField('model')}
-          </Section>
+          {tab === 'inference' && (
+            <div className="space-y-4">
+              <p className="text-xs text-ink-muted">{t('section.inferenceDesc')}</p>
+              {renderField('ollamaUrl')}
+              {renderField('model')}
+            </div>
+          )}
 
-          <Section icon={Database} title={t('section.runtime')} desc={t('section.runtimeDesc')}>
-            {renderField('pythonPath')}
-            {renderField('dbPath')}
-          </Section>
+          {tab === 'runtime' && (
+            <div className="space-y-4">
+              <p className="text-xs text-ink-muted">{t('section.runtimeDesc')}</p>
+              {renderField('pythonPath')}
+              {renderField('dbPath')}
+            </div>
+          )}
 
           {/* MCP server 清單 */}
-          <Section icon={Server} title={t('mcpSection')} desc={t('mcpSectionDesc')}>
+          {tab === 'mcp' && (
             <div className="space-y-2">
+              <p className="text-xs text-ink-muted">{t('mcpSectionDesc')}</p>
             {draft.mcpServers.map((srv, idx) => {
               const builtin = BUILTIN_IDS.has(srv.id)
               const st = liveStatus.find((s) => s.id === srv.id)
@@ -450,7 +489,7 @@ export function SettingsView(): React.JSX.Element {
               </div>
             </div>
             </div>
-          </Section>
+          )}
 
           {/* 連線測試結果 */}
           {test && (
@@ -533,32 +572,6 @@ export function SettingsView(): React.JSX.Element {
         </div>
       </div>
     </div>
-  )
-}
-
-/** 設定分組卡片：標題列（icon + 標題 + 描述）＋內容。 */
-function Section({
-  icon: Icon,
-  title,
-  desc,
-  children
-}: {
-  icon: typeof Server
-  title: string
-  desc?: string
-  children: React.ReactNode
-}): React.JSX.Element {
-  return (
-    <section className="overflow-hidden rounded-xl border border-border bg-card/30">
-      <div className="border-b border-border px-4 py-2.5">
-        <h2 className="flex items-center gap-1.5 text-sm font-semibold text-ink">
-          <Icon className="h-4 w-4 text-brand" />
-          {title}
-        </h2>
-        {desc && <p className="mt-0.5 text-xs text-ink-muted">{desc}</p>}
-      </div>
-      <div className="space-y-4 p-4">{children}</div>
-    </section>
   )
 }
 
