@@ -22,7 +22,13 @@
     "copyTooltip": "複製訊息",
     "regenerate": "重新生成",
     "retry": "重試",
-    "dismiss": "關閉"
+    "dismiss": "關閉",
+    "fhirBadge": "FHIR R4",
+    "fhirObs_other": "{{count}} 筆 Observation",
+    "viewCards": "卡片",
+    "viewRaw": "原始 JSON",
+    "exportJson": "匯出 .json",
+    "exported": "已匯出 FHIR Bundle"
   },
   "scrollToLatest": "捲到最新",
   "composer": {

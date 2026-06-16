@@ -105,6 +105,41 @@ export async function exportConversationMarkdown(
   }
 }
 
+/** 通用：把一段文字另存為檔案（給「匯出工具結果 .json」等用），沿用 lastExportDir 與測試路徑。 */
+export async function saveTextFile(
+  defaultName: string,
+  content: string,
+  win: BrowserWindow | null
+): Promise<ExportResult> {
+  try {
+    const fname = safeName(defaultName.replace(/\.[^.]+$/, '')) + (defaultName.match(/\.[^.]+$/)?.[0] ?? '')
+    const testDir = process.env.NS_EXPORT_TEST_DIR
+    if (testDir) {
+      const p = join(testDir, fname)
+      writeFileSync(p, content, 'utf-8')
+      return { saved: true, path: p }
+    }
+    const cfg = loadConfig()
+    const remembered = cfg.lastExportDir && existsSync(cfg.lastExportDir) ? cfg.lastExportDir : null
+    const startDir = remembered ?? app.getPath('documents')
+    const ext = (fname.match(/\.([^.]+)$/)?.[1] ?? 'txt').toLowerCase()
+    const opts = {
+      defaultPath: join(startDir, fname),
+      filters: [{ name: ext.toUpperCase(), extensions: [ext] }],
+      properties: ['createDirectory', 'showOverwriteConfirmation'] as Array<
+        'createDirectory' | 'showOverwriteConfirmation'
+      >
+    }
+    const res = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts)
+    if (res.canceled || !res.filePath) return { saved: false, canceled: true }
+    writeFileSync(res.filePath, content, 'utf-8')
+    saveConfig({ ...loadConfig(), lastExportDir: dirname(res.filePath) })
+    return { saved: true, path: res.filePath }
+  } catch (err) {
+    return { saved: false, error: err instanceof Error ? err.message : String(err) }
+  }
+}
+
 /** 匯出稽核紀錄為 JSONL（每行一筆）：跳出「另存新檔」，沿用 lastExportDir 與測試路徑。 */
 export async function exportAuditJsonl(
   entries: AuditEntry[],

@@ -22,7 +22,13 @@
     "copyTooltip": "Copy message",
     "regenerate": "Regenerate",
     "retry": "Retry",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "fhirBadge": "FHIR R4",
+    "fhirObs_other": "{{count}} observations",
+    "viewCards": "Cards",
+    "viewRaw": "Raw JSON",
+    "exportJson": "Export .json",
+    "exported": "Exported FHIR Bundle"
   },
   "scrollToLatest": "Scroll to latest",
   "composer": {

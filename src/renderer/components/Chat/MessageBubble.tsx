@@ -4,6 +4,7 @@ import { ChatMessage } from '@shared/types'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/store/useAppStore'
 import { Markdown } from '@/components/Markdown/Markdown'
+import { ToolResult } from './ToolResult'
 import {
   Wrench,
   User,
@@ -44,13 +45,11 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
         <Avatar className="bg-brand-accent/30 text-brand">
           <Database className="h-4 w-4" />
         </Avatar>
-        <div className="max-w-[78%] rounded-2xl rounded-tl-sm border border-border bg-card px-4 py-2.5">
+        <div className="min-w-0 max-w-[80%] rounded-2xl rounded-tl-sm border border-border bg-card px-4 py-2.5">
           <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-ink-muted">
             {t('message.toolResult')}
           </div>
-          <pre className="max-h-72 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-ink">
-            {message.content}
-          </pre>
+          <ToolResult content={message.content} />
         </div>
       </div>
     )

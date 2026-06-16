@@ -24,6 +24,7 @@ export const IPC = {
   CONV_SEARCH: 'conv:search',
   CONV_GEN_TITLE: 'conv:genTitle',
   CONV_EXPORT_MD: 'conv:exportMd',
+  FILE_SAVE_TEXT: 'file:saveText',
   CHAT_SUGGEST: 'chat:suggest',
   SAMPLE_GENERATE: 'sample:generate',
   LANG_SET: 'lang:set',
@@ -311,6 +312,7 @@ export interface NoteSentryApi {
     kind: 'triage' | 'soap' | 'pharmacy' | 'fhir'
   ) => Promise<Record<string, unknown> | null>
   exportMarkdown: (conv: Conversation) => Promise<ExportResult>
+  saveTextFile: (defaultName: string, content: string) => Promise<ExportResult>
 
   onChatToken: (cb: (e: ChatTokenEvent) => void) => () => void
   onChatMessage: (cb: (e: ChatMessageEvent) => void) => () => void
