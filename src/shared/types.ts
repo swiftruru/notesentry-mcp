@@ -46,10 +46,19 @@ export interface McpServerConfig {
   id: string
   /** 顯示名稱 */
   name: string
-  /** server 腳本路徑（相對路徑以專案根為基準） */
+  /** server 腳本路徑（相對路徑以專案根為基準）。未填 command 時走「python <scriptPath>」啟動。 */
   scriptPath: string
   /** 是否啟用（停用則不連線） */
   enabled: boolean
+  /**
+   * 標準 MCP 啟動指令（如 npx / node / python3 / uvx）。填了就走標準模式，
+   * 與 Claude Desktop / mcp.json 的 command 同義；未填則回退為 python <scriptPath>。
+   */
+  command?: string
+  /** 標準 MCP 啟動參數（command 模式用） */
+  args?: string[]
+  /** 額外環境變數（command 模式用；會與系統環境合併，使用者值優先） */
+  env?: Record<string, string>
 }
 
 /** 應用程式設定（持久化於專案資料夾的 config.json） */
@@ -139,6 +148,12 @@ export interface McpServerStatus {
   state: McpConnState
   toolCount: number
   message?: string
+  /** MCP 一致性檢查（connected 時填）：server 於 initialize 握手回報的實作名稱／版本 */
+  serverInfo?: { name: string; version: string }
+  /** server 宣告的能力鍵（如 tools / resources / prompts） */
+  capabilities?: string[]
+  /** 所有工具的 inputSchema 是否皆為有效的物件式 JSON Schema */
+  schemaValid?: boolean
 }
 
 /** 對話訊息角色 */

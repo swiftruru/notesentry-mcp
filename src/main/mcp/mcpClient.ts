@@ -57,6 +57,13 @@ export function getTools(): ToolInfo[] {
   return out
 }
 
+/** 工具的 inputSchema 是否為有效的物件式 JSON Schema（MCP 標準要求 object schema）。 */
+function isObjectSchema(schema: unknown): boolean {
+  if (!schema || typeof schema !== 'object') return false
+  const s = schema as Record<string, unknown>
+  return s.type === 'object' || 'properties' in s
+}
+
 async function connectOne(config: McpServerConfig, dbPath: string): Promise<void> {
   // 先關掉同 id 的舊連線。
   await closeOne(config.id)
@@ -72,17 +79,26 @@ async function connectOne(config: McpServerConfig, dbPath: string): Promise<void
   emitStatus()
 
   try {
-    const transport = new StdioClientTransport({
-      command: loadConfig().pythonPath,
-      // 腳本是內附唯讀資源（打包後在 resourcesPath；開發在專案根）。
-      args: [resolveResourcePath(config.scriptPath)],
-      env: {
-        ...(process.env as Record<string, string>),
-        MIMIC_DB_PATH: dbPath,
-        PYTHONUNBUFFERED: '1'
-      },
-      stderr: 'pipe'
-    })
+    const baseEnv = process.env as Record<string, string>
+    // 有 command → 標準 MCP 啟動（command/args/env，與 mcp.json 同義）；否則回退 python <scriptPath>。
+    const useStandard = !!config.command?.trim()
+    const transport = new StdioClientTransport(
+      useStandard
+        ? {
+            command: config.command!.trim(),
+            args: config.args ?? [],
+            // 仍注入 MIMIC_DB_PATH 以便相容；使用者自訂 env 優先。
+            env: { ...baseEnv, MIMIC_DB_PATH: dbPath, ...(config.env ?? {}) },
+            stderr: 'pipe'
+          }
+        : {
+            command: loadConfig().pythonPath,
+            // 腳本是內附唯讀資源（打包後在 resourcesPath；開發在專案根）。
+            args: [resolveResourcePath(config.scriptPath)],
+            env: { ...baseEnv, MIMIC_DB_PATH: dbPath, PYTHONUNBUFFERED: '1' },
+            stderr: 'pipe'
+          }
+    )
     const client = new Client({ name: 'notesentry', version: '0.1.0' }, { capabilities: {} })
     await client.connect(transport)
 
@@ -98,10 +114,25 @@ async function connectOne(config: McpServerConfig, dbPath: string): Promise<void
       serverName: config.name
     }))
 
+    // MCP 一致性檢查：擷取握手回報的 server 實作、宣告能力，並驗證工具 schema。
+    const impl = client.getServerVersion()
+    const caps = client.getServerCapabilities()
+    const serverInfo = impl ? { name: impl.name, version: impl.version } : undefined
+    const capabilities = caps ? Object.keys(caps) : []
+    const schemaValid = tools.every((t) => isObjectSchema(t.inputSchema))
+
     conn.client = client
     conn.transport = transport
     conn.tools = tools
-    conn.status = { id: config.id, name: config.name, state: 'connected', toolCount: tools.length }
+    conn.status = {
+      id: config.id,
+      name: config.name,
+      state: 'connected',
+      toolCount: tools.length,
+      serverInfo,
+      capabilities,
+      schemaValid
+    }
     for (const t of tools) toolRoute.set(t.name, config.id)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)

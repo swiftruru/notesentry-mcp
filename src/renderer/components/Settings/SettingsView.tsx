@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { Button } from '@/components/ui/button'
-import { Input, Label } from '@/components/ui/primitives'
+import { Input, Label, Textarea } from '@/components/ui/primitives'
 import { cn } from '@/lib/utils'
-import { AppConfig, McpServerStatus, EnvCheck, DEFAULT_CONFIG } from '@shared/types'
+import { AppConfig, McpServerConfig, McpServerStatus, EnvCheck, DEFAULT_CONFIG } from '@shared/types'
 import {
   Settings as SettingsIcon,
   Save,
@@ -33,6 +33,25 @@ const FIELDS: { key: FieldKey; placeholder: string }[] = [
 // 內建 server id 集合：這些可停用但不可刪除（configStore.normalize 會在存檔時自動補回）。
 const BUILTIN_IDS = new Set(DEFAULT_CONFIG.mcpServers.map((s) => s.id))
 
+/** env 物件 ⇄ 文字（每行 KEY=VALUE）的雙向轉換。 */
+function serializeEnv(env?: Record<string, string>): string {
+  return env
+    ? Object.entries(env)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('\n')
+    : ''
+}
+function parseEnv(text: string): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const line of text.split('\n')) {
+    const i = line.indexOf('=')
+    if (i <= 0) continue
+    const k = line.slice(0, i).trim()
+    if (k) out[k] = line.slice(i + 1).trim()
+  }
+  return out
+}
+
 export function SettingsView(): React.JSX.Element {
   const { t } = useTranslation('settings')
   const config = useAppStore((s) => s.config)
@@ -43,6 +62,10 @@ export function SettingsView(): React.JSX.Element {
   const [saving, setSaving] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null)
   const [testing, setTesting] = useState(false)
+  // 每支 server 的 env 編輯文字（id → 多行 KEY=VALUE），於存檔時解析回物件。
+  const [envText, setEnvText] = useState<Record<string, string>>({})
+  const [importText, setImportText] = useState('')
+  const [importMsg, setImportMsg] = useState<{ ok: boolean; msg: string } | null>(null)
   const [test, setTest] = useState<{
     ollama: { ok: boolean; msg: string }
     env: EnvCheck | null
@@ -51,6 +74,11 @@ export function SettingsView(): React.JSX.Element {
 
   useEffect(() => {
     setDraft(config)
+    if (config) {
+      const e: Record<string, string> = {}
+      for (const s of config.mcpServers) if (s.env) e[s.id] = serializeEnv(s.env)
+      setEnvText(e)
+    }
   }, [config])
 
   if (!draft) {
@@ -81,7 +109,10 @@ export function SettingsView(): React.JSX.Element {
     }
     setDraft({
       ...draft,
-      mcpServers: [...draft.mcpServers, { id, name: '', scriptPath: '', enabled: true }]
+      mcpServers: [
+        ...draft.mcpServers,
+        { id, name: '', scriptPath: '', enabled: true, command: '', args: [] }
+      ]
     })
   }
 
@@ -89,11 +120,67 @@ export function SettingsView(): React.JSX.Element {
     setDraft({ ...draft, mcpServers: draft.mcpServers.filter((_, i) => i !== idx) })
   }
 
+  /** 貼上標準 mcpServers JSON（command/args/env）→ append 成自訂列。 */
+  const importFromJson = (): void => {
+    try {
+      const parsed = JSON.parse(importText) as Record<string, unknown>
+      const map = (parsed.mcpServers ?? parsed) as Record<string, { command?: unknown; args?: unknown; env?: unknown }>
+      if (!map || typeof map !== 'object') throw new Error('shape')
+      const used = new Set(draft.mcpServers.map((s) => s.id))
+      let n = draft.mcpServers.length
+      const added: McpServerConfig[] = []
+      const seededEnv: Record<string, string> = {}
+      for (const [name, v] of Object.entries(map)) {
+        if (!v || typeof v !== 'object' || !v.command) continue
+        n += 1
+        let id = `custom-${n}`
+        while (used.has(id)) {
+          n += 1
+          id = `custom-${n}`
+        }
+        used.add(id)
+        const env =
+          v.env && typeof v.env === 'object' ? (v.env as Record<string, string>) : undefined
+        added.push({
+          id,
+          name,
+          scriptPath: '',
+          enabled: true,
+          command: String(v.command),
+          args: Array.isArray(v.args) ? v.args.map(String) : [],
+          env
+        })
+        if (env) seededEnv[id] = serializeEnv(env)
+      }
+      if (!added.length) throw new Error('empty')
+      setDraft({ ...draft, mcpServers: [...draft.mcpServers, ...added] })
+      setEnvText((prev) => ({ ...prev, ...seededEnv }))
+      setImportText('')
+      setImportMsg({ ok: true, msg: t('mcpImportOk', { count: added.length }) })
+    } catch {
+      setImportMsg({ ok: false, msg: t('mcpImportFail') })
+    }
+  }
+
   const save = async (): Promise<void> => {
-    // 存檔前驗證：每支 server 需有名稱與腳本路徑，且 id 不重複。
-    const ids = draft.mcpServers.map((s) => s.id)
+    // 把編輯態正規化：command 模式才帶 args/env；args 去空白；env 由文字解析。
+    const cleaned: AppConfig = {
+      ...draft,
+      mcpServers: draft.mcpServers.map((s) => {
+        const command = s.command?.trim() || undefined
+        const env = parseEnv(envText[s.id] ?? '')
+        return {
+          ...s,
+          command,
+          args: command ? (s.args ?? []).map((a) => a.trim()).filter(Boolean) : undefined,
+          env: command && Object.keys(env).length ? env : undefined
+        }
+      })
+    }
+    // 存檔前驗證：每支 server 需有名稱、至少一個 command 或 scriptPath，且 id 不重複。
+    const ids = cleaned.mcpServers.map((s) => s.id)
     const invalid =
-      draft.mcpServers.some((s) => !s.name.trim() || !s.scriptPath.trim()) ||
+      cleaned.mcpServers.some((s) => !s.name.trim() || (!s.command && !s.scriptPath.trim())) ||
       ids.length !== new Set(ids).size
     if (invalid) {
       useAppStore.getState().pushToast(t('mcpInvalid'), 'info')
@@ -102,7 +189,7 @@ export function SettingsView(): React.JSX.Element {
     setSaving(true)
     setResult(null)
     try {
-      const saved = await window.api.setConfig(draft)
+      const saved = await window.api.setConfig(cleaned)
       useAppStore.setState({ config: saved })
       const status = await window.api.getMcpStatus()
       setMcpStatus(status)
@@ -247,12 +334,48 @@ export function SettingsView(): React.JSX.Element {
                       </button>
                     )}
                   </div>
-                  <Input
-                    value={srv.scriptPath}
-                    placeholder="./server.py"
-                    aria-label={t('mcpScriptLabel', { name: srv.name || srv.id })}
-                    onChange={(e) => updateServer(idx, { scriptPath: e.target.value })}
-                  />
+                  {builtin ? (
+                    <Input
+                      value={srv.scriptPath}
+                      placeholder="./server.py"
+                      aria-label={t('mcpScriptLabel', { name: srv.name || srv.id })}
+                      onChange={(e) => updateServer(idx, { scriptPath: e.target.value })}
+                    />
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        <Input
+                          value={srv.command ?? ''}
+                          placeholder={t('mcpCommandPlaceholder')}
+                          aria-label={t('mcpCommand')}
+                          onChange={(e) => updateServer(idx, { command: e.target.value })}
+                        />
+                        <Input
+                          value={(srv.args ?? []).join(' ')}
+                          placeholder={t('mcpArgsPlaceholder')}
+                          aria-label={t('mcpArgs')}
+                          onChange={(e) => updateServer(idx, { args: e.target.value.split(' ') })}
+                        />
+                      </div>
+                      <Input
+                        value={srv.scriptPath}
+                        placeholder="./server.py"
+                        aria-label={t('mcpScriptLabel', { name: srv.name || srv.id })}
+                        onChange={(e) => updateServer(idx, { scriptPath: e.target.value })}
+                      />
+                      <Textarea
+                        rows={2}
+                        value={envText[srv.id] ?? ''}
+                        placeholder={t('mcpEnvPlaceholder')}
+                        aria-label={t('mcpEnv')}
+                        onChange={(e) =>
+                          setEnvText((prev) => ({ ...prev, [srv.id]: e.target.value }))
+                        }
+                        className="font-mono text-xs"
+                      />
+                      <p className="text-[11px] text-ink-muted">{t('mcpStandardHint')}</p>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-1.5 text-xs text-ink-muted">
                       <input
@@ -265,6 +388,17 @@ export function SettingsView(): React.JSX.Element {
                     </label>
                     <ServerStatus enabled={srv.enabled} st={st} />
                   </div>
+                  {st?.state === 'connected' && st.serverInfo && (
+                    <p className="flex flex-wrap items-center gap-x-1.5 text-[11px] text-emerald-700">
+                      <CheckCircle2 className="h-3 w-3 shrink-0" />
+                      {t('mcpHandshakeOk')} · {st.serverInfo.name} v{st.serverInfo.version}
+                      {st.capabilities && st.capabilities.length > 0
+                        ? ` · ${t('mcpCapabilities')}: ${st.capabilities.join(', ')}`
+                        : ''}
+                      {' · '}
+                      {st.schemaValid ? t('mcpSchemaOk') : t('mcpSchemaBad')}
+                    </p>
+                  )}
                 </div>
               )
             })}
@@ -273,6 +407,39 @@ export function SettingsView(): React.JSX.Element {
               {t('mcpAdd')}
             </Button>
             <p className="text-xs text-ink-muted">{t('mcpBuiltinHint')}</p>
+
+            {/* 匯入標準 mcpServers JSON（command/args/env） */}
+            <div className="space-y-1.5 rounded-md border border-dashed border-border p-3">
+              <Label className="text-xs">{t('mcpImport')}</Label>
+              <Textarea
+                rows={3}
+                value={importText}
+                placeholder={t('mcpImportPlaceholder')}
+                onChange={(e) => setImportText(e.target.value)}
+                className="font-mono text-[11px]"
+              />
+              <div className="flex items-center justify-between gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={importFromJson}
+                  disabled={!importText.trim()}
+                >
+                  {t('mcpImportBtn')}
+                </Button>
+                {importMsg && (
+                  <span
+                    className={cn(
+                      'text-xs',
+                      importMsg.ok ? 'text-emerald-600' : 'text-red-600'
+                    )}
+                  >
+                    {importMsg.msg}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* 連線測試結果 */}
