@@ -138,20 +138,27 @@ picks it up automatically, **with no changes to any component code**. Each local
 
 ## Clinical apps
 
-The **Apps** tab turns free‑form chat into two structured, form‑driven workflows. Each form
-builds a grounded prompt and runs it through the same agent loop — so every tool call still
-asks for your approval, and the result lands in a normal chat thread you can keep working in.
+The **Apps** tab turns free‑form chat into four structured, form‑driven workflows — one per
+MCP pillar. Each form builds a grounded prompt and runs it through the same agent loop — so
+every tool call still asks for your approval, and the result lands in a normal chat thread you
+can keep working in.
 
 - **App A · Triage**: enter the chief complaint and vital signs; the LLM calls
   `assess_vital_signs` (rule‑based red‑flag check) and `get_ttas_reference`, then suggests a
   TTAS level with its reasoning. The triage nurse makes the final call.
 - **App B · SOAP note**: enter exam keywords and a note type; the LLM expands them into a
   SOAP draft grounded by `get_soap_template`. The physician reviews and signs off.
+- **App C · Medication safety**: enter the current medication list and known allergies; the
+  LLM calls `check_drug_interactions` and `check_allergy_conflict`, then summarizes the risk
+  level and recommendations. The physician and pharmacist confirm.
+- **App D · Vital signs → FHIR**: enter vital signs; the LLM calls `vitals_to_fhir` to emit
+  HL7 **FHIR R4** `Observation` resources (LOINC codes, UCUM units) — demonstrating
+  standards‑based exchange across systems.
 
 **No more blank forms.** Each form has two one‑click ways to populate it:
 
-- **Load sample**: built‑in, realistic ED presets — instant and demo‑safe. Clicking again
-  cycles to the next case (3 triage cases with full vitals, 3 SOAP keyword lines).
+- **Load sample**: built‑in, realistic presets — instant and demo‑safe. Clicking again
+  cycles to the next case.
 - **✨ AI‑generate sample**: the **local** Ollama model generates a random synthetic case as
   JSON and fills the form (~6–15 s). If generation fails it automatically falls back to a
   built‑in preset (with a toast), so a live demo never stalls.
