@@ -21,6 +21,7 @@
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-Model_Context_Protocol-444?style=flat-square)
+![FHIR](https://img.shields.io/badge/FHIR-R4-E36667?style=flat-square&logo=hl7&logoColor=white)
 
 **English** · [繁體中文](README.zh-TW.md)
 
@@ -31,6 +32,12 @@
 NoteSentry is a desktop assistant for exploring **MIMIC‑III** clinical notes in natural
 language. A **local** Ollama LLM queries a **local** SQLite database through MCP tools and
 turns the results into an answer.
+
+Beyond free‑form chat it ships **structured clinical apps** (a Triage and a SOAP‑note form),
+a **modular multi‑MCP backend** (notes query · clinical support · pharmacy safety · FHIR
+vitals), and a **grounding → reasoning → human‑review** pipeline where every tool call is
+approved by you. All four MCP servers are bundled; the architecture is additive — a new
+server is pure addition and HITL, audit, routing, and the agent loop apply automatically.
 
 > **Data stays on this device.** This data is governed by the PhysioNet Credentialed Data
 > Use Agreement (DUA) and may not leave the machine: all inference runs on local Ollama;
@@ -92,7 +99,7 @@ A Claude‑Chat‑like desktop experience:
 - **Bilingual (i18n)**: one‑click `繁體中文 / English` toggle in the top‑right — the UI,
   the model's answer language, auto‑titles, suggestions, export labels, and error messages
   all switch; the choice is remembered in `config.json`.
-- **Activity‑rail layout**: the left icon rail switches `Chat / Tools / Audit / Settings / About`.
+- **Activity‑rail layout**: the left icon rail switches `Chat / Apps / Tools / Audit / Settings / About`.
 
 ### Adding a language (no component changes)
 
@@ -128,6 +135,29 @@ picks it up automatically, **with no changes to any component code**. Each local
   inputs, `<html lang>` synced to the UI language, a screen‑reader status region for streaming
   (instead of reading every token), a combobox/listbox command palette, keyboard‑operable
   conversation rows, semantic landmarks, WCAG‑AA dark contrast, and `prefers-reduced-motion`.
+
+## Clinical apps
+
+The **Apps** tab turns free‑form chat into two structured, form‑driven workflows. Each form
+builds a grounded prompt and runs it through the same agent loop — so every tool call still
+asks for your approval, and the result lands in a normal chat thread you can keep working in.
+
+- **App A · Triage**: enter the chief complaint and vital signs; the LLM calls
+  `assess_vital_signs` (rule‑based red‑flag check) and `get_ttas_reference`, then suggests a
+  TTAS level with its reasoning. The triage nurse makes the final call.
+- **App B · SOAP note**: enter exam keywords and a note type; the LLM expands them into a
+  SOAP draft grounded by `get_soap_template`. The physician reviews and signs off.
+
+**No more blank forms.** Each form has two one‑click ways to populate it:
+
+- **Load sample**: built‑in, realistic ED presets — instant and demo‑safe. Clicking again
+  cycles to the next case (3 triage cases with full vitals, 3 SOAP keyword lines).
+- **✨ AI‑generate sample**: the **local** Ollama model generates a random synthetic case as
+  JSON and fills the form (~6–15 s). If generation fails it automatically falls back to a
+  built‑in preset (with a toast), so a live demo never stalls.
+
+> Samples are synthetic (no PHI) and only *fill the fields* — nothing is submitted until you
+> press the form's action button, and each resulting tool call is still individually approved.
 
 ## Architecture
 
@@ -172,11 +202,12 @@ written to the audit log.
    python3 build_db.py --db mimic_notes_test.db --limit 20000 --rebuild
    ```
 
-> The project bundles two MCP servers (FastMCP / stdio) and `build_db.py`. The app connects
-> to multiple servers at once (a multi‑MCP architecture) and routes tools to the right server
-> by name.
+> The project bundles **four** MCP servers (FastMCP / stdio) and `build_db.py`. The app
+> connects to all of them at once (a multi‑MCP architecture) and routes each tool to the
+> right server by name. Only `mimic_mcp_server.py` needs the database; the other three are
+> self‑contained knowledge/rule servers that work out of the box.
 
-### MCP servers & tools (two servers, all read‑only / side‑effect‑free)
+### MCP servers & tools (four servers, all read‑only / side‑effect‑free)
 
 **`mimic_mcp_server.py` — MIMIC notes query** (needs `mimic_notes.db`)
 
@@ -195,6 +226,21 @@ written to the audit log.
 | `assess_vital_signs` | Rule‑based vital‑sign assessment with red‑flag alerts (zero hallucination, reproducible) | A · triage |
 | `get_ttas_reference` | TTAS 5‑level triage criteria + chief‑complaint red flags (built‑in knowledge) | A · triage |
 | `get_soap_template` | SOAP note structure and section‑by‑section guidance | B · charting |
+
+**`pharmacy_support_mcp_server.py` — pharmacy safety** (no database needed)
+
+| Tool | Purpose |
+| --- | --- |
+| `check_drug_interactions` | Pairwise interaction check over a drug list, with severity (major / moderate / minor) and rationale |
+| `check_allergy_conflict` | Cross‑checks prescribed drugs against the patient's allergies, including drug‑class matches (e.g. penicillin → amoxicillin) |
+| `get_drug_reference` | Built‑in reference for a drug (class, common cautions) |
+
+**`nis_fhir_mcp_server.py` — nursing / vitals as FHIR** (no database needed)
+
+| Tool | Purpose |
+| --- | --- |
+| `vitals_to_fhir` | Converts vital signs into a **FHIR R4** Bundle of `Observation` resources (LOINC codes, UCUM units) |
+| `get_fhir_reference` | Field mapping for common FHIR resources (Patient / Observation / AllergyIntolerance / MedicationStatement) |
 
 > Design principle: triage levels and SOAP drafting are produced by **LLM reasoning**; these
 > tools only *ground* that reasoning in deterministic references (rule‑based vitals, the
@@ -260,7 +306,7 @@ also be edited in the app's "Settings" tab:
 | `pythonPath` | `python3` | Python used to launch all MCP servers |
 | `dbPath` | `./mimic_notes.db` | SQLite path, passed to each server via `MIMIC_DB_PATH` |
 | `language` | `zh-TW` | UI and model‑answer language (also via the top‑right toggle) |
-| `mcpServers[]` | mimic + clinical | Multiple MCP servers (id / name / scriptPath / enabled) |
+| `mcpServers[]` | mimic + clinical + pharmacy + nis | Multiple MCP servers (id / name / scriptPath / enabled); missing defaults are auto‑merged into an existing `config.json` on launch |
 
 ### Model recommendation (tool‑call reliability)
 
@@ -296,7 +342,8 @@ Every tool call (time, tool name, parameters, approved/rejected, result summary/
 ## Tech stack
 
 Electron · React · TypeScript · Tailwind CSS · zustand · react-i18next ·
-Model Context Protocol (`@modelcontextprotocol/sdk`) · Ollama · SQLite (FTS5) · FastMCP (Python)
+Model Context Protocol (`@modelcontextprotocol/sdk`) · Ollama · SQLite (FTS5) · FastMCP (Python) ·
+FHIR R4 (LOINC / UCUM)
 
 ## License & acknowledgments
 

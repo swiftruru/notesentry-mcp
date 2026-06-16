@@ -21,6 +21,7 @@
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-Model_Context_Protocol-444?style=flat-square)
+![FHIR](https://img.shields.io/badge/FHIR-R4-E36667?style=flat-square&logo=hl7&logoColor=white)
 
 [English](README.md) · **繁體中文**
 
@@ -30,6 +31,11 @@
 
 本機端 MIMIC‑III 臨床紀錄探索助理。使用者以自然語言提問，由**本機** Ollama LLM
 透過 MCP 工具查詢**本機** SQLite 資料庫，並把結果整理成回答。
+
+除了自由聊天，還內建**結構化臨床應用**（檢傷與 SOAP 病歷兩種表單）、**模組化多 MCP 後端**
+（病歷查詢／臨床輔助／用藥安全／FHIR 生命徵象），以及「**接地 → 推理 → 人類覆核**」流程——
+每次工具呼叫都由你核可。四支 MCP server 皆已內附；架構採「加法式」設計：新增一支 server 純屬
+加法，HITL、稽核、路由與 agent 迴圈會自動套用。
 
 > **資料全程留在本機。** 本資料受 PhysioNet Credentialed DUA 規範，禁止外流：
 > 所有推論一律走本機 Ollama；每次工具呼叫前都需你親自核可（HITL）；不上傳、
@@ -80,7 +86,7 @@
 - **匯出 Markdown**：把整段對話另存為 `.md`（原生「另存新檔」，可自由選擇任何位置；預設開在「文件」資料夾並記住上次所選；含工具呼叫與結果，全程本機）。
 - **後續建議**：開新對話、每輪回答後、載入舊對話時，依內容產生可點擊的建議問句。
 - **雙語（i18n）**：右上角一鍵切換 `繁體中文 / English`，UI、模型回答、自動標題、後續建議、匯出標籤、錯誤訊息全部跟著切；語言記憶於 `config.json`。
-- **活動列版面**：最左圖示列切換 `對話 / 工具 / 稽核 / 設定 / 關於`。
+- **活動列版面**：最左圖示列切換 `對話 / 應用 / 工具 / 稽核 / 設定 / 關於`。
 
 ### 新增語言（零元件改動）
 
@@ -108,6 +114,26 @@
 - **無障礙**：所有控制項鍵盤焦點可見、icon 按鈕與輸入框具可讀名稱、`<html lang>` 隨介面語言、
   串流改用螢幕報讀器狀態列（不再逐字朗讀）、命令面板具 combobox/listbox 語意、對話列鍵盤可操作、
   語意 landmarks、深色模式達 WCAG AA 對比、並尊重 `prefers-reduced-motion`。
+
+## 臨床應用
+
+**應用**分頁把自由聊天升級成兩種結構化、表單驅動的流程。每個表單會組出一段「接地」提示，
+再走同一套 agent 迴圈——因此每次工具呼叫仍會請你核可，結果也會落在一般對話串中可繼續延伸。
+
+- **應用 A · 檢傷**：輸入主訴與生命徵象；LLM 呼叫 `assess_vital_signs`（規則化紅旗判讀）與
+  `get_ttas_reference`，再建議 TTAS 級別並說明理由。最終由檢傷護理師決定。
+- **應用 B · SOAP 病歷**：輸入診察關鍵字與病歷類型；LLM 以 `get_soap_template` 為依據擴寫成
+  SOAP 草稿。最終由醫師 review 並簽核。
+
+**不再面對空白表單。** 每個表單都有兩種一鍵帶入方式：
+
+- **載入範例**：內建逼真的急診 presets——即時、demo 安全。再點一次會循環到下一個案例
+  （3 個檢傷案例含完整生命徵象、3 句 SOAP 關鍵字）。
+- **✨ AI 生成範例**：由**本機** Ollama 模型即時生成隨機合成病例（JSON）並填入表單（約 6–15 秒）。
+  生成失敗會自動退回內建範例（並冒 toast），確保現場 demo 不卡住。
+
+> 範例皆為合成資料（無 PHI），且只**填入欄位**——在你按下表單送出鈕前不會送出，產生的每次
+> 工具呼叫仍逐次核可。
 
 ## 架構
 
@@ -150,10 +176,11 @@
    python3 build_db.py --db mimic_notes_test.db --limit 20000 --rebuild
    ```
 
-> 本專案已內附兩支 MCP server（FastMCP / stdio）與 `build_db.py`。app 會同時連上
-> 多支 server（對應簡報的多 MCP 架構），工具依名稱路由到對的 server。
+> 本專案已內附**四支** MCP server（FastMCP / stdio）與 `build_db.py`。app 會同時連上
+> 全部 server（對應簡報的多 MCP 架構），每個工具依名稱路由到對的 server。只有
+> `mimic_mcp_server.py` 需要資料庫，其餘三支是自帶知識／規則、開箱即用的 server。
 
-### MCP server 與工具一覽（兩支 server，皆唯讀／無副作用）
+### MCP server 與工具一覽（四支 server，皆唯讀／無副作用）
 
 **`mimic_mcp_server.py` — MIMIC 病歷查詢**（需 `mimic_notes.db`）
 
@@ -172,6 +199,21 @@
 | `assess_vital_signs` | 純規則判讀生命徵象、標出危急紅旗（零幻覺、可重現） | A 檢傷 |
 | `get_ttas_reference` | TTAS 五級檢傷判定原則 + 主訴紅旗（內建知識） | A 檢傷 |
 | `get_soap_template` | SOAP 病歷結構與各段內容指引 | B 病歷 |
+
+**`pharmacy_support_mcp_server.py` — 用藥安全（不需資料庫）**
+
+| 工具 | 用途 |
+| --- | --- |
+| `check_drug_interactions` | 對藥物清單做兩兩交互作用檢查，標出嚴重度（major／moderate／minor）與理由 |
+| `check_allergy_conflict` | 把處方藥比對病患過敏史，含藥物類別比對（如 penicillin → amoxicillin） |
+| `get_drug_reference` | 單一藥物的內建參考（藥物類別、常見注意事項） |
+
+**`nis_fhir_mcp_server.py` — 護理／生命徵象（FHIR）（不需資料庫）**
+
+| 工具 | 用途 |
+| --- | --- |
+| `vitals_to_fhir` | 把生命徵象轉成 **FHIR R4** 的 `Observation` Bundle（LOINC 代碼、UCUM 單位） |
+| `get_fhir_reference` | 常見 FHIR 資源的欄位對應（Patient／Observation／AllergyIntolerance／MedicationStatement） |
 
 > 設計原則：檢傷分級與 SOAP 擴寫由 **LLM 推理**，這些工具只把判斷「接地」到確定性
 > 依據（規則化生命徵象、官方檢傷標準、固定格式），最終仍由**醫護人類覆核**。
@@ -233,7 +275,7 @@ npm run package      # 打包成可散布的 App（electron-builder）
 | `pythonPath` | `python3` | 啟動所有 MCP server 的 Python |
 | `dbPath` | `./mimic_notes.db` | SQLite 資料庫路徑，經 `MIMIC_DB_PATH` 傳給各 server |
 | `language` | `zh-TW` | 介面與模型回答語言（右上角切換鈕亦可改） |
-| `mcpServers[]` | mimic + clinical | 多個 MCP server（id / name / scriptPath / enabled） |
+| `mcpServers[]` | mimic + clinical + pharmacy + nis | 多個 MCP server（id / name / scriptPath / enabled）；啟動時會把缺少的預設 server 自動併入既有 `config.json` |
 
 ### 模型建議（工具呼叫穩定度）
 
@@ -267,7 +309,8 @@ HITL 能否可靠跳出，取決於模型是否發出「結構化工具呼叫」
 ## 技術堆疊
 
 Electron · React · TypeScript · Tailwind CSS · zustand · react-i18next ·
-Model Context Protocol（`@modelcontextprotocol/sdk`）· Ollama · SQLite（FTS5）· FastMCP（Python）
+Model Context Protocol（`@modelcontextprotocol/sdk`）· Ollama · SQLite（FTS5）· FastMCP（Python）·
+FHIR R4（LOINC／UCUM）
 
 ## 授權與致謝
 
