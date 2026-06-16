@@ -29,10 +29,17 @@ function normalize(raw: Record<string, unknown>): AppConfig {
     const legacy = merged.mcpScriptPath
     merged.mcpServers = legacy
       ? [
-          { id: 'mimic', name: 'MIMIC 病歷查詢', scriptPath: legacy, enabled: true },
+          { id: 'mimic', name: 'MIMIC 病歷查詢（HIS）', scriptPath: legacy, enabled: true },
           ...DEFAULT_CONFIG.mcpServers.filter((s) => s.id !== 'mimic')
         ]
       : DEFAULT_CONFIG.mcpServers.map((s) => ({ ...s }))
+  } else {
+    // 自動補進「設定中還缺少」的預設 server（例如版本更新後新增的 nis / pharmacy），
+    // 既有項目（含使用者自訂的啟用狀態/路徑）一律保留。
+    const existing = new Set(merged.mcpServers.map((s) => s.id))
+    for (const def of DEFAULT_CONFIG.mcpServers) {
+      if (!existing.has(def.id)) merged.mcpServers.push({ ...def })
+    }
   }
   delete merged.mcpScriptPath
   return {

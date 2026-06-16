@@ -1,0 +1,29 @@
+{
+  "title": "臨床應用",
+  "desc": "結構化輸入 → LLM 接地推理 → 你覆核。送出後會在聊天視窗顯示，並逐次請你核可。",
+  "triage": {
+    "tab": "檢傷（應用 A）",
+    "hint": "輸入主訴與生命徵象，系統會請 LLM 評估並建議 TTAS 級別；最終由檢傷護理師決定。",
+    "complaint": "主訴",
+    "complaintPlaceholder": "例：胸痛合併冒冷汗",
+    "age": "年齡",
+    "temp": "體溫 °C",
+    "hr": "心跳 /分",
+    "rr": "呼吸 /分",
+    "spo2": "血氧 %",
+    "sbp": "收縮壓",
+    "dbp": "舒張壓",
+    "gcs": "GCS",
+    "submit": "評估並建議檢傷級別",
+    "prompt": "病患主訴：{{complaint}}；生命徵象：{{vitals}}。請先評估生命徵象、標出危急紅旗，再建議 TTAS 檢傷級別並說明理由。"
+  },
+  "soap": {
+    "tab": "SOAP 病歷（應用 B）",
+    "hint": "輸入診察關鍵字，系統會請 LLM 依 SOAP 結構擴寫成病歷草稿；最終由醫師 review 並簽核。",
+    "noteType": "病歷類型",
+    "keywords": "診察關鍵字",
+    "keywordsPlaceholder": "例：60 歲女性、上腹痛 3 小時、噁心、無發燒、腹軟、疑膽結石",
+    "submit": "產生 SOAP 病歷草稿",
+    "prompt": "請依 SOAP 格式，把以下急診診察關鍵字擴寫成病歷草稿（病歷類型：{{noteType}}）：{{keywords}}。僅就提供的關鍵字擴寫，缺漏處標「待補」。"
+  }
+}

@@ -3,6 +3,7 @@ import { useAppStore, ViewKey } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
 import {
   MessageSquare,
+  ClipboardList,
   Wrench,
   ScrollText,
   Settings,
@@ -14,6 +15,7 @@ type RailItem = { key: ViewKey; icon: typeof MessageSquare }
 
 const ITEMS: RailItem[] = [
   { key: 'chat', icon: MessageSquare },
+  { key: 'apps', icon: ClipboardList },
   { key: 'tools', icon: Wrench },
   { key: 'audit', icon: ScrollText },
   { key: 'settings', icon: Settings }

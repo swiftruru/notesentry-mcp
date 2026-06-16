@@ -10,6 +10,7 @@
   "cmd": {
     "newChat": "New chat",
     "goChat": "Go to: Chat",
+    "goApps": "Go to: Apps (Triage / SOAP)",
     "goTools": "Go to: Tools",
     "goAudit": "Go to: Audit",
     "goSettings": "Go to: Settings",

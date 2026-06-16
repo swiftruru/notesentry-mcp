@@ -5,6 +5,7 @@ import { ActivityRail } from './components/Layout/ActivityRail'
 import { LanguageToggle } from './components/Layout/LanguageToggle'
 import { ConversationList } from './components/Conversations/ConversationList'
 import { ChatView } from './components/Chat/ChatView'
+import { AppsView } from './components/Apps/AppsView'
 import { AuditView } from './components/Audit/AuditView'
 import { SettingsView } from './components/Settings/SettingsView'
 import { AboutView } from './components/About/AboutView'
@@ -41,7 +42,7 @@ export default function App(): React.JSX.Element {
 
   // 全域快捷鍵（mac ⌘、其他 Ctrl）。讀寫一律走 getState，避免 stale closure。
   useEffect(() => {
-    const VIEWS: ViewKey[] = ['chat', 'tools', 'audit', 'settings', 'about']
+    const VIEWS: ViewKey[] = ['chat', 'apps', 'tools', 'audit', 'settings']
     const onKey = (e: KeyboardEvent): void => {
       const mod = e.metaKey || e.ctrlKey
       const s = useAppStore.getState()
@@ -108,6 +109,12 @@ export default function App(): React.JSX.Element {
               <ChatView />
             </main>
           </>
+        )}
+
+        {view === 'apps' && (
+          <main className="min-w-0 flex-1 bg-surface">
+            <AppsView />
+          </main>
         )}
 
         {view === 'tools' && (

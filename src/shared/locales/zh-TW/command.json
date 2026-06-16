@@ -10,6 +10,7 @@
   "cmd": {
     "newChat": "新對話",
     "goChat": "前往：對話",
+    "goApps": "前往：應用（檢傷／SOAP）",
     "goTools": "前往：工具",
     "goAudit": "前往：稽核",
     "goSettings": "前往：設定",

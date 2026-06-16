@@ -1,0 +1,29 @@
+{
+  "title": "Clinical apps",
+  "desc": "Structured input → grounded LLM reasoning → your review. The result appears in the chat, and each tool call asks for your approval.",
+  "triage": {
+    "tab": "Triage (App A)",
+    "hint": "Enter the chief complaint and vital signs; the LLM assesses them and suggests a TTAS level. The triage nurse makes the final call.",
+    "complaint": "Chief complaint",
+    "complaintPlaceholder": "e.g. chest pain with cold sweats",
+    "age": "Age",
+    "temp": "Temp °C",
+    "hr": "HR /min",
+    "rr": "RR /min",
+    "spo2": "SpO2 %",
+    "sbp": "Systolic",
+    "dbp": "Diastolic",
+    "gcs": "GCS",
+    "submit": "Assess & suggest triage level",
+    "prompt": "Patient chief complaint: {{complaint}}; vital signs: {{vitals}}. First assess the vital signs and flag any critical red flags, then suggest a TTAS triage level with your reasoning."
+  },
+  "soap": {
+    "tab": "SOAP note (App B)",
+    "hint": "Enter exam keywords; the LLM expands them into a SOAP note draft. The physician reviews and signs off.",
+    "noteType": "Note type",
+    "keywords": "Exam keywords",
+    "keywordsPlaceholder": "e.g. 60F, epigastric pain 3h, nausea, no fever, soft abdomen, suspected gallstones",
+    "submit": "Generate SOAP draft",
+    "prompt": "Using the SOAP format, expand the following emergency-department exam keywords into a note draft (note type: {{noteType}}): {{keywords}}. Only expand on what is provided; mark gaps as 'to be completed'."
+  }
+}

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import {
   Plus,
   MessageSquare,
+  ClipboardList,
   Wrench,
   ScrollText,
   Settings,
@@ -64,10 +65,11 @@ export function CommandPalette(): React.JSX.Element | null {
     const list: Cmd[] = [
       { id: 'newChat', label: t('cmd.newChat'), hint: shortcut('N'), icon: Plus, keywords: ['new', '新', '對話'], run: () => s.newConversation() },
       { id: 'goChat', label: t('cmd.goChat'), hint: shortcut('1'), icon: MessageSquare, keywords: ['chat', '對話'], run: () => s.setView('chat') },
-      { id: 'goTools', label: t('cmd.goTools'), hint: shortcut('2'), icon: Wrench, keywords: ['tools', '工具', 'mcp'], run: () => s.setView('tools') },
-      { id: 'goAudit', label: t('cmd.goAudit'), hint: shortcut('3'), icon: ScrollText, keywords: ['audit', '稽核', 'log'], run: () => s.setView('audit') },
-      { id: 'goSettings', label: t('cmd.goSettings'), hint: shortcut('4'), icon: Settings, keywords: ['settings', '設定', 'preferences'], run: () => s.setView('settings') },
-      { id: 'goAbout', label: t('cmd.goAbout'), hint: shortcut('5'), icon: Info, keywords: ['about', '關於'], run: () => s.setView('about') },
+      { id: 'goApps', label: t('cmd.goApps'), hint: shortcut('2'), icon: ClipboardList, keywords: ['apps', '應用', '檢傷', 'soap', 'triage'], run: () => s.setView('apps') },
+      { id: 'goTools', label: t('cmd.goTools'), hint: shortcut('3'), icon: Wrench, keywords: ['tools', '工具', 'mcp'], run: () => s.setView('tools') },
+      { id: 'goAudit', label: t('cmd.goAudit'), hint: shortcut('4'), icon: ScrollText, keywords: ['audit', '稽核', 'log'], run: () => s.setView('audit') },
+      { id: 'goSettings', label: t('cmd.goSettings'), hint: shortcut('5'), icon: Settings, keywords: ['settings', '設定', 'preferences'], run: () => s.setView('settings') },
+      { id: 'goAbout', label: t('cmd.goAbout'), icon: Info, keywords: ['about', '關於'], run: () => s.setView('about') },
       ...(hasMessages
         ? [{ id: 'export', label: t('cmd.export'), hint: shortcut('E'), icon: Download, keywords: ['export', '匯出', 'markdown'], run: () => void s.exportCurrentChat() }]
         : []),

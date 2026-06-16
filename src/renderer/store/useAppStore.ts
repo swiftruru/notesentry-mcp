@@ -15,7 +15,7 @@ import {
   ToolInfo
 } from '@shared/types'
 
-export type ViewKey = 'chat' | 'tools' | 'audit' | 'settings' | 'about'
+export type ViewKey = 'chat' | 'apps' | 'tools' | 'audit' | 'settings' | 'about'
 
 export type HealthLevel = 'ok' | 'warn' | 'error' | 'unknown'
 
@@ -92,6 +92,7 @@ interface AppState {
   setView: (v: ViewKey) => void
   setPaletteOpen: (open: boolean) => void
   toggleSidebar: () => void
+  runApp: (prompt: string) => void
   refreshHealth: () => Promise<void>
   pushToast: (msg: string, kind?: Toast['kind']) => void
   dismissToast: (id: string) => void
@@ -252,6 +253,12 @@ export const useAppStore = create<AppState>((set, get) => {
         localStorage.setItem('ns.sidebarCollapsed', next ? '1' : '0')
         return { sidebarCollapsed: next }
       }),
+
+    // 應用 A/B 表單：開新對話、送出組好的提示、切到聊天看結果（重用 send → HITL/稽核）。
+    runApp: (prompt) => {
+      get().newConversation()
+      void get().send(prompt)
+    },
 
     pushToast: (msg, kind = 'success') => {
       const id = uiId('toast')

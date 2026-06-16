@@ -51,6 +51,14 @@
         "to": "clinical_support_mcp_server.py"
       },
       {
+        "from": "nis_fhir_mcp_server.py",
+        "to": "nis_fhir_mcp_server.py"
+      },
+      {
+        "from": "pharmacy_support_mcp_server.py",
+        "to": "pharmacy_support_mcp_server.py"
+      },
+      {
         "from": "build_db.py",
         "to": "build_db.py"
       }
