@@ -56,24 +56,24 @@
     ],
     "extraResources": [
       {
-        "from": "mimic_mcp_server.py",
-        "to": "mimic_mcp_server.py"
+        "from": "mcp/servers/mimic_mcp_server.py",
+        "to": "mcp/servers/mimic_mcp_server.py"
       },
       {
-        "from": "clinical_support_mcp_server.py",
-        "to": "clinical_support_mcp_server.py"
+        "from": "mcp/servers/clinical_support_mcp_server.py",
+        "to": "mcp/servers/clinical_support_mcp_server.py"
       },
       {
-        "from": "nis_fhir_mcp_server.py",
-        "to": "nis_fhir_mcp_server.py"
+        "from": "mcp/servers/nis_fhir_mcp_server.py",
+        "to": "mcp/servers/nis_fhir_mcp_server.py"
       },
       {
-        "from": "pharmacy_support_mcp_server.py",
-        "to": "pharmacy_support_mcp_server.py"
+        "from": "mcp/servers/pharmacy_support_mcp_server.py",
+        "to": "mcp/servers/pharmacy_support_mcp_server.py"
       },
       {
-        "from": "build_db.py",
-        "to": "build_db.py"
+        "from": "mcp/scripts/build_db.py",
+        "to": "mcp/scripts/build_db.py"
       }
     ],
     "mac": {

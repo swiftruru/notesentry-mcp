@@ -123,25 +123,25 @@ export const DEFAULT_CONFIG: AppConfig = {
     {
       id: 'mimic',
       name: 'MIMIC 病歷查詢（HIS）',
-      scriptPath: './mimic_mcp_server.py',
+      scriptPath: './mcp/servers/mimic_mcp_server.py',
       enabled: true
     },
     {
       id: 'clinical',
       name: '臨床輔助（檢傷／SOAP）',
-      scriptPath: './clinical_support_mcp_server.py',
+      scriptPath: './mcp/servers/clinical_support_mcp_server.py',
       enabled: true
     },
     {
       id: 'nis',
       name: 'NIS 護理／生命徵象（FHIR）',
-      scriptPath: './nis_fhir_mcp_server.py',
+      scriptPath: './mcp/servers/nis_fhir_mcp_server.py',
       enabled: true
     },
     {
       id: 'pharmacy',
       name: '藥事輔助（用藥／過敏／交互作用）',
-      scriptPath: './pharmacy_support_mcp_server.py',
+      scriptPath: './mcp/servers/pharmacy_support_mcp_server.py',
       enabled: true
     }
   ]

@@ -23,7 +23,7 @@ async def main():
     with open(GT_PATH, encoding="utf-8") as f:
         gt = json.load(f)
 
-    params = StdioServerParameters(command="python3", args=["mimic_mcp_server.py"], env={**os.environ})
+    params = StdioServerParameters(command="python3", args=["mcp/servers/mimic_mcp_server.py"], env={**os.environ})
     async with stdio_client(params) as (r, w):
         async with ClientSession(r, w) as s:
             await s.initialize()

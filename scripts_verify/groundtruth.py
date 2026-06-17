@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """直接掃描原始 NOTEEVENTS.csv，算出「標準答案」，與 MCP 輸出比對用。
 
-完全獨立於 build_db.py / SQLite，純讀 CSV，作為對照基準。
+完全獨立於 mcp/scripts/build_db.py / SQLite，純讀 CSV，作為對照基準。
 輸出 scripts_verify/ground_truth.json。
 """
 import csv, json, os, sys, time

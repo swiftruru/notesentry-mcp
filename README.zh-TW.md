@@ -163,30 +163,30 @@
    pip install "mcp[cli]"
    ```
 
-3. **建立資料庫**：用內附的 `build_db.py` 把 `NOTEEVENTS.csv` 匯入 SQLite。
+3. **建立資料庫**：用內附的 `mcp/scripts/build_db.py` 把 `NOTEEVENTS.csv` 匯入 SQLite。
    （純標準函式庫，可處理數 GB 大檔，不需 pandas。）
 
    ```bash
    # 完整匯入（約 200 萬列；視機器數分鐘）
-   python3 build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db
+   python3 mcp/scripts/build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db
 
    # 一併建立全文檢索索引（給 search_notes 用；多花數分鐘）
-   python3 build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db --with-fts
+   python3 mcp/scripts/build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 
    # 或對既有資料庫單獨補建全文檢索索引（不必重匯）
-   python3 build_db.py --db mimic_notes.db --fts-only
+   python3 mcp/scripts/build_db.py --db mimic_notes.db --fts-only
 
    # 先用一小段測試（前 2 萬列）
-   python3 build_db.py --db mimic_notes_test.db --limit 20000 --rebuild
+   python3 mcp/scripts/build_db.py --db mimic_notes_test.db --limit 20000 --rebuild
    ```
 
-> 本專案已內附**四支** MCP server（FastMCP / stdio）與 `build_db.py`。app 會同時連上
+> 本專案已內附**四支** MCP server（FastMCP / stdio）與 `mcp/scripts/build_db.py`。app 會同時連上
 > 全部 server（對應簡報的多 MCP 架構），每個工具依名稱路由到對的 server。只有
-> `mimic_mcp_server.py` 需要資料庫，其餘三支是自帶知識／規則、開箱即用的 server。
+> `mcp/servers/mimic_mcp_server.py` 需要資料庫，其餘三支是自帶知識／規則、開箱即用的 server。
 
 ### MCP server 與工具一覽（四支 server，皆唯讀／無副作用）
 
-**`mimic_mcp_server.py` — MIMIC 病歷查詢**（需 `mimic_notes.db`）
+**`mcp/servers/mimic_mcp_server.py` — MIMIC 病歷查詢**（需 `mimic_notes.db`）
 
 | 工具 | 用途 |
 | --- | --- |
@@ -196,7 +196,7 @@
 | `search_notes` | **全文檢索**內文（TEXT），回傳命中片段（需先建 FTS 索引） |
 | `get_note_text` | 依 ROW_ID 取單筆完整內文 |
 
-**`clinical_support_mcp_server.py` — 臨床輔助（不需資料庫）**
+**`mcp/servers/clinical_support_mcp_server.py` — 臨床輔助（不需資料庫）**
 
 | 工具 | 用途 | 對應應用 |
 | --- | --- | --- |
@@ -204,7 +204,7 @@
 | `get_ttas_reference` | TTAS 五級檢傷判定原則 + 主訴紅旗（內建知識） | A 檢傷 |
 | `get_soap_template` | SOAP 病歷結構與各段內容指引 | B 病歷 |
 
-**`pharmacy_support_mcp_server.py` — 用藥安全（不需資料庫）**
+**`mcp/servers/pharmacy_support_mcp_server.py` — 用藥安全（不需資料庫）**
 
 | 工具 | 用途 |
 | --- | --- |
@@ -212,7 +212,7 @@
 | `check_allergy_conflict` | 把處方藥比對病患過敏史，含藥物類別比對（如 penicillin → amoxicillin） |
 | `get_drug_reference` | 單一藥物的內建參考（藥物類別、常見注意事項） |
 
-**`nis_fhir_mcp_server.py` — 護理／生命徵象（FHIR）（不需資料庫）**
+**`mcp/servers/nis_fhir_mcp_server.py` — 護理／生命徵象（FHIR）（不需資料庫）**
 
 | 工具 | 用途 |
 | --- | --- |
@@ -228,11 +228,11 @@
 App 啟動 MCP server 的方式為：
 
 ```text
-<pythonPath> <mcpScriptPath>     # 例：python3 ./mimic_mcp_server.py
+<pythonPath> <mcpScriptPath>     # 例：python3 ./mcp/servers/mimic_mcp_server.py
 ```
 
 並透過**環境變數 `MIMIC_DB_PATH`** 傳入 SQLite 資料庫的絕對路徑。請確認
-`mimic_mcp_server.py` 會讀取此環境變數來定位資料庫，例如：
+`mcp/servers/mimic_mcp_server.py` 會讀取此環境變數來定位資料庫，例如：
 
 ```python
 import os

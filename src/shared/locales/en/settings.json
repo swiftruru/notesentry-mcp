@@ -101,7 +101,7 @@
     "ollamaFail": "Ollama connection failed: {{error}}",
     "dbLabel": "Database file",
     "dbExists": "Found ({{path}})",
-    "dbMissing": "Not found: {{path}}. Build it with build_db.py or fix the path.",
+    "dbMissing": "Not found: {{path}}. Build it with mcp/scripts/build_db.py or fix the path.",
     "pythonLabel": "Python",
     "pythonFail": "Cannot run: {{info}}",
     "mcpNone": "No enabled MCP server, or reconnection failed.",

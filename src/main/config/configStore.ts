@@ -40,13 +40,19 @@ function normalize(raw: Record<string, unknown>): AppConfig {
           ...DEFAULT_CONFIG.mcpServers.filter((s) => s.id !== 'mimic')
         ]
       : DEFAULT_CONFIG.mcpServers.map((s) => ({ ...s }))
-  } else {
-    // 自動補進「設定中還缺少」的預設 server（例如版本更新後新增的 nis / pharmacy），
-    // 既有項目（含使用者自訂的啟用狀態/路徑）一律保留。
-    const existing = new Set(merged.mcpServers.map((s) => s.id))
-    for (const def of DEFAULT_CONFIG.mcpServers) {
-      if (!existing.has(def.id)) merged.mcpServers.push({ ...def })
-    }
+  }
+  // 內建 server 的腳本路徑由 app 管理：一律對齊目前 DEFAULT_CONFIG（讓檔案搬移／版本更新自動生效，
+  // 例如舊設定仍指向專案根 ./mimic_mcp_server.py → 改寫為 ./mcp/servers/...），保留使用者的啟用狀態與名稱。
+  // 使用者若改用標準 command 啟動（command 有值）則尊重其設定、不覆寫。
+  const defById = new Map(DEFAULT_CONFIG.mcpServers.map((s) => [s.id, s]))
+  merged.mcpServers = merged.mcpServers.map((s) => {
+    const def = defById.get(s.id)
+    return def && !s.command ? { ...s, scriptPath: def.scriptPath } : s
+  })
+  // 自動補進「設定中還缺少」的預設 server（例如版本更新後新增的 nis / pharmacy）。
+  const existing = new Set(merged.mcpServers.map((s) => s.id))
+  for (const def of DEFAULT_CONFIG.mcpServers) {
+    if (!existing.has(def.id)) merged.mcpServers.push({ ...def })
   }
   delete merged.mcpScriptPath
   return {

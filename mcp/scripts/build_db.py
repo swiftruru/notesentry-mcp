@@ -5,10 +5,10 @@
 資料全程留在本機，不對外連線。
 
 用法：
-    python3 build_db.py
-    python3 build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db
-    python3 build_db.py --limit 50000        # 只匯入前 N 列（測試用）
-    python3 build_db.py --rebuild            # 砍掉重建（預設若已存在則中止）
+    python3 mcp/scripts/build_db.py
+    python3 mcp/scripts/build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db
+    python3 mcp/scripts/build_db.py --limit 50000        # 只匯入前 N 列（測試用）
+    python3 mcp/scripts/build_db.py --rebuild            # 砍掉重建（預設若已存在則中止）
 """
 from __future__ import annotations
 
@@ -165,7 +165,7 @@ def build_fts(db_path: str) -> None:
     （如 pneumonia / pneumonias）。此步驟會掃過全部 TEXT，約需數分鐘。
     """
     if not os.path.exists(db_path):
-        sys.exit(f"找不到資料庫：{db_path}（請先執行 build_db.py 匯入資料）")
+        sys.exit(f"找不到資料庫：{db_path}（請先執行 mcp/scripts/build_db.py 匯入資料）")
 
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()

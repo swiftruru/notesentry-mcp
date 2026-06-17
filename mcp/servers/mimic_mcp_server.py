@@ -11,7 +11,7 @@
 本 server 不對外連線、僅讀取本機 SQLite，所有查詢均為參數化（避免注入）。
 
 相依：pip install "mcp[cli]"
-執行（stdio）：python3 mimic_mcp_server.py
+執行（stdio）：python3 mcp/servers/mimic_mcp_server.py
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def _connect() -> sqlite3.Connection:
     """以唯讀模式開啟資料庫；找不到檔案則回報清楚的錯誤。"""
     if not os.path.exists(DB_PATH):
         raise FileNotFoundError(
-            f"找不到資料庫：{DB_PATH}。請先執行 build_db.py 建立，或在 NoteSentry 設定頁指定正確路徑。"
+            f"找不到資料庫：{DB_PATH}。請先執行 mcp/scripts/build_db.py 建立，或在 NoteSentry 設定頁指定正確路徑。"
         )
     # 以 file: URI + mode=ro 確保唯讀，避免任何意外寫入。
     uri = f"file:{os.path.abspath(DB_PATH)}?mode=ro"
@@ -242,7 +242,7 @@ def search_notes(
             return _dumps(
                 {
                     "query": query,
-                    "error": "尚未建立全文檢索索引。請執行：python3 build_db.py --fts-only",
+                    "error": "尚未建立全文檢索索引。請執行：python3 mcp/scripts/build_db.py --fts-only",
                 }
             )
 

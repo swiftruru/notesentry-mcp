@@ -22,7 +22,7 @@
   "mcpStatus_other": "{{connected}}/{{total}} 個 server 已連線",
   "mcpNone": "沒有 server 連線，請確認 Python 與腳本路徑",
   "dbOk": "存在",
-  "dbMissing": "找不到：{{path}}，請先用 build_db.py 建立",
+  "dbMissing": "找不到：{{path}}，請先用 mcp/scripts/build_db.py 建立",
   "pythonOk": "可執行（{{info}}）",
   "pythonFail": "無法執行：{{info}}",
   "recheck": "重新檢查",

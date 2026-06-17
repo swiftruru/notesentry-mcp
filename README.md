@@ -192,31 +192,31 @@ written to the audit log.
    pip install "mcp[cli]"
    ```
 
-3. **Build the database**: use the bundled `build_db.py` to import `NOTEEVENTS.csv` into
+3. **Build the database**: use the bundled `mcp/scripts/build_db.py` to import `NOTEEVENTS.csv` into
    SQLite (standard library only — handles multi‑GB files, no pandas needed).
 
    ```bash
    # Full import (~2M rows; a few minutes depending on machine)
-   python3 build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db
+   python3 mcp/scripts/build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db
 
    # Import and build the full-text index (for search_notes; a few extra minutes)
-   python3 build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db --with-fts
+   python3 mcp/scripts/build_db.py --csv MIMIC-III/dataset/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 
    # Or add the full-text index to an existing database (no re-import)
-   python3 build_db.py --db mimic_notes.db --fts-only
+   python3 mcp/scripts/build_db.py --db mimic_notes.db --fts-only
 
    # Quick test with a small slice (first 20k rows)
-   python3 build_db.py --db mimic_notes_test.db --limit 20000 --rebuild
+   python3 mcp/scripts/build_db.py --db mimic_notes_test.db --limit 20000 --rebuild
    ```
 
-> The project bundles **four** MCP servers (FastMCP / stdio) and `build_db.py`. The app
+> The project bundles **four** MCP servers (FastMCP / stdio) and `mcp/scripts/build_db.py`. The app
 > connects to all of them at once (a multi‑MCP architecture) and routes each tool to the
-> right server by name. Only `mimic_mcp_server.py` needs the database; the other three are
+> right server by name. Only `mcp/servers/mimic_mcp_server.py` needs the database; the other three are
 > self‑contained knowledge/rule servers that work out of the box.
 
 ### MCP servers & tools (four servers, all read‑only / side‑effect‑free)
 
-**`mimic_mcp_server.py` — MIMIC notes query** (needs `mimic_notes.db`)
+**`mcp/servers/mimic_mcp_server.py` — MIMIC notes query** (needs `mimic_notes.db`)
 
 | Tool | Purpose |
 | --- | --- |
@@ -226,7 +226,7 @@ written to the audit log.
 | `search_notes` | **Full‑text search** of note text (TEXT), returns matched snippets (needs the FTS index) |
 | `get_note_text` | Full text of a single note by ROW_ID |
 
-**`clinical_support_mcp_server.py` — clinical support** (no database needed)
+**`mcp/servers/clinical_support_mcp_server.py` — clinical support** (no database needed)
 
 | Tool | Purpose | App |
 | --- | --- | --- |
@@ -234,7 +234,7 @@ written to the audit log.
 | `get_ttas_reference` | TTAS 5‑level triage criteria + chief‑complaint red flags (built‑in knowledge) | A · triage |
 | `get_soap_template` | SOAP note structure and section‑by‑section guidance | B · charting |
 
-**`pharmacy_support_mcp_server.py` — pharmacy safety** (no database needed)
+**`mcp/servers/pharmacy_support_mcp_server.py` — pharmacy safety** (no database needed)
 
 | Tool | Purpose |
 | --- | --- |
@@ -242,7 +242,7 @@ written to the audit log.
 | `check_allergy_conflict` | Cross‑checks prescribed drugs against the patient's allergies, including drug‑class matches (e.g. penicillin → amoxicillin) |
 | `get_drug_reference` | Built‑in reference for a drug (class, common cautions) |
 
-**`nis_fhir_mcp_server.py` — nursing / vitals as FHIR** (no database needed)
+**`mcp/servers/nis_fhir_mcp_server.py` — nursing / vitals as FHIR** (no database needed)
 
 | Tool | Purpose |
 | --- | --- |
@@ -259,11 +259,11 @@ written to the audit log.
 The app launches an MCP server as:
 
 ```text
-<pythonPath> <mcpScriptPath>     # e.g. python3 ./mimic_mcp_server.py
+<pythonPath> <mcpScriptPath>     # e.g. python3 ./mcp/servers/mimic_mcp_server.py
 ```
 
 and passes the absolute SQLite path via the **`MIMIC_DB_PATH`** environment variable. Make
-sure `mimic_mcp_server.py` reads it to locate the database, e.g.:
+sure `mcp/servers/mimic_mcp_server.py` reads it to locate the database, e.g.:
 
 ```python
 import os

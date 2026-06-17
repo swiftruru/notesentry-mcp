@@ -49,12 +49,12 @@ pip install "mcp[cli]"
 ## 步驟 3 —— 建立資料庫
 
 你需要自己 credentialed 的 MIMIC‑III `NOTEEVENTS.csv`。從 repo 下載
-[`build_db.py`](https://github.com/swiftruru/notesentry-mcp/blob/main/build_db.py)
+[`mcp/scripts/build_db.py`](https://github.com/swiftruru/notesentry-mcp/blob/main/mcp/scripts/build_db.py)
 (這支腳本也內附在 App 的 `resources/` 內),然後:
 
 ```bash
 # 完整匯入（約 200 萬列）+ 建立 search_notes 用的全文檢索索引
-python3 build_db.py --csv /路徑/NOTEEVENTS.csv --db mimic_notes.db --with-fts
+python3 mcp/scripts/build_db.py --csv /路徑/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 ```
 
 記住產生出來的 `mimic_notes.db` 的**絕對路徑**——步驟 5 會在 App 裡指定它。這個檔案請留在
@@ -128,7 +128,7 @@ python3 build_db.py --csv /路徑/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 - **工具分頁空白 / MCP 連不上** —— 確認 **Python 路徑**正確,且 `pip install "mcp[cli]"` 是裝在
   *那一個* Python 上;再按**重新連線 MCP**。
 - **`search_notes` 查不到東西** —— 建 DB 時沒建全文檢索索引;用 `--with-fts` 重建,或對既有
-  DB 單獨補建:`python3 build_db.py --db mimic_notes.db --fts-only`。
+  DB 單獨補建:`python3 mcp/scripts/build_db.py --db mimic_notes.db --fts-only`。
 - **結果錯誤/空白** —— 設定裡的**資料庫路徑**沒指到你真正的 `mimic_notes.db`;改成絕對路徑後
   重新連線 MCP。
 - **macOS 顯示「App 已損毀/無法打開」** —— ad‑hoc 簽章被 Gatekeeper 擋;用右鍵 → 打開,或

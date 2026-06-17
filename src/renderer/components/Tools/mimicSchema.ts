@@ -1,6 +1,6 @@
 /**
  * MIMIC-III `notes` 資料表（NOTEEVENTS）的欄位字典。
- * 對齊 build_db.py 的 COLUMNS / SCHEMA / INT_COLUMNS。
+ * 對齊 mcp/scripts/build_db.py 的 COLUMNS / SCHEMA / INT_COLUMNS。
  * 注意：這裡只放「公開 schema 文件」（欄位名稱／型別／意義），不含任何實際病患資料，符合 PhysioNet DUA。
  * 各欄「說明」走 i18n（tools.json 的 schema.col.<NAME>），可雙語。
  */

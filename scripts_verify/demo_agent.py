@@ -53,7 +53,7 @@ async def main():
     question = sys.argv[1] if len(sys.argv) > 1 else "資料庫裡有哪些類別？各有多少筆？最多的前三類是什麼？"
     print(f"🧑 使用者：{question}\n模型：{MODEL}\n" + "=" * 56)
 
-    params = StdioServerParameters(command="python3", args=["mimic_mcp_server.py"], env={**os.environ})
+    params = StdioServerParameters(command="python3", args=["mcp/servers/mimic_mcp_server.py"], env={**os.environ})
     async with stdio_client(params) as (r, w):
         async with ClientSession(r, w) as s:
             await s.initialize()

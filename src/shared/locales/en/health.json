@@ -24,7 +24,7 @@
   "mcpStatus_other": "{{connected}}/{{total}} servers connected",
   "mcpNone": "No server connected — check the Python and script paths",
   "dbOk": "Found",
-  "dbMissing": "Not found: {{path}} — build it with build_db.py",
+  "dbMissing": "Not found: {{path}} — build it with mcp/scripts/build_db.py",
   "pythonOk": "Runnable ({{info}})",
   "pythonFail": "Cannot run: {{info}}",
   "recheck": "Re-check",

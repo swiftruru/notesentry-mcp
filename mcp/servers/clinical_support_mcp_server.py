@@ -11,7 +11,7 @@
 
 此 server 不需資料庫、不對外連線、無任何副作用(純查表/純計算)。
 相依：pip install "mcp[cli]"
-執行（stdio）：python3 clinical_support_mcp_server.py
+執行（stdio）：python3 mcp/servers/clinical_support_mcp_server.py
 """
 from __future__ import annotations
 

@@ -51,12 +51,12 @@ Note the path to your Python. On most systems `python3` works; on Windows it may
 ## Step 3 — Build the database
 
 You need your own credentialed MIMIC‑III `NOTEEVENTS.csv`. Download
-[`build_db.py`](https://github.com/swiftruru/notesentry-mcp/blob/main/build_db.py) from the
+[`mcp/scripts/build_db.py`](https://github.com/swiftruru/notesentry-mcp/blob/main/mcp/scripts/build_db.py) from the
 repo (it is also bundled inside the app under `resources/`), then:
 
 ```bash
 # Full import (~2M rows) + full‑text search index used by search_notes
-python3 build_db.py --csv /path/to/NOTEEVENTS.csv --db mimic_notes.db --with-fts
+python3 mcp/scripts/build_db.py --csv /path/to/NOTEEVENTS.csv --db mimic_notes.db --with-fts
 ```
 
 Remember the **absolute path** to the resulting `mimic_notes.db` — you'll point the app at it
@@ -133,7 +133,7 @@ clinical text). The default database path resolves inside that folder too, so ei
 - **Tools tab empty / MCP won't connect** — check the **Python path** is correct and that
   `pip install "mcp[cli]"` ran for *that* Python; then click **Reconnect MCP**.
 - **`search_notes` returns nothing** — you built the DB without the FTS index; rebuild with
-  `--with-fts`, or add it to an existing DB with `python3 build_db.py --db mimic_notes.db --fts-only`.
+  `--with-fts`, or add it to an existing DB with `python3 mcp/scripts/build_db.py --db mimic_notes.db --fts-only`.
 - **Wrong/empty results** — the **Database path** in Settings doesn't point to your real
   `mimic_notes.db`; set the absolute path and Reconnect MCP.
 - **macOS "app is damaged / can't be opened"** — Gatekeeper on an ad‑hoc build; use

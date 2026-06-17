@@ -8,7 +8,7 @@
 （HIS/NIS/LIS/藥事）能互通的關鍵。本 server 為知識/格式轉換式，不需資料庫、無副作用。
 
 相依：pip install "mcp[cli]"
-執行（stdio）：python3 nis_fhir_mcp_server.py
+執行（stdio）：python3 mcp/servers/nis_fhir_mcp_server.py
 """
 from __future__ import annotations
 

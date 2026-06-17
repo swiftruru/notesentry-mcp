@@ -99,7 +99,7 @@
     "ollamaFail": "Ollama 連線失敗：{{error}}",
     "dbLabel": "資料庫檔",
     "dbExists": "存在（{{path}}）",
-    "dbMissing": "找不到：{{path}}。請先用 build_db.py 建立或修正路徑。",
+    "dbMissing": "找不到：{{path}}。請先用 mcp/scripts/build_db.py 建立或修正路徑。",
     "pythonLabel": "Python",
     "pythonFail": "無法執行：{{info}}",
     "mcpNone": "沒有啟用的 MCP server，或重連失敗。",
