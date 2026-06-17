@@ -17,6 +17,7 @@
     "highContrast": "High-contrast mode",
     "highContrastHint": "Increases the contrast of borders, secondary text, and focus rings for readability.",
     "instantNote": "Changes apply immediately and are saved automatically.",
+    "previewBadge": "Preview",
     "previewText": "Sample text Aa 123"
   },
   "agent": {

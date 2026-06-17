@@ -357,6 +357,7 @@ export function SettingsView(): React.JSX.Element {
           return (
             <button
               key={tb.key}
+              data-testid={`settings-tab-${tb.key}`}
               role="tab"
               aria-selected={active}
               onClick={() => setTab(tb.key)}
@@ -447,22 +448,30 @@ export function SettingsView(): React.JSX.Element {
           {tab === 'appearance' && (
             <div className="space-y-4">
               <p className="text-xs text-ink-muted">{t('section.appearanceDesc')}</p>
-              {/* 字級 */}
-              <div className="space-y-1.5">
-                <Label>{t('appearance.fontSize')}</Label>
-                <div className="inline-flex overflow-hidden rounded-md border border-border">
+
+              {/* 字級卡片 */}
+              <div className="space-y-4 rounded-xl border border-border bg-card/40 p-5">
+                <div className="flex items-center gap-2">
+                  <Accessibility className="h-4 w-4 text-brand" />
+                  <Label className="text-sm">{t('appearance.fontSize')}</Label>
+                </div>
+                {/* 全寬分段控制 */}
+                <div className="grid grid-cols-4 overflow-hidden rounded-lg border border-border">
                   {FONT_SIZES.map((s, i) => {
                     const active = (config?.fontScale ?? 'md') === s
                     return (
                       <button
                         key={s}
+                        data-testid={`appearance-font-${s}`}
                         type="button"
                         onClick={() => setFontScale(s)}
                         aria-pressed={active}
                         className={cn(
-                          'px-3 py-1.5 text-sm transition-colors',
+                          'py-2 text-sm font-medium transition-colors',
                           i > 0 && 'border-l border-border',
-                          active ? 'bg-brand text-white' : 'text-ink-muted hover:bg-card hover:text-ink'
+                          active
+                            ? 'bg-brand text-white shadow-inner'
+                            : 'text-ink-muted hover:bg-brand/5 hover:text-ink'
                         )}
                       >
                         {t(`appearance.sizes.${s}`)}
@@ -470,27 +479,56 @@ export function SettingsView(): React.JSX.Element {
                     )
                   })}
                 </div>
-                <p
-                  className="text-ink"
-                  style={{ fontSize: { sm: 14, md: 16, lg: 18, xl: 20 }[config?.fontScale ?? 'md'] }}
-                >
-                  {t('appearance.previewText')}
-                </p>
+                {/* 預覽 */}
+                <div className="flex items-center gap-3 rounded-lg border border-dashed border-brand/30 bg-brand/5 px-4 py-3">
+                  <span className="shrink-0 rounded-md bg-brand/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+                    {t('appearance.previewBadge')}
+                  </span>
+                  <span
+                    className="font-medium text-ink"
+                    style={{ fontSize: { sm: 14, md: 16, lg: 18, xl: 20 }[config?.fontScale ?? 'md'] }}
+                  >
+                    {t('appearance.previewText')}
+                  </span>
+                </div>
               </div>
-              {/* 高對比 */}
-              <div className="space-y-1.5">
-                <label className="flex items-center gap-2 text-sm text-ink">
-                  <input
-                    type="checkbox"
-                    checked={config?.highContrast ?? false}
-                    onChange={(e) => setHighContrast(e.target.checked)}
-                    className="accent-brand"
-                  />
-                  {t('appearance.highContrast')}
-                </label>
-                <p className="text-xs text-ink-muted">{t('appearance.highContrastHint')}</p>
-              </div>
-              <p className="text-xs text-ink-muted">{t('appearance.instantNote')}</p>
+
+              {/* 高對比卡片（含切換開關） */}
+              {(() => {
+                const hc = config?.highContrast ?? false
+                return (
+                  <button
+                    type="button"
+                    data-testid="appearance-hc-switch"
+                    role="switch"
+                    aria-checked={hc}
+                    onClick={() => setHighContrast(!hc)}
+                    className="flex w-full items-center gap-4 rounded-xl border border-border bg-card/40 p-5 text-left transition-colors hover:border-brand/40"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-ink">{t('appearance.highContrast')}</p>
+                      <p className="mt-0.5 text-xs text-ink-muted">
+                        {t('appearance.highContrastHint')}
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors',
+                        hc ? 'bg-brand' : 'bg-ink-muted/30'
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform',
+                          hc ? 'translate-x-[22px]' : 'translate-x-0.5'
+                        )}
+                      />
+                    </span>
+                  </button>
+                )
+              })()}
+
+              <p className="text-center text-xs text-ink-muted">{t('appearance.instantNote')}</p>
             </div>
           )}
 
@@ -713,11 +751,11 @@ export function SettingsView(): React.JSX.Element {
           ) : (
             <div className="flex-1" />
           )}
-          <Button variant="outline" onClick={runTest} disabled={testing || saving}>
+          <Button data-testid="settings-test" variant="outline" onClick={runTest} disabled={testing || saving}>
             <Activity className={`h-4 w-4 ${testing ? 'animate-pulse' : ''}`} />
             {testing ? t('test.testing') : t('test.btn')}
           </Button>
-          <Button onClick={save} disabled={saving || !localOk}>
+          <Button data-testid="settings-save" onClick={save} disabled={saving || !localOk}>
             <Save className="h-4 w-4" />
             {saving ? t('save.saving') : t('save.btn')}
           </Button>

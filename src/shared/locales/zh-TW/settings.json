@@ -19,6 +19,7 @@
     "highContrast": "高對比模式",
     "highContrastHint": "提高邊框、次要文字與焦點外框的對比，提升可讀性。",
     "instantNote": "變更即時生效並自動儲存。",
+    "previewBadge": "預覽",
     "previewText": "範例文字 Aa 123"
   },
   "agent": {
