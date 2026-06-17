@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright'
-import { test, expect } from '../fixtures/test'
+import { test, expect } from '../fixtures/a11y'
 
 const VIEWS = ['dashboard', 'chat', 'apps', 'tools', 'audit', 'settings', 'help', 'about'] as const
 

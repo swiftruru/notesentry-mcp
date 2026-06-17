@@ -253,8 +253,8 @@ function Kpi({
   const toneCls = {
     default: 'text-ink',
     brand: 'text-brand',
-    warn: 'text-amber-600',
-    danger: 'text-rose-500',
+    warn: 'text-amber-700',
+    danger: 'text-rose-700',
     muted: 'text-ink-muted'
   }[tone]
   return (

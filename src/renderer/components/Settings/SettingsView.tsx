@@ -923,7 +923,7 @@ function ModelSelect({
         </Button>
       </div>
       {error ? (
-        <p className="flex items-center gap-1 text-xs text-amber-600">
+        <p className="flex items-center gap-1 text-xs text-amber-700">
           <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </p>
