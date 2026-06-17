@@ -6,6 +6,8 @@
   "count_other": "{{count}} 筆",
   "searchPlaceholder": "搜尋工具名／參數／錯誤…",
   "export": "匯出",
+  "report": "治理報表",
+  "reportTooltip": "彙整整份稽核日誌，匯出治理報表（HTML／Markdown）",
   "filter": {
     "all": "全部",
     "approved": "已核可",
@@ -29,6 +31,7 @@
   },
   "toast": {
     "exported": "已匯出稽核至 {{path}}",
+    "reportExported": "已匯出治理報表至 {{path}}",
     "failed": "匯出失敗：{{error}}"
   },
   "error": "錯誤：{{error}}",

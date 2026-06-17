@@ -120,6 +120,7 @@ interface AppState {
   exportCurrentChat: () => Promise<void>
   exportCaseReport: () => Promise<void>
   exportAudit: () => Promise<void>
+  exportGovernanceReport: () => Promise<void>
   reconnectMcp: () => Promise<void>
   setTheme: (mode: ThemeMode) => void
   setLanguage: (lng: string) => void
@@ -466,6 +467,14 @@ export const useAppStore = create<AppState>((set, get) => {
     exportAudit: async () => {
       const res = await window.api.exportAudit(get().audit)
       if (res.saved) get().pushToast(i18n.t('audit:toast.exported', { path: res.path }))
+      else if (res.error)
+        get().pushToast(i18n.t('audit:toast.failed', { error: res.error }), 'error')
+    },
+
+    // 匯出治理稽核報表（彙整整份稽核日誌；稽核頁／命令面板／儀表板共用）。
+    exportGovernanceReport: async () => {
+      const res = await window.api.exportGovernanceReport()
+      if (res.saved) get().pushToast(i18n.t('audit:toast.reportExported', { path: res.path }))
       else if (res.error)
         get().pushToast(i18n.t('audit:toast.failed', { error: res.error }), 'error')
     },

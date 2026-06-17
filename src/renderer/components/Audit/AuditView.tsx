@@ -12,6 +12,7 @@ import {
   FileWarning,
   Search,
   Download,
+  FileBarChart2,
   ChevronRight,
   ChevronDown,
   AlertTriangle
@@ -23,6 +24,7 @@ export function AuditView(): React.JSX.Element {
   const { t } = useTranslation('audit')
   const audit = useAppStore((s) => s.audit)
   const exportAudit = useAppStore((s) => s.exportAudit)
+  const exportGovernanceReport = useAppStore((s) => s.exportGovernanceReport)
 
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
@@ -66,17 +68,29 @@ export function AuditView(): React.JSX.Element {
             {t('title')}
             <span className="text-xs font-normal text-ink-muted">{t('count', { count: rows.length })}</span>
           </h1>
-          <Button
-            data-testid="audit-export"
-            variant="ghost"
-            size="sm"
-            onClick={() => void exportAudit()}
-            disabled={audit.length === 0}
-            title={t('export')}
-          >
-            <Download className="h-3.5 w-3.5" />
-            {t('export')}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              data-testid="audit-report"
+              variant="ghost"
+              size="sm"
+              onClick={() => void exportGovernanceReport()}
+              title={t('reportTooltip')}
+            >
+              <FileBarChart2 className="h-3.5 w-3.5" />
+              {t('report')}
+            </Button>
+            <Button
+              data-testid="audit-export"
+              variant="ghost"
+              size="sm"
+              onClick={() => void exportAudit()}
+              disabled={audit.length === 0}
+              title={t('export')}
+            >
+              <Download className="h-3.5 w-3.5" />
+              {t('export')}
+            </Button>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

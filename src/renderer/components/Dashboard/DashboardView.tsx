@@ -19,7 +19,8 @@ import {
   ScrollText,
   Settings,
   History,
-  Inbox
+  Inbox,
+  FileBarChart2
 } from 'lucide-react'
 
 /** 治理／稽核總覽：純前端彙整 store 內既有的 audit / tools / health 等狀態，零新增後端。 */
@@ -33,6 +34,7 @@ export function DashboardView(): React.JSX.Element {
   const refreshHealth = useAppStore((s) => s.refreshHealth)
   const setView = useAppStore((s) => s.setView)
   const newConversation = useAppStore((s) => s.newConversation)
+  const exportGovernanceReport = useAppStore((s) => s.exportGovernanceReport)
 
   // 由 audit（+ tools 對映 server）即時推導所有指標。
   const m = useMemo(() => {
@@ -74,12 +76,22 @@ export function DashboardView(): React.JSX.Element {
     <div className="h-full overflow-y-auto">
       {/* 頁首 */}
       <div className="border-b border-border bg-gradient-to-br from-brand to-brand-secondary px-8 py-7 text-white">
-        <div className="mx-auto max-w-4xl">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-brand-accent" />
-            <h1 className="text-xl font-bold tracking-tight">{t('title')}</h1>
+        <div className="mx-auto flex max-w-4xl items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-brand-accent" />
+              <h1 className="text-xl font-bold tracking-tight">{t('title')}</h1>
+            </div>
+            <p className="mt-1.5 max-w-2xl text-sm text-white/85">{t('govNote')}</p>
           </div>
-          <p className="mt-1.5 max-w-2xl text-sm text-white/85">{t('govNote')}</p>
+          <button
+            data-testid="dashboard-export-report"
+            onClick={() => void exportGovernanceReport()}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/20"
+          >
+            <FileBarChart2 className="h-3.5 w-3.5" />
+            {t('exportReport')}
+          </button>
         </div>
       </div>
 

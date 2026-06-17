@@ -7,6 +7,8 @@
   "count_other": "{{count}} entries",
   "searchPlaceholder": "Search tool / params / error…",
   "export": "Export",
+  "report": "Governance report",
+  "reportTooltip": "Aggregate the whole audit log into a governance report (HTML / Markdown)",
   "filter": {
     "all": "All",
     "approved": "Approved",
@@ -30,6 +32,7 @@
   },
   "toast": {
     "exported": "Audit exported to {{path}}",
+    "reportExported": "Governance report exported to {{path}}",
     "failed": "Export failed: {{error}}"
   },
   "error": "Error: {{error}}",

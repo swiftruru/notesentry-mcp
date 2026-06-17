@@ -4,11 +4,12 @@ import { join, dirname } from 'node:path'
 import { Marked } from 'marked'
 import hljs from 'highlight.js/lib/core'
 import hljsJson from 'highlight.js/lib/languages/json'
-import { AuditEntry, Conversation, ExportResult } from '@shared/types'
+import { AuditEntry, Conversation, ExportResult, ToolInfo } from '@shared/types'
 
 hljs.registerLanguage('json', hljsJson)
 import { loadConfig, saveConfig } from './config/configStore'
 import { listAudit } from './audit/auditLog'
+import { getTools } from './mcp/mcpClient'
 import { tMain } from './i18n'
 
 function pad(n: number): string {
@@ -474,6 +475,165 @@ export async function exportCaseReport(
     if (res.canceled || !res.filePath) return { saved: false, canceled: true }
     const isHtml = /\.html?$/i.test(res.filePath)
     writeFileSync(res.filePath, isHtml ? caseReportToHtml(md, title) : md, 'utf-8')
+    saveConfig({ ...loadConfig(), lastExportDir: dirname(res.filePath) })
+    return { saved: true, path: res.filePath }
+  } catch (err) {
+    return { saved: false, error: err instanceof Error ? err.message : String(err) }
+  }
+}
+
+// ---- 治理稽核報表 ----
+
+type ToolAgg = { calls: number; approved: number; rejected: number; errors: number }
+function emptyAgg(): ToolAgg {
+  return { calls: 0, approved: 0, rejected: 0, errors: 0 }
+}
+
+/** 把整份稽核日誌確定性地彙整成治理報表（Markdown）；不呼叫 LLM。 */
+export function governanceReportToMarkdown(audit: AuditEntry[], tools: ToolInfo[]): string {
+  const out: string[] = []
+  const toolToServer = new Map(tools.map((t) => [t.name, t.serverName]))
+  const serverOf = (name: string): string =>
+    toolToServer.get(name) ?? tMain('main.governance.serverUnknown')
+
+  out.push(`# ${tMain('main.governance.title')}`, '')
+  out.push(`> ${tMain('main.governance.govNote')}`)
+  out.push(`> ${tMain('main.governance.generatedAt', { time: stamp(Date.now()) })}`)
+  if (audit.length) {
+    const from = stamp(Math.min(...audit.map((e) => e.ts)))
+    const to = stamp(Math.max(...audit.map((e) => e.ts)))
+    out.push(`> ${tMain('main.governance.period', { from, to })}`)
+  }
+  out.push(`> ${tMain('main.governance.source')}`, '', '---', '')
+
+  const total = audit.length
+  const approved = audit.filter((e) => e.approved).length
+  const rejected = total - approved
+  const errors = audit.filter((e) => e.error).length
+  const uniqueTools = new Set(audit.map((e) => e.toolName)).size
+  const sessions = new Set(audit.map((e) => e.sessionId)).size
+  const rate = total ? Math.round((approved / total) * 100) : 0
+
+  out.push(`## ${tMain('main.governance.summaryTitle')}`, '')
+  if (!total) {
+    out.push(tMain('main.governance.empty'), '')
+  } else {
+    out.push(
+      `- ${tMain('main.governance.kpiTotal', { n: total })}`,
+      `- ${tMain('main.governance.kpiApproval', { approved, rejected, rate })}`,
+      `- ${tMain('main.governance.kpiErrors', { n: errors })}`,
+      `- ${tMain('main.governance.kpiTools', { n: uniqueTools })}`,
+      `- ${tMain('main.governance.kpiSessions', { n: sessions })}`,
+      ''
+    )
+
+    // 各工具
+    const byTool = new Map<string, ToolAgg>()
+    for (const e of audit) {
+      const a = byTool.get(e.toolName) ?? emptyAgg()
+      a.calls++
+      if (e.approved) a.approved++
+      else a.rejected++
+      if (e.error) a.errors++
+      byTool.set(e.toolName, a)
+    }
+    out.push(`## ${tMain('main.governance.byToolTitle')}`, '')
+    out.push(tMain('main.governance.byToolCols'), '| --- | --- | --: | --: | --: | --: |')
+    for (const [name, a] of [...byTool.entries()].sort((x, y) => y[1].calls - x[1].calls)) {
+      out.push(`| ${cell(name)} | ${cell(serverOf(name))} | ${a.calls} | ${a.approved} | ${a.rejected} | ${a.errors} |`)
+    }
+    out.push('')
+
+    // 各 MCP server（治理支柱）
+    const byServer = new Map<string, ToolAgg>()
+    for (const e of audit) {
+      const s = serverOf(e.toolName)
+      const a = byServer.get(s) ?? emptyAgg()
+      a.calls++
+      if (e.approved) a.approved++
+      else a.rejected++
+      if (e.error) a.errors++
+      byServer.set(s, a)
+    }
+    out.push(`## ${tMain('main.governance.byServerTitle')}`, '')
+    out.push(tMain('main.governance.byServerCols'), '| --- | --: | --: |')
+    for (const [s, a] of [...byServer.entries()].sort((x, y) => y[1].calls - x[1].calls)) {
+      const r = a.calls ? Math.round((a.approved / a.calls) * 100) : 0
+      out.push(`| ${cell(s)} | ${a.calls} | ${r}% |`)
+    }
+    out.push('')
+
+    // 各 session
+    const bySession = new Map<string, ToolAgg & { min: number; max: number }>()
+    for (const e of audit) {
+      const a = bySession.get(e.sessionId) ?? { ...emptyAgg(), min: e.ts, max: e.ts }
+      a.calls++
+      if (e.approved) a.approved++
+      else a.rejected++
+      a.min = Math.min(a.min, e.ts)
+      a.max = Math.max(a.max, e.ts)
+      bySession.set(e.sessionId, a)
+    }
+    out.push(`## ${tMain('main.governance.bySessionTitle')}`, '')
+    out.push(tMain('main.governance.bySessionCols'), '| --- | --: | --: | --: | --- |')
+    for (const [sid, a] of [...bySession.entries()].sort((x, y) => y[1].max - x[1].max)) {
+      out.push(`| ${cell(sid.slice(0, 8))} | ${a.calls} | ${a.approved} | ${a.rejected} | ${stamp(a.min)} – ${stamp(a.max)} |`)
+    }
+    out.push('')
+
+    // 完整稽核軌跡（時間序）
+    out.push(`## ${tMain('main.governance.trailTitle')}`, '')
+    out.push(tMain('main.governance.trailCols'), '| --- | --- | --- | --- | --- |')
+    for (const e of audit) {
+      const decision = e.approved
+        ? tMain('main.governance.approved')
+        : tMain('main.governance.rejected')
+      const summary = cell(truncate(e.error ? e.error : e.resultSummary ?? '', 120))
+      out.push(`| ${stamp(e.ts)} | ${cell(e.toolName)} | ${cell(serverOf(e.toolName))} | ${decision} | ${summary} |`)
+    }
+    out.push('')
+  }
+
+  out.push('---', '', `_${tMain('main.governance.footer')}_`, '')
+  return out.join('\n')
+}
+
+/**
+ * 匯出治理稽核報表：彙整整份稽核日誌，跳出「另存新檔」，可選 HTML（預設）或 Markdown。
+ * 沿用 lastExportDir 與測試路徑（NS_EXPORT_TEST_DIR；NS_EXPORT_FORMAT=html 指定格式）。
+ */
+export async function exportGovernanceReport(win: BrowserWindow | null): Promise<ExportResult> {
+  try {
+    const md = governanceReportToMarkdown(listAudit(), getTools())
+    const title = tMain('main.governance.title')
+    const d = new Date()
+    const base = `notesentry-governance-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`
+
+    const testDir = process.env.NS_EXPORT_TEST_DIR
+    if (testDir) {
+      const html = process.env.NS_EXPORT_FORMAT === 'html'
+      const p = join(testDir, `${base}.${html ? 'html' : 'md'}`)
+      writeFileSync(p, html ? caseReportToHtml(md, title) : md, 'utf-8')
+      return { saved: true, path: p }
+    }
+
+    const cfg = loadConfig()
+    const remembered = cfg.lastExportDir && existsSync(cfg.lastExportDir) ? cfg.lastExportDir : null
+    const startDir = remembered ?? app.getPath('documents')
+    const opts = {
+      defaultPath: join(startDir, `${base}.html`),
+      filters: [
+        { name: 'HTML', extensions: ['html'] },
+        { name: 'Markdown', extensions: ['md'] }
+      ],
+      properties: ['createDirectory', 'showOverwriteConfirmation'] as Array<
+        'createDirectory' | 'showOverwriteConfirmation'
+      >
+    }
+    const res = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts)
+    if (res.canceled || !res.filePath) return { saved: false, canceled: true }
+    const isMd = /\.md$/i.test(res.filePath)
+    writeFileSync(res.filePath, isMd ? md : caseReportToHtml(md, title), 'utf-8')
     saveConfig({ ...loadConfig(), lastExportDir: dirname(res.filePath) })
     return { saved: true, path: res.filePath }
   } catch (err) {

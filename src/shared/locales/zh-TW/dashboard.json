@@ -1,5 +1,6 @@
 {
   "title": "治理總覽",
+  "exportReport": "匯出治理報表",
   "govNote": "NoteSentry 全程在本機運作：每一次 MCP 工具呼叫都需你親自核可（HITL）並寫入稽核日誌。本頁即時彙整這些治理事實。",
   "healthTitle": "系統健康",
   "health": {

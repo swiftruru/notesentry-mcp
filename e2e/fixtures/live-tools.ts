@@ -27,6 +27,7 @@ interface LiveToolsWorkerFixtures {
 }
 interface LiveToolsTestFixtures {
   shell: AppShell
+  exportDir: string
 }
 
 /**
@@ -66,7 +67,9 @@ export const test = base.extend<LiveToolsTestFixtures, LiveToolsWorkerFixtures>(
     const shell = new AppShell(liveApp!.page)
     await shell.ready()
     await use(shell)
-  }
+  },
+
+  exportDir: async ({ liveApp }, use) => use(liveApp!.exportDir)
 })
 
 test.beforeEach(({ liveReady }) => {

@@ -1,3 +1,5 @@
+import { readdir, readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { test, expect } from '../../fixtures/live-tools'
 
 /**
@@ -5,7 +7,10 @@ import { test, expect } from '../../fixtures/live-tools'
  * 最易 flaky（小模型未必呼叫工具）→ 獨立 @live-tools tag、可單獨跳過；逾時 180s。
  */
 test.describe('HITL tool-call governance flow (live-tools)', () => {
-  test('triggering a MIMIC tool requires approval and is audited @live-tools', async ({ shell }) => {
+  test('triggering a MIMIC tool requires approval and is audited @live-tools', async ({
+    shell,
+    exportDir
+  }) => {
     const page = shell.page
 
     await page.getByTestId('rail-item-chat').click()
@@ -25,5 +30,13 @@ test.describe('HITL tool-call governance flow (live-tools)', () => {
     // 稽核頁應留下紀錄（核可的工具呼叫）。
     await page.getByTestId('rail-item-audit').click()
     await expect(page.getByTestId('audit-empty')).toHaveCount(0, { timeout: 10_000 })
+
+    // 有資料後匯出治理報表 → 確認 populated 路徑不會 throw、落檔且含治理標題。
+    await page.getByTestId('audit-report').click()
+    await expect
+      .poll(async () => (await readdir(exportDir)).filter((f) => f.startsWith('notesentry-governance-')).length)
+      .toBeGreaterThan(0)
+    const file = (await readdir(exportDir)).find((f) => f.startsWith('notesentry-governance-'))!
+    expect(await readFile(join(exportDir, file), 'utf-8')).toContain('NoteSentry')
   })
 })

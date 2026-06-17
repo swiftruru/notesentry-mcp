@@ -26,6 +26,7 @@ import {
   Compass,
   Search,
   MessagesSquare,
+  ShieldCheck,
   CornerDownLeft
 } from 'lucide-react'
 
@@ -83,6 +84,7 @@ export function CommandPalette(): React.JSX.Element | null {
             { id: 'exportReport', label: t('cmd.exportReport'), icon: FileText, keywords: ['report', '個案', '報告', 'case'], run: () => void s.exportCaseReport() }
           ]
         : []),
+      { id: 'govReport', label: t('cmd.govReport'), icon: ShieldCheck, keywords: ['governance', '治理', '報表', '稽核', 'audit', 'report'], run: () => void s.exportGovernanceReport() },
       { id: 'reconnect', label: t('cmd.reconnect'), icon: RefreshCw, keywords: ['reconnect', '重連', 'mcp'], run: () => void s.reconnectMcp() },
       { id: 'recheck', label: t('cmd.recheck'), icon: Activity, keywords: ['health', '健康', '檢查', 'status'], run: () => void s.refreshHealth() },
       { id: 'themeSystem', label: t('cmd.themeSystem'), icon: Monitor, keywords: ['theme', '主題', 'system', '系統'], run: () => s.setTheme('system') },

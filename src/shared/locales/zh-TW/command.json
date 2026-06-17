@@ -20,6 +20,7 @@
     "startTour": "開始特色導覽",
     "export": "匯出目前對話（Markdown）",
     "exportReport": "匯出個案報告（Markdown）",
+    "govReport": "匯出治理稽核報表",
     "reconnect": "重新連線 MCP",
     "recheck": "重新檢查系統狀態",
     "themeSystem": "主題：跟隨系統",

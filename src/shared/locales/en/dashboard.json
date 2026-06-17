@@ -1,5 +1,6 @@
 {
   "title": "Governance overview",
+  "exportReport": "Export governance report",
   "govNote": "NoteSentry runs entirely on‑device: every MCP tool call requires your explicit approval (HITL) and is written to the audit log. This page aggregates those governance facts in real time.",
   "healthTitle": "System health",
   "health": {

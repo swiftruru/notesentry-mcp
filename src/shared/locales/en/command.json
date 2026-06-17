@@ -20,6 +20,7 @@
     "startTour": "Start feature tour",
     "export": "Export current chat (Markdown)",
     "exportReport": "Export case report (Markdown)",
+    "govReport": "Export governance & audit report",
     "reconnect": "Reconnect MCP",
     "recheck": "Re-check system status",
     "themeSystem": "Theme: System",

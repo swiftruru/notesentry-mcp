@@ -16,6 +16,7 @@ export const IPC = {
   ENV_CHECK: 'env:check',
   AUDIT_LIST: 'audit:list',
   AUDIT_EXPORT: 'audit:export',
+  AUDIT_REPORT: 'audit:report',
   CONV_LIST: 'conv:list',
   CONV_LOAD: 'conv:load',
   CONV_SAVE: 'conv:save',
@@ -318,6 +319,7 @@ export interface NoteSentryApi {
   checkEnvironment: () => Promise<EnvCheck>
   listAudit: () => Promise<AuditEntry[]>
   exportAudit: (entries: AuditEntry[]) => Promise<ExportResult>
+  exportGovernanceReport: () => Promise<ExportResult>
 
   listConversations: () => Promise<ConversationMeta[]>
   loadConversation: (id: string) => Promise<Conversation | null>

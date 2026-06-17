@@ -36,6 +36,7 @@ const api: NoteSentryApi = {
   checkEnvironment: () => ipcRenderer.invoke(IPC.ENV_CHECK),
   listAudit: () => ipcRenderer.invoke(IPC.AUDIT_LIST),
   exportAudit: (entries) => ipcRenderer.invoke(IPC.AUDIT_EXPORT, entries),
+  exportGovernanceReport: () => ipcRenderer.invoke(IPC.AUDIT_REPORT),
 
   listConversations: () => ipcRenderer.invoke(IPC.CONV_LIST),
   loadConversation: (id: string) => ipcRenderer.invoke(IPC.CONV_LOAD, id),
