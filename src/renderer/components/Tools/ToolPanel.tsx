@@ -7,10 +7,10 @@ import { McpConnState, ToolInfo } from '@shared/types'
 import { useState } from 'react'
 
 const stateColor: Record<McpConnState, string> = {
-  connected: 'text-emerald-600',
-  connecting: 'text-amber-500',
+  connected: 'text-emerald-700',
+  connecting: 'text-amber-600',
   disconnected: 'text-ink-muted',
-  error: 'text-red-600'
+  error: 'text-red-700'
 }
 
 export function ToolPanel(): React.JSX.Element {

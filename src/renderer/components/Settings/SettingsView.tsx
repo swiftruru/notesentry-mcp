@@ -674,7 +674,7 @@ export function SettingsView(): React.JSX.Element {
                     data-ok={importMsg.ok}
                     className={cn(
                       'text-xs',
-                      importMsg.ok ? 'text-emerald-600' : 'text-red-600'
+                      importMsg.ok ? 'text-emerald-700' : 'text-red-700'
                     )}
                   >
                     {importMsg.msg}
@@ -783,10 +783,10 @@ function ServerStatus({
   if (!enabled) {
     text = t('mcpDisabled')
   } else if (st?.state === 'connected') {
-    color = 'text-emerald-600'
+    color = 'text-emerald-700'
     text = t('test.serverConnected', { count: st.toolCount })
   } else if (st?.state === 'error') {
-    color = 'text-red-600'
+    color = 'text-red-700'
     text = st.message || st.state
   } else if (st) {
     text = st.state

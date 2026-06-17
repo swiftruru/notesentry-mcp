@@ -70,9 +70,9 @@ e2e/
 ## 無障礙稽核（a11y.spec.ts，屬 offline／CI）
 
 用 `@axe-core/playwright` 對每個 view 跑 axe（WCAG A/AA），斷言**無 serious/critical 違規**。
-Electron 需 `.setLegacyMode(true)`（不支援為 frame 開新分頁）。`color-contrast` 規則暫以
-`.disableRules(['color-contrast'])` 排除（次要文字／導覽列屬全站設計 token，需另做一次刻意的對比設計、且會牽動視覺基準；
-已提供「高對比模式」作為替代）。新功能若引入 a11y 回歸，這支會在 CI 擋下。
+Electron 需 `.setLegacyMode(true)`（不支援為 frame 開新分頁）。`color-contrast` **已納入**（預設主題經正式對比設計、達 WCAG AA）。
+掃描前以 `addStyleTag` 關掉 transition/animation，量穩定態對比（避免取到色彩過場動畫途中的混色而誤判）。
+新功能若引入 a11y 回歸（含對比），這支會在 CI 擋下。
 
 ## i18n 翻譯完整性（i18n.spec.ts，屬 offline／CI）
 

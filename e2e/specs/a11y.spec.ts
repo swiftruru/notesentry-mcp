@@ -11,13 +11,15 @@ test.describe('Accessibility (offline)', () => {
   for (const view of VIEWS) {
     test(`${view} view has no serious/critical a11y violations`, async ({ shell }) => {
       await shell.goto(view)
+      // 關掉 CSS transition/animation，避免 axe 在「色彩過場動畫途中」取到混色而誤判
+      // （例如導覽列 active 標籤從前色漸變到品牌色的 150ms 過場）。量的是穩定態對比。
+      await shell.page.addStyleTag({
+        content: '*,*::before,*::after{transition:none!important;animation:none!important}'
+      })
       const results = await new AxeBuilder({ page: shell.page })
         // Electron 不支援為跨來源 frame 開新分頁 → 用 legacy mode（單一 context 掃描，本 app 無 iframe）。
         .setLegacyMode(true)
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-        // 暫排除 color-contrast：次要文字（--ink-muted）與導覽列屬全站設計 token，
-        // 需另做一次刻意的視覺對比設計（且會牽動視覺基準圖）；此階段已提供「高對比模式」作為無障礙替代。
-        .disableRules(['color-contrast'])
         .analyze()
       const severe = results.violations.filter(
         (v) => v.impact === 'serious' || v.impact === 'critical'

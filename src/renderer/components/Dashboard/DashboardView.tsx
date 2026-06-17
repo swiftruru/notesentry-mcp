@@ -226,14 +226,14 @@ function HealthChip({
       <div
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-md',
-          ok ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-500'
+          ok ? 'bg-emerald-500/10 text-emerald-700' : 'bg-rose-500/10 text-rose-700'
         )}
       >
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0">
         <div className="truncate text-xs font-medium text-ink">{label}</div>
-        <div className={cn('text-[11px]', ok ? 'text-emerald-600' : 'text-rose-500')}>
+        <div className={cn('text-[11px]', ok ? 'text-emerald-700' : 'text-rose-700')}>
           {value ?? (ok ? 'OK' : '—')}
         </div>
       </div>
