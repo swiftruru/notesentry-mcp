@@ -21,13 +21,15 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   use: { trace: 'on-first-retry' },
   projects: [
-    // 預設：離線功能互動測試（排除 @live 與 @visual）。
-    { name: 'offline', grepInvert: /@live|@visual/ },
+    // 預設：離線功能互動測試（排除 @live、@visual、@capture）。
+    { name: 'offline', grepInvert: /@live|@visual|@capture/ },
     // 需本機 Ollama 的純問答流程（偵測不到模型會自動跳過）；排除 @live-tools。
     { name: 'live', grep: /@live/, grepInvert: /@live-tools/, timeout: 120_000 },
     // @live-tools：真模型觸發工具→核可→稽核（需 DB+MCP，最易 flaky）；逾時最寬。
     { name: 'live-tools', grep: /@live-tools/, timeout: 180_000 },
     // 視覺回歸截圖（本機 opt-in、不擋 CI）。
-    { name: 'visual', grep: /@visual/ }
+    { name: 'visual', grep: /@visual/ },
+    // 文件用截圖擷取（本機 opt-in，需 Ollama+MCP+DB）；產出 docs/screenshots-1/。
+    { name: 'capture', grep: /@capture/, timeout: 600_000, testDir: './e2e/capture' }
   ]
 })

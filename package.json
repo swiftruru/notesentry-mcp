@@ -32,6 +32,8 @@
     "pretest:visual": "npm run build",
     "test:visual": "playwright test --project=visual",
     "test:visual:update": "npm run build && playwright test --project=visual --update-snapshots",
+    "precapture": "npm run build",
+    "capture": "playwright test --project=capture",
     "test:report": "playwright show-report",
     "package:dir": "electron-vite build && electron-builder --dir",
     "package": "electron-vite build && electron-builder"

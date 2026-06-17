@@ -51,7 +51,7 @@ export async function launchApp(opts: LaunchOptions = {}): Promise<AppHandle> {
   await page.waitForLoadState('domcontentloaded')
   await page.getByTestId('rail-item-dashboard').waitFor({ state: 'visible', timeout: 20_000 })
 
-  await suppressTour(page)
+  await prepareUiState(page)
   return { app, page, dataDir, exportDir }
 }
 
@@ -62,17 +62,18 @@ export async function closeApp(handle: AppHandle): Promise<void> {
 }
 
 /**
- * 首啟導覽會在載入約 700ms 後自動彈出、其全螢幕遮罩會吃掉點擊。
- * 這裡設下 ns.tourSeen 旗標（避免之後 reload 再次自動開），並把已彈出的導覽關掉。
+ * 設定可預期的 UI 初始狀態，再 reload 讓 store 以此重新初始化：
+ * - `ns.tourSeen='1'`：不自動彈出首啟導覽（其全螢幕遮罩會吃掉點擊）。
+ * - `ns.sidebarCollapsed='0'`：對話側欄展開（conversation-list 可見）。
+ * 注意：Electron 的 localStorage 存在真實 userData、**不受 NS_DATA_DIR 隔離**會跨次殘留，
+ * 故必須在此明確歸零，測試才不受先前狀態影響。store 於載入時讀 localStorage，所以設定後需 reload。
  */
-async function suppressTour(page: Page): Promise<void> {
-  await page.evaluate(() => localStorage.setItem('ns.tourSeen', '1'))
-  const overlay = page.getByTestId('tour-overlay')
-  try {
-    await overlay.waitFor({ state: 'visible', timeout: 2500 })
-    await page.getByTestId('tour-end').click()
-    await overlay.waitFor({ state: 'hidden', timeout: 3000 })
-  } catch {
-    // 導覽沒彈出（例如同一 worker 的後續測試），略過即可。
-  }
+async function prepareUiState(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    localStorage.setItem('ns.tourSeen', '1')
+    localStorage.setItem('ns.sidebarCollapsed', '0')
+  })
+  await page.reload()
+  await page.waitForLoadState('domcontentloaded')
+  await page.getByTestId('rail-item-dashboard').waitFor({ state: 'visible', timeout: 20_000 })
 }
