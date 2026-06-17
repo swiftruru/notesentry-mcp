@@ -23,9 +23,10 @@ const PHARMACY_PRESETS = [
 ]
 
 // 生命徵象→FHIR presets（數值語言中性，放常數）。
+// 第 1、2 筆帶 subject_id（示範綁定病患、產生 Patient 參照）；第 3 筆留空（示範可選病患）。
 const FHIR_VITALS = [
-  { temp: '36.8', hr: '72', rr: '16', spo2: '98', sbp: '120', dbp: '80', subjectId: '' },
-  { temp: '38.9', hr: '110', rr: '22', spo2: '94', sbp: '105', dbp: '65', subjectId: '10006' },
+  { temp: '36.8', hr: '72', rr: '16', spo2: '98', sbp: '120', dbp: '80', subjectId: '10006' },
+  { temp: '38.9', hr: '110', rr: '22', spo2: '94', sbp: '105', dbp: '65', subjectId: '10011' },
   { temp: '36.2', hr: '52', rr: '14', spo2: '97', sbp: '148', dbp: '92', subjectId: '' }
 ]
 
