@@ -74,6 +74,12 @@ Electron 需 `.setLegacyMode(true)`（不支援為 frame 開新分頁）。`colo
 `.disableRules(['color-contrast'])` 排除（次要文字／導覽列屬全站設計 token，需另做一次刻意的對比設計、且會牽動視覺基準；
 已提供「高對比模式」作為替代）。新功能若引入 a11y 回歸，這支會在 CI 擋下。
 
+## i18n 翻譯完整性（i18n.spec.ts，屬 offline／CI）
+
+不啟動 app、純讀 `src/shared/locales`：驗證所有語系（zh-TW／en）的 namespace 齊全、
+每個 namespace 的鍵齊全（plural 後綴 `_one/_other` 正規化後比對），且無空字串翻譯。
+防止雙語漏譯漂移；新增/改翻譯時漏一邊，CI 會擋下並指出缺哪個鍵。
+
 ## HITL 對話框測試的 test-only hook
 
 [App.tsx](../src/renderer/App.tsx) 在 `window.__nsTest` 為真時掛上 `window.__emitHitl()`，讓 `hitl.spec.ts` 能離線注入
