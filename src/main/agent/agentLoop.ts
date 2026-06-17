@@ -16,10 +16,11 @@ import { getTools, callTool } from '../mcp/mcpClient'
 import { toOllamaTools } from '../mcp/toolMapping'
 import { nextApprovalId, waitForApproval } from '../hitl/approvalBroker'
 import { recordAudit } from '../audit/auditLog'
+import { loadConfig } from '../config/configStore'
 import { tMain } from '../i18n'
 
-// 安全上限：避免模型無限呼叫工具導致迴圈打不停。
-const MAX_TURNS = 12
+// 安全上限預設值：避免模型無限呼叫工具導致迴圈打不停（可於設定頁「AI 行為」調整，夾 1–20）。
+const DEFAULT_MAX_TURNS = 12
 const RESULT_SUMMARY_MAX = 4000
 
 /** 把目前實際可用的工具清單接進 system prompt（語言依設定），避免模型臆造不存在的工具/資料表。 */
@@ -32,6 +33,11 @@ function buildSystemPrompt(tools: ToolInfo[]): string {
     .map((t) => `- ${t.name}（${t.serverName}）：${t.description || ''}`)
     .join('\n')
   return `${base}\n\n${tMain('prompt.toolsHeader')}\n${list}`
+}
+
+/** 回傳目前實際會送出的系統提示（含目前連上的工具清單、語言依設定），供設定頁透明化預覽。 */
+export function getSystemPromptPreview(): string {
+  return buildSystemPrompt(getTools())
 }
 
 let idSeq = 0
@@ -87,8 +93,10 @@ export async function runAgentLoop(
   const messages = toOllamaMessages(payload.history, tools)
   messages.push({ role: 'user', content: payload.text })
 
+  const maxTurns = Math.round(Math.min(20, Math.max(1, loadConfig().maxTurns ?? DEFAULT_MAX_TURNS)))
+
   try {
-    for (let turn = 0; turn < MAX_TURNS; turn++) {
+    for (let turn = 0; turn < maxTurns; turn++) {
       if (abortSignal.aborted) {
         emit.done({ sessionId })
         return

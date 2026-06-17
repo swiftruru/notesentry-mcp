@@ -19,6 +19,13 @@ export function getProjectRoot(): string {
   return getDataRoot()
 }
 
+/** 數值夾在 [min,max]；非有限數則回 fallback。 */
+function clampNum(v: unknown, min: number, max: number, fallback: number): number {
+  const n = typeof v === 'number' ? v : Number(v)
+  if (!Number.isFinite(n)) return fallback
+  return Math.min(max, Math.max(min, n))
+}
+
 /** 正規化（含舊版單一 mcpScriptPath → mcpServers 陣列的遷移） */
 function normalize(raw: Record<string, unknown>): AppConfig {
   const merged = { ...DEFAULT_CONFIG, ...raw } as AppConfig & {
@@ -48,6 +55,8 @@ function normalize(raw: Record<string, unknown>): AppConfig {
     pythonPath: merged.pythonPath,
     dbPath: merged.dbPath,
     mcpServers: merged.mcpServers,
+    temperature: clampNum(merged.temperature, 0, 1, DEFAULT_CONFIG.temperature as number),
+    maxTurns: Math.round(clampNum(merged.maxTurns, 1, 20, DEFAULT_CONFIG.maxTurns as number)),
     language: merged.language ?? DEFAULT_CONFIG.language,
     theme: merged.theme ?? DEFAULT_CONFIG.theme,
     // 保留「上次匯出資料夾」與「上次視窗幾何」偏好（undefined 會被 JSON.stringify 自動略過）。

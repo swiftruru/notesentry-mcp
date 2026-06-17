@@ -58,13 +58,15 @@ export async function streamChat(
     abortSignal.addEventListener('abort', () => client.abort(), { once: true })
   }
 
+  // 低溫：臨床資料助理需要更確定性的行為——提升工具呼叫格式遵循度、降低臆造。
+  // 可於設定頁「AI 行為」調整（夾 0–1），預設 0.3。
+  const temperature = Math.min(1, Math.max(0, loadConfig().temperature ?? 0.3))
   const response = await client.chat({
     model,
     messages,
     tools: tools.length > 0 ? tools : undefined,
     stream: true,
-    // 低溫：臨床資料助理需要更確定性的行為——提升工具呼叫格式遵循度、降低臆造。
-    options: { temperature: 0.3 }
+    options: { temperature }
   })
 
   let content = ''

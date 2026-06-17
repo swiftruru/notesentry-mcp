@@ -5,7 +5,18 @@
     "inferenceDesc": "Local Ollama connection and the model used for answers.",
     "runtime": "Runtime",
     "runtimeDesc": "Python interpreter and database path used to launch MCP servers.",
-    "mcp": "MCP servers"
+    "mcp": "MCP servers",
+    "agent": "AI behavior",
+    "agentDesc": "Tune model sampling and the tool-call limit, and inspect the actual system prompt."
+  },
+  "agent": {
+    "temperatureLabel": "Sampling temperature",
+    "temperatureHint": "0–1: lower is more deterministic, follows the tool-call format better, and fabricates less. Clinical default 0.3.",
+    "maxTurnsLabel": "Max tool turns",
+    "maxTurnsHint": "1–20: the cap on consecutive tool-call rounds per answer, to avoid endless loops. Default 12.",
+    "systemPromptLabel": "System prompt (read-only preview)",
+    "systemPromptHint": "This prompt is assembled automatically and injected with the live tool list and the 'no fabricated tables/tools' rules, applied before every request.",
+    "systemPromptLoading": "Loading…"
   },
   "desc": "Settings are saved to config.json in the project folder. Changes automatically reconnect all MCP servers.",
   "loading": "Loading settings…",

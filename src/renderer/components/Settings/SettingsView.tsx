@@ -19,7 +19,8 @@ import {
   Plus,
   Trash2,
   Cpu,
-  Database
+  Database,
+  Bot
 } from 'lucide-react'
 
 type FieldKey = 'ollamaUrl' | 'model' | 'pythonPath' | 'dbPath'
@@ -36,11 +37,12 @@ const FIELDS: { key: FieldKey; placeholder: string }[] = [
 const BUILTIN_IDS = new Set(DEFAULT_CONFIG.mcpServers.map((s) => s.id))
 
 // 設定分頁：依功能橫向切換，避免一頁塞太多。
-type SettingsTab = 'inference' | 'runtime' | 'mcp'
+type SettingsTab = 'inference' | 'runtime' | 'mcp' | 'agent'
 const SETTINGS_TABS: { key: SettingsTab; icon: typeof Cpu }[] = [
   { key: 'inference', icon: Cpu },
   { key: 'runtime', icon: Database },
-  { key: 'mcp', icon: Server }
+  { key: 'mcp', icon: Server },
+  { key: 'agent', icon: Bot }
 ]
 
 /** env 物件 ⇄ 文字（每行 KEY=VALUE）的雙向轉換。 */
@@ -63,7 +65,7 @@ function parseEnv(text: string): Record<string, string> {
 }
 
 export function SettingsView(): React.JSX.Element {
-  const { t } = useTranslation('settings')
+  const { t, i18n } = useTranslation('settings')
   const config = useAppStore((s) => s.config)
   const setMcpStatus = useAppStore((s) => s._setMcpStatus)
   const setTools = useAppStore((s) => s._setTools)
@@ -77,6 +79,7 @@ export function SettingsView(): React.JSX.Element {
   const [envText, setEnvText] = useState<Record<string, string>>({})
   const [importText, setImportText] = useState('')
   const [importMsg, setImportMsg] = useState<{ ok: boolean; msg: string } | null>(null)
+  const [systemPrompt, setSystemPrompt] = useState<string | null>(null)
   const [test, setTest] = useState<{
     ollama: { ok: boolean; msg: string }
     env: EnvCheck | null
@@ -91,6 +94,19 @@ export function SettingsView(): React.JSX.Element {
       setEnvText(e)
     }
   }, [config])
+
+  // 進入「AI 行為」分頁時抓取實際系統提示（語言／工具清單變動後重抓）。
+  useEffect(() => {
+    if (tab !== 'agent') return
+    let alive = true
+    setSystemPrompt(null)
+    void window.api.getSystemPrompt().then((p) => {
+      if (alive) setSystemPrompt(p)
+    })
+    return () => {
+      alive = false
+    }
+  }, [tab, i18n.language, liveStatus])
 
   if (!draft) {
     return (
@@ -175,8 +191,14 @@ export function SettingsView(): React.JSX.Element {
 
   const save = async (): Promise<void> => {
     // 把編輯態正規化：command 模式才帶 args/env；args 去空白；env 由文字解析。
+    const clamp = (v: number | undefined, lo: number, hi: number, def: number): number => {
+      const n = typeof v === 'number' && Number.isFinite(v) ? v : def
+      return Math.min(hi, Math.max(lo, n))
+    }
     const cleaned: AppConfig = {
       ...draft,
+      temperature: clamp(draft.temperature, 0, 1, 0.3),
+      maxTurns: Math.round(clamp(draft.maxTurns, 1, 20, 12)),
       mcpServers: draft.mcpServers.map((s) => {
         const command = s.command?.trim() || undefined
         const env = parseEnv(envText[s.id] ?? '')
@@ -339,6 +361,60 @@ export function SettingsView(): React.JSX.Element {
               <p className="text-xs text-ink-muted">{t('section.runtimeDesc')}</p>
               {renderField('pythonPath')}
               {renderField('dbPath')}
+            </div>
+          )}
+
+          {tab === 'agent' && (
+            <div className="space-y-4">
+              <p className="text-xs text-ink-muted">{t('section.agentDesc')}</p>
+              <div className="space-y-1.5">
+                <Label htmlFor="temperature">{t('agent.temperatureLabel')}</Label>
+                <Input
+                  id="temperature"
+                  type="number"
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={draft.temperature ?? 0.3}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      temperature: e.target.value === '' ? undefined : Number(e.target.value)
+                    })
+                  }
+                  className="w-28"
+                />
+                <p className="text-xs text-ink-muted">{t('agent.temperatureHint')}</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="maxTurns">{t('agent.maxTurnsLabel')}</Label>
+                <Input
+                  id="maxTurns"
+                  type="number"
+                  min={1}
+                  max={20}
+                  step={1}
+                  value={draft.maxTurns ?? 12}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      maxTurns: e.target.value === '' ? undefined : Number(e.target.value)
+                    })
+                  }
+                  className="w-28"
+                />
+                <p className="text-xs text-ink-muted">{t('agent.maxTurnsHint')}</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label>{t('agent.systemPromptLabel')}</Label>
+                <Textarea
+                  readOnly
+                  rows={12}
+                  value={systemPrompt ?? t('agent.systemPromptLoading')}
+                  className="font-mono text-[11px] leading-relaxed"
+                />
+                <p className="text-xs text-ink-muted">{t('agent.systemPromptHint')}</p>
+              </div>
             </div>
           )}
 

@@ -7,7 +7,18 @@
     "inferenceDesc": "本機 Ollama 連線與回答用的模型。",
     "runtime": "執行環境",
     "runtimeDesc": "啟動 MCP server 的 Python 與資料庫路徑。",
-    "mcp": "MCP server"
+    "mcp": "MCP server",
+    "agent": "AI 行為",
+    "agentDesc": "調整模型取樣與工具呼叫上限，並檢視實際送出的系統提示。"
+  },
+  "agent": {
+    "temperatureLabel": "取樣溫度 temperature",
+    "temperatureHint": "0–1：越低越確定、越遵循工具呼叫格式、越不易臆造；臨床預設 0.3。",
+    "maxTurnsLabel": "最大工具回合數",
+    "maxTurnsHint": "1–20：單次回答最多可連續呼叫工具的回合上限，避免無限迴圈。預設 12。",
+    "systemPromptLabel": "系統提示（唯讀預覽）",
+    "systemPromptHint": "此提示由系統自動組成，並注入「目前連上的工具清單」與「禁止杜撰資料表／工具」等規則，於每次送出前套用。",
+    "systemPromptLoading": "載入中…"
   },
   "fields": {
     "ollamaUrl": {

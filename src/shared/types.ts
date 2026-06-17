@@ -25,6 +25,7 @@ export const IPC = {
   CONV_GEN_TITLE: 'conv:genTitle',
   CONV_EXPORT_MD: 'conv:exportMd',
   CONV_EXPORT_REPORT: 'conv:exportReport',
+  AGENT_SYSTEM_PROMPT: 'agent:systemPrompt',
   FILE_SAVE_TEXT: 'file:saveText',
   CHAT_SUGGEST: 'chat:suggest',
   SAMPLE_GENERATE: 'sample:generate',
@@ -72,6 +73,10 @@ export interface AppConfig {
   dbPath: string
   /** 多個 MCP server（對應簡報的 HIS/NIS/LIS… 多 MCP 架構） */
   mcpServers: McpServerConfig[]
+  /** agent 取樣溫度（0–1；越低越確定、越遵循工具格式）。預設 0.3。 */
+  temperature?: number
+  /** 單次回答最多連續呼叫工具的回合上限（1–20），避免無限迴圈。預設 12。 */
+  maxTurns?: number
   /** 介面與模型回答的語言（locale 代碼，如 zh-TW / en）；用 string 以利擴充第三語言 */
   language?: string
   /** 介面主題：light / dark / system（跟隨作業系統） */
@@ -99,6 +104,8 @@ export const DEFAULT_CONFIG: AppConfig = {
   model: 'gpt-oss:20b',
   pythonPath: 'python3',
   dbPath: './mimic_notes.db',
+  temperature: 0.3,
+  maxTurns: 12,
   language: 'zh-TW',
   theme: 'system',
   mcpServers: [
@@ -314,6 +321,7 @@ export interface NoteSentryApi {
   ) => Promise<Record<string, unknown> | null>
   exportMarkdown: (conv: Conversation) => Promise<ExportResult>
   exportCaseReport: (conv: Conversation) => Promise<ExportResult>
+  getSystemPrompt: () => Promise<string>
   saveTextFile: (defaultName: string, content: string) => Promise<ExportResult>
 
   onChatToken: (cb: (e: ChatTokenEvent) => void) => () => void

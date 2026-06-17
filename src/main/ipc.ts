@@ -9,7 +9,7 @@ import {
   Conversation,
   ChatMessage
 } from '@shared/types'
-import { runAgentLoop, AgentEmitter } from './agent/agentLoop'
+import { runAgentLoop, AgentEmitter, getSystemPromptPreview } from './agent/agentLoop'
 import { resolveApproval, rejectAllPending } from './hitl/approvalBroker'
 import { connectMcp, getMcpStatus, getTools, onMcpStatus } from './mcp/mcpClient'
 import { loadConfig, saveConfig } from './config/configStore'
@@ -141,6 +141,7 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
   ipcMain.handle(IPC.CONV_EXPORT_REPORT, async (_e, conv: Conversation) =>
     exportCaseReport(conv, getWindow())
   )
+  ipcMain.handle(IPC.AGENT_SYSTEM_PROMPT, async () => getSystemPromptPreview())
   ipcMain.handle(IPC.CONV_EXPORT_MD, async (_e, conv: Conversation) =>
     exportConversationMarkdown(conv, getWindow())
   )

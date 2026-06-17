@@ -49,6 +49,7 @@ const api: NoteSentryApi = {
   generateSample: (kind) => ipcRenderer.invoke(IPC.SAMPLE_GENERATE, kind),
   exportMarkdown: (conv) => ipcRenderer.invoke(IPC.CONV_EXPORT_MD, conv),
   exportCaseReport: (conv) => ipcRenderer.invoke(IPC.CONV_EXPORT_REPORT, conv),
+  getSystemPrompt: () => ipcRenderer.invoke(IPC.AGENT_SYSTEM_PROMPT),
   saveTextFile: (defaultName, content) =>
     ipcRenderer.invoke(IPC.FILE_SAVE_TEXT, defaultName, content),
 
