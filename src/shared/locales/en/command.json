@@ -16,6 +16,7 @@
     "goAudit": "Go to: Audit",
     "goSettings": "Go to: Settings",
     "goAbout": "Go to: About",
+    "goHelp": "Go to: Help",
     "startTour": "Start feature tour",
     "export": "Export current chat (Markdown)",
     "exportReport": "Export case report (Markdown)",

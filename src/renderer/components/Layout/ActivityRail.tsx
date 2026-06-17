@@ -9,6 +9,7 @@ import {
   ScrollText,
   Settings,
   Stethoscope,
+  HelpCircle,
   Info
 } from 'lucide-react'
 
@@ -65,8 +66,9 @@ export function ActivityRail(): React.JSX.Element {
         <Stethoscope className="h-5 w-5" />
       </div>
       <nav className="flex flex-1 flex-col gap-1">{ITEMS.map(renderBtn)}</nav>
-      {/* 關於放在最底部 */}
-      <div className="mt-1 border-t border-white/15 pt-2">
+      {/* 說明、關於放在最底部 */}
+      <div className="mt-1 flex flex-col gap-1 border-t border-white/15 pt-2">
+        {renderBtn({ key: 'help', icon: HelpCircle })}
         {renderBtn({ key: 'about', icon: Info })}
       </div>
     </div>

@@ -15,7 +15,15 @@ import {
   ToolInfo
 } from '@shared/types'
 
-export type ViewKey = 'dashboard' | 'chat' | 'apps' | 'tools' | 'audit' | 'settings' | 'about'
+export type ViewKey =
+  | 'dashboard'
+  | 'chat'
+  | 'apps'
+  | 'tools'
+  | 'audit'
+  | 'settings'
+  | 'about'
+  | 'help'
 
 export type HealthLevel = 'ok' | 'warn' | 'error' | 'unknown'
 

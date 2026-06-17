@@ -11,7 +11,8 @@
     "audit": "Audit",
     "settings": "Settings",
     "about": "About",
-    "tour": "Feature tour"
+    "tour": "Feature tour",
+    "help": "Help"
   },
   "badge": {
     "local": "Data stays on this device",

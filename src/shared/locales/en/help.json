@@ -1,0 +1,69 @@
+{
+  "title": "Help",
+  "subtitle": "Understand NoteSentry's architecture, how it works, and how to use it. Prefer a guided walkthrough? Start the feature tour.",
+  "startTour": "Start feature tour",
+  "arch": {
+    "title": "System architecture",
+    "desc": "Four hospital information pillars integrated via MCP. All inference runs on local Ollama; every tool call runs only after your approval and is written to the audit log.",
+    "pillarsTitle": "Four pillars (one MCP server each)",
+    "his": "HIS · MIMIC notes query",
+    "clinical": "Clinical support · Triage / SOAP",
+    "pharmacy": "Pharmacy · interactions / allergies",
+    "nis": "NIS · vital signs → FHIR",
+    "route": "MCP routing",
+    "agent": "Local Ollama agent",
+    "hitl": "Human approval (HITL)",
+    "audit": "Audit log",
+    "localNote": "Data and inference stay on this device — no upload, no sharing, no telemetry."
+  },
+  "flow": {
+    "title": "Three-layer defense (data flow)",
+    "step1": "MCP grounding: deterministic tools (lookups, rules, official standards) provide the facts, so the model doesn't fabricate.",
+    "step2": "LLM reasoning: the local model composes the answer only from what the tools returned.",
+    "step3": "Human review: you approve each tool call before it runs; every call and result is written to the audit log."
+  },
+  "hitl": {
+    "title": "Why does every tool call need human approval?",
+    "p1": "Lower risk: the model can misunderstand or fabricate; review catches inappropriate queries before they run.",
+    "p2": "Accountability: every action is human-approved and traceable in the audit log.",
+    "p3": "Compliance: MIMIC-III is governed by the PhysioNet DUA; data access must be controlled and auditable.",
+    "p4": "Educational: a clear demonstration of human-in-the-loop design and AI governance."
+  },
+  "shortcutsTitle": "Keyboard shortcuts",
+  "shortcuts": [
+    { "keys": "⌘/Ctrl + K", "desc": "Open the command palette" },
+    { "keys": "⌘/Ctrl + 1–6", "desc": "Switch views (Dashboard / Chat / Apps / Tools / Audit / Settings)" },
+    { "keys": "⌘/Ctrl + N", "desc": "New conversation" },
+    { "keys": "⌘/Ctrl + ,", "desc": "Open Settings" },
+    { "keys": "⌘/Ctrl + E", "desc": "Export the current chat" },
+    { "keys": "Esc", "desc": "Stop generating / close the palette or dialog" },
+    { "keys": "Enter / Esc", "desc": "Approval dialog: Enter approves, Esc rejects" }
+  ],
+  "faqTitle": "FAQ",
+  "faq": [
+    {
+      "q": "Why only local Ollama?",
+      "a": "To keep data on-device, the Ollama URL is restricted to localhost / 127.0.0.1; non-local addresses are blocked. All inference happens on your machine."
+    },
+    {
+      "q": "What does \"no records found\" mean?",
+      "a": "It means the model actually called a tool but the database had no matching records. That's intentional grounding — it states the truth rather than fabricating."
+    },
+    {
+      "q": "How do I add a custom MCP server?",
+      "a": "Settings → MCP servers tab → Add server, then fill in the standard command / args / env (or paste a standard mcpServers JSON to import). Saving connects it and runs a conformance check."
+    },
+    {
+      "q": "How do I export a case report?",
+      "a": "On the chat header, click Case report and choose Markdown or HTML in the save dialog; the HTML is self-contained, print-friendly, and syntax-highlighted."
+    },
+    {
+      "q": "Can I tune the AI's behavior?",
+      "a": "Settings → AI behavior tab lets you adjust the sampling temperature and max tool turns, and preview the actual system prompt."
+    },
+    {
+      "q": "Does my data leave the device?",
+      "a": "No. Inference runs on local Ollama; conversations, logs, and settings are stored only on your machine — no upload, no telemetry."
+    }
+  ]
+}

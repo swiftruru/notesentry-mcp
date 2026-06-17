@@ -10,6 +10,7 @@ import { AppsView } from './components/Apps/AppsView'
 import { AuditView } from './components/Audit/AuditView'
 import { SettingsView } from './components/Settings/SettingsView'
 import { AboutView } from './components/About/AboutView'
+import { HelpView } from './components/Help/HelpView'
 import { ToolPanel } from './components/Tools/ToolPanel'
 import { LocalBadge } from './components/Layout/LocalBadge'
 import { HealthStatus } from './components/Layout/HealthStatus'
@@ -168,6 +169,12 @@ export default function App(): React.JSX.Element {
         {view === 'about' && (
           <main data-tour="main" className="min-w-0 flex-1 bg-surface">
             <AboutView />
+          </main>
+        )}
+
+        {view === 'help' && (
+          <main data-tour="main" className="min-w-0 flex-1 bg-surface">
+            <HelpView />
           </main>
         )}
       </div>
