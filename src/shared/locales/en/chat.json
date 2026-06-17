@@ -3,7 +3,7 @@
     "export": "Export",
     "exportTooltip": "Export this chat as Markdown",
     "report": "Case report",
-    "reportTooltip": "Turn this chat into a structured case report (Markdown)"
+    "reportTooltip": "Turn this chat into a structured case report (Markdown or HTML)"
   },
   "toast": {
     "exportedTo": "Exported to {{path}}",

@@ -3,7 +3,7 @@
     "export": "匯出",
     "exportTooltip": "匯出此對話為 Markdown",
     "report": "個案報告",
-    "reportTooltip": "把此對話整理成結構化個案報告（Markdown）"
+    "reportTooltip": "把此對話整理成結構化個案報告（可選 Markdown 或 HTML）"
   },
   "toast": {
     "exportedTo": "已匯出至 {{path}}",

@@ -1,6 +1,7 @@
 import { dialog, BrowserWindow, app } from 'electron'
 import { writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
+import { marked } from 'marked'
 import { AuditEntry, Conversation, ExportResult } from '@shared/types'
 import { loadConfig, saveConfig } from './config/configStore'
 import { listAudit } from './audit/auditLog'
@@ -348,22 +349,85 @@ export function conversationToCaseReport(conv: Conversation): string {
   return out.join('\n')
 }
 
-/** 匯出個案報告為 Markdown：跳出「另存新檔」，沿用 lastExportDir 與測試路徑。 */
+function escHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/** 輕量移除危險 HTML（報告為使用者自有資料、本機開啟；此為基本防護，非完整 sanitizer）。 */
+function stripUnsafeHtml(html: string): string {
+  return html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '')
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/(href|src)\s*=\s*("javascript:[^"]*"|'javascript:[^']*')/gi, '$1="#"')
+}
+
+const REPORT_CSS = `
+:root{--brand:#0d5c63;--brand2:#247b7b;--ink:#1c2b2d;--muted:#5a6b6d;--border:#d4e4e4;--card:#eaf3f3}
+*{box-sizing:border-box}
+body{margin:0;background:#eef5f5;color:var(--ink);line-height:1.7;
+  font-family:-apple-system,"Segoe UI",system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+.report{max-width:820px;margin:24px auto;background:#fff;border:1px solid var(--border);border-radius:12px;padding:32px 40px}
+.report>:first-child{margin-top:0}
+h1{color:var(--brand);font-size:1.55rem;margin:0 0 .5rem}
+h2{color:var(--brand);font-size:1.2rem;margin:1.7rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.3rem}
+h3{color:var(--brand2);font-size:1rem;margin:1.2rem 0 .4rem}
+blockquote{margin:.5rem 0;padding:.5rem .9rem;border-left:3px solid var(--brand2);background:var(--card);color:var(--muted);border-radius:0 6px 6px 0}
+blockquote p{margin:.2rem 0}
+table{border-collapse:collapse;width:100%;margin:.7rem 0;font-size:.9rem}
+th,td{border:1px solid var(--border);padding:.4rem .65rem;text-align:left;vertical-align:top}
+th{background:var(--card);color:var(--brand);font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em}
+pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;overflow:auto;font-size:.82rem}
+pre code{background:none;padding:0}
+hr{border:0;border-top:1px solid var(--border);margin:1.6rem 0}
+em{color:var(--muted)}
+a{color:var(--brand2)}
+@media print{body{background:#fff}.report{border:0;border-radius:0;margin:0;max-width:100%;padding:0}}
+`
+
+/** 把報告 Markdown 轉成自包含、可列印、配合品牌色的 HTML 文件。 */
+export function caseReportToHtml(md: string, title: string): string {
+  const body = stripUnsafeHtml(marked.parse(md, { async: false }) as string)
+  const lang = loadConfig().language ?? 'zh-TW'
+  return `<!doctype html>
+<html lang="${escHtml(lang)}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escHtml(title)}</title>
+<style>${REPORT_CSS}</style>
+</head>
+<body><main class="report">${body}</main></body>
+</html>
+`
+}
+
+/**
+ * 匯出個案報告：跳出「另存新檔」，可選 Markdown 或 HTML（依所選副檔名決定格式）。
+ * 沿用 lastExportDir 與測試路徑（測試可用 NS_EXPORT_FORMAT=html 指定格式）。
+ */
 export async function exportCaseReport(
   conv: Conversation,
   win: BrowserWindow | null
 ): Promise<ExportResult> {
   try {
     const md = conversationToCaseReport(conv)
+    const title = conv.title || tMain('main.report.defaultTitle')
     const d = new Date()
-    const fname = `${safeName(conv.title)}-report-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(
+    const base = `${safeName(conv.title)}-report-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(
       d.getDate()
-    )}.md`
+    )}`
 
     const testDir = process.env.NS_EXPORT_TEST_DIR
     if (testDir) {
-      const p = join(testDir, fname)
-      writeFileSync(p, md, 'utf-8')
+      const html = process.env.NS_EXPORT_FORMAT === 'html'
+      const p = join(testDir, `${base}.${html ? 'html' : 'md'}`)
+      writeFileSync(p, html ? caseReportToHtml(md, title) : md, 'utf-8')
       return { saved: true, path: p }
     }
 
@@ -371,15 +435,19 @@ export async function exportCaseReport(
     const remembered = cfg.lastExportDir && existsSync(cfg.lastExportDir) ? cfg.lastExportDir : null
     const startDir = remembered ?? app.getPath('documents')
     const opts = {
-      defaultPath: join(startDir, fname),
-      filters: [{ name: 'Markdown', extensions: ['md'] }],
+      defaultPath: join(startDir, `${base}.md`),
+      filters: [
+        { name: 'Markdown', extensions: ['md'] },
+        { name: 'HTML', extensions: ['html'] }
+      ],
       properties: ['createDirectory', 'showOverwriteConfirmation'] as Array<
         'createDirectory' | 'showOverwriteConfirmation'
       >
     }
     const res = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts)
     if (res.canceled || !res.filePath) return { saved: false, canceled: true }
-    writeFileSync(res.filePath, md, 'utf-8')
+    const isHtml = /\.html?$/i.test(res.filePath)
+    writeFileSync(res.filePath, isHtml ? caseReportToHtml(md, title) : md, 'utf-8')
     saveConfig({ ...loadConfig(), lastExportDir: dirname(res.filePath) })
     return { saved: true, path: res.filePath }
   } catch (err) {
