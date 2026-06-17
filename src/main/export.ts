@@ -1,8 +1,12 @@
 import { dialog, BrowserWindow, app } from 'electron'
 import { writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
-import { marked } from 'marked'
+import { Marked } from 'marked'
+import hljs from 'highlight.js/lib/core'
+import hljsJson from 'highlight.js/lib/languages/json'
 import { AuditEntry, Conversation, ExportResult } from '@shared/types'
+
+hljs.registerLanguage('json', hljsJson)
 import { loadConfig, saveConfig } from './config/configStore'
 import { listAudit } from './audit/auditLog'
 import { tMain } from './i18n'
@@ -384,15 +388,37 @@ th{background:var(--card);color:var(--brand);font-weight:600}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em}
 pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;overflow:auto;font-size:.82rem}
 pre code{background:none;padding:0}
+.hljs{color:var(--ink);background:none}
+.hljs-attr,.hljs-property{color:var(--brand);font-weight:600}
+.hljs-string{color:#c25e7a}
+.hljs-number{color:#c77d3e}
+.hljs-literal,.hljs-keyword,.hljs-built_in{color:#8a6fb0}
+.hljs-punctuation{color:var(--muted)}
 hr{border:0;border-top:1px solid var(--border);margin:1.6rem 0}
 em{color:var(--muted)}
 a{color:var(--brand2)}
 @media print{body{background:#fff}.report{border:0;border-radius:0;margin:0;max-width:100%;padding:0}}
 `
 
+// 報告用 marked 實例：JSON 區塊以 highlight.js 上色（內嵌主題見 REPORT_CSS）。
+const reportMarked = new Marked().use({
+  renderer: {
+    code({ text, lang }: { text: string; lang?: string }): string {
+      if ((lang ?? '').trim().toLowerCase() === 'json') {
+        try {
+          return `<pre><code class="hljs language-json">${hljs.highlight(text, { language: 'json' }).value}</code></pre>\n`
+        } catch {
+          /* fall through to plain */
+        }
+      }
+      return `<pre><code>${escHtml(text)}</code></pre>\n`
+    }
+  }
+})
+
 /** 把報告 Markdown 轉成自包含、可列印、配合品牌色的 HTML 文件。 */
 export function caseReportToHtml(md: string, title: string): string {
-  const body = stripUnsafeHtml(marked.parse(md, { async: false }) as string)
+  const body = stripUnsafeHtml(reportMarked.parse(md) as string)
   const lang = loadConfig().language ?? 'zh-TW'
   return `<!doctype html>
 <html lang="${escHtml(lang)}">
