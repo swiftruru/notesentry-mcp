@@ -21,17 +21,23 @@ export class ConversationsPage {
     await this.page.getByTestId('conversation-list').waitFor({ state: 'visible' })
   }
 
-  /** 以 IPC 植入一筆對話，reload 後讓清單載入。 */
-  async seed(id: string, title: string): Promise<void> {
+  /** 以 IPC 植入一筆對話（可帶訊息），reload 後讓清單載入。 */
+  async seed(id: string, title: string, withMessages = false): Promise<void> {
     await this.page.evaluate(
-      async ({ id, title }) => {
+      async ({ id, title, withMessages }) => {
         const now = Date.now()
+        const messages = withMessages
+          ? [
+              { id: 'm1', role: 'user', content: 'Hello from E2E export test' },
+              { id: 'm2', role: 'assistant', content: 'Assistant reply for the report' }
+            ]
+          : []
         // window.api 由 preload 暴露；測試情境下以 any 取用。
         await (window as unknown as { api: { saveConversation: (c: unknown) => Promise<unknown> } }).api.saveConversation(
-          { id, title, createdAt: now, updatedAt: now, messages: [] }
+          { id, title, createdAt: now, updatedAt: now, model: 'test', messages }
         )
       },
-      { id, title }
+      { id, title, withMessages }
     )
     await this.page.reload()
     await this.page.waitForLoadState('domcontentloaded')

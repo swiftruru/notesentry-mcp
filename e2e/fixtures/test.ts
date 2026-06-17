@@ -9,6 +9,8 @@ interface WorkerFixtures {
   appHandle: AppHandle
   /** 本 worker 的隔離資料根（供讀取 config.json 等斷言用）。 */
   dataDir: string
+  /** 匯出測試落檔資料夾（NS_EXPORT_TEST_DIR）。 */
+  exportDir: string
 }
 
 interface TestFixtures {
@@ -33,6 +35,7 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
   ],
 
   dataDir: [async ({ appHandle }, use) => use(appHandle.dataDir), { scope: 'worker' }],
+  exportDir: [async ({ appHandle }, use) => use(appHandle.exportDir), { scope: 'worker' }],
 
   shell: async ({ appHandle }, use) => {
     const shell = new AppShell(appHandle.page)

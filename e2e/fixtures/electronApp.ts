@@ -1,5 +1,5 @@
 import { _electron as electron, type ElectronApplication, type Page } from '@playwright/test'
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -11,6 +11,8 @@ export interface AppHandle {
   page: Page
   /** 本次執行的隔離資料根（config/對話/日誌都在這；測試結束會刪）。 */
   dataDir: string
+  /** 匯出測試落檔資料夾（NS_EXPORT_TEST_DIR；繞過原生存檔對話框）。 */
+  exportDir: string
 }
 
 export interface LaunchOptions {
@@ -31,11 +33,15 @@ export async function launchApp(opts: LaunchOptions = {}): Promise<AppHandle> {
   if (opts.seedConfig) {
     await writeFile(join(dataDir, 'config.json'), JSON.stringify(opts.seedConfig, null, 2), 'utf-8')
   }
+  // 匯出測試落檔資料夾：設 NS_EXPORT_TEST_DIR 讓匯出繞過原生存檔對話框（沿用 export.ts 的鉤子）。
+  const exportDir = join(dataDir, 'exports')
+  await mkdir(exportDir, { recursive: true })
 
   const env: Record<string, string> = {}
   for (const [k, v] of Object.entries(process.env)) if (v != null) env[k] = v
   delete env.ELECTRON_RUN_AS_NODE
   env.NS_DATA_DIR = dataDir
+  env.NS_EXPORT_TEST_DIR = exportDir
 
   const args = [MAIN_ENTRY]
   if (process.env.CI) args.push('--no-sandbox')
@@ -46,7 +52,7 @@ export async function launchApp(opts: LaunchOptions = {}): Promise<AppHandle> {
   await page.getByTestId('rail-item-dashboard').waitFor({ state: 'visible', timeout: 20_000 })
 
   await suppressTour(page)
-  return { app, page, dataDir }
+  return { app, page, dataDir, exportDir }
 }
 
 /** 關閉 app 並清掉暫存資料根。 */

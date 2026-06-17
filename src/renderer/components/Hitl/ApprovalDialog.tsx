@@ -73,6 +73,7 @@ export function ApprovalDialog(): React.JSX.Element | null {
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-ink/30 backdrop-blur-sm">
       <div
         ref={dialogRef}
+        data-testid="hitl-dialog"
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="hitl-title"
@@ -146,11 +147,11 @@ export function ApprovalDialog(): React.JSX.Element | null {
         <div className="flex items-center justify-between gap-2 border-t border-border px-5 py-4">
           <span className="text-[11px] text-ink-muted">{t('kbdHint')}</span>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => respond(false)}>
+            <Button data-testid="hitl-reject" variant="outline" onClick={() => respond(false)}>
               <X className="h-4 w-4" />
               {t('reject')}
             </Button>
-            <Button ref={approveRef} onClick={() => respond(true)}>
+            <Button data-testid="hitl-approve" ref={approveRef} onClick={() => respond(true)}>
               <Check className="h-4 w-4" />
               {t('approve')}
             </Button>

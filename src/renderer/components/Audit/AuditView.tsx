@@ -67,6 +67,7 @@ export function AuditView(): React.JSX.Element {
             <span className="text-xs font-normal text-ink-muted">{t('count', { count: rows.length })}</span>
           </h1>
           <Button
+            data-testid="audit-export"
             variant="ghost"
             size="sm"
             onClick={() => void exportAudit()}
@@ -110,7 +111,7 @@ export function AuditView(): React.JSX.Element {
 
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {audit.length === 0 ? (
-          <Empty text={t('empty')} />
+          <Empty testid="audit-empty" text={t('empty')} />
         ) : rows.length === 0 ? (
           <Empty text={t('noMatch')} />
         ) : (
@@ -204,9 +205,9 @@ function Field({
   )
 }
 
-function Empty({ text }: { text: string }): React.JSX.Element {
+function Empty({ text, testid }: { text: string; testid?: string }): React.JSX.Element {
   return (
-    <div className="mt-16 flex flex-col items-center text-center text-ink-muted">
+    <div data-testid={testid} className="mt-16 flex flex-col items-center text-center text-ink-muted">
       <FileWarning className="mb-3 h-8 w-8 opacity-50" />
       <p className="text-sm">{text}</p>
     </div>

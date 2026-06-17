@@ -127,6 +127,7 @@ export function ChatView(): React.JSX.Element {
           {hasMessages && (
             <>
               <Button
+                data-testid="chat-report"
                 variant="ghost"
                 size="sm"
                 onClick={doReport}
@@ -136,6 +137,7 @@ export function ChatView(): React.JSX.Element {
                 {t('header.report')}
               </Button>
               <Button
+                data-testid="chat-export"
                 variant="ghost"
                 size="sm"
                 onClick={doExport}

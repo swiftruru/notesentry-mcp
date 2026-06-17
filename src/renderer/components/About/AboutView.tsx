@@ -34,7 +34,7 @@ const PRINCIPLES = [
 export function AboutView(): React.JSX.Element {
   const { t } = useTranslation('about')
   return (
-    <div className="h-full overflow-y-auto">
+    <div data-testid="about-view" tabIndex={0} className="h-full overflow-y-auto">
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-brand to-brand-secondary px-8 py-12 text-white">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/5" />

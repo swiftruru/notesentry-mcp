@@ -65,3 +65,9 @@ const api: NoteSentryApi = {
 }
 
 contextBridge.exposeInMainWorld('api', api)
+
+// 測試專用：主程式以 additionalArguments 傳入 --ns-test（只在自動化測試出現）。
+// 暴露布林旗標供渲染端掛上測試輔助函式（見 App.tsx）；正式執行下不存在。
+if (process.argv.includes('--ns-test')) {
+  contextBridge.exposeInMainWorld('__nsTest', true)
+}

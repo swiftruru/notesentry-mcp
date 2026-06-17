@@ -27,6 +27,8 @@
     "test:debug": "PWDEBUG=1 playwright test --project=offline",
     "pretest:live": "npm run build",
     "test:live": "playwright test --project=live",
+    "pretest:live-tools": "npm run build",
+    "test:live-tools": "playwright test --project=live-tools",
     "pretest:visual": "npm run build",
     "test:visual": "playwright test --project=visual",
     "test:visual:update": "npm run build && playwright test --project=visual --update-snapshots",
@@ -150,6 +152,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.61.0",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",

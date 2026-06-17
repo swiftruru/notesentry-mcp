@@ -650,6 +650,7 @@ export function SettingsView(): React.JSX.Element {
             <div className="space-y-1.5 rounded-md border border-dashed border-border p-3">
               <Label className="text-xs">{t('mcpImport')}</Label>
               <Textarea
+                data-testid="settings-mcp-import-input"
                 rows={3}
                 value={importText}
                 placeholder={t('mcpImportPlaceholder')}
@@ -658,6 +659,7 @@ export function SettingsView(): React.JSX.Element {
               />
               <div className="flex items-center justify-between gap-2">
                 <Button
+                  data-testid="settings-mcp-import"
                   type="button"
                   variant="outline"
                   size="sm"
@@ -668,6 +670,8 @@ export function SettingsView(): React.JSX.Element {
                 </Button>
                 {importMsg && (
                   <span
+                    data-testid="settings-mcp-import-msg"
+                    data-ok={importMsg.ok}
                     className={cn(
                       'text-xs',
                       importMsg.ok ? 'text-emerald-600' : 'text-red-600'
@@ -892,6 +896,7 @@ function ModelSelect({
       <div className="flex gap-2">
         <select
           value={value}
+          aria-label={t('fields.model.label')}
           onChange={(e) => {
             if (e.target.value === CUSTOM) setCustom(true)
             else onChange(e.target.value)

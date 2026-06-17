@@ -43,7 +43,9 @@ function createWindow(): void {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
-      webSecurity: true
+      webSecurity: true,
+      // 測試專用旗標（NS_DATA_DIR 只在自動化測試設定 → 旗標只在測試出現，正式執行零足跡）。
+      additionalArguments: process.env.NS_DATA_DIR ? ['--ns-test'] : []
     }
   })
 

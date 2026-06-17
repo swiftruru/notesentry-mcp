@@ -55,7 +55,7 @@ export function ToolPanel(): React.JSX.Element {
         </Button>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-3 pb-3">
+      <div tabIndex={0} className="flex-1 space-y-3 overflow-y-auto px-3 pb-3">
         {mcpServers.length === 0 && (
           <div className="flex flex-col items-center gap-3 px-1 py-8 text-center text-xs text-ink-muted">
             <span className="max-w-xs">{t('emptyServers')}</span>

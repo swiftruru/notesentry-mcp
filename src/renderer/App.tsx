@@ -45,6 +45,28 @@ export default function App(): React.JSX.Element {
     return () => unsubs.forEach((u) => u())
   }, [init])
 
+  // 測試專用：自動化測試啟動時（preload 暴露 window.__nsTest），掛上注入假 HITL 請求的輔助函式，
+  // 讓 e2e 能在不依賴真實模型的情況下，決定性地測核可對話框。正式執行下 __nsTest 不存在 → 不掛。
+  useEffect(() => {
+    const w = window as unknown as {
+      __nsTest?: boolean
+      __emitHitl?: (partial?: Record<string, unknown>) => void
+    }
+    if (!w.__nsTest) return
+    w.__emitHitl = (partial = {}) => {
+      const s = useAppStore.getState()
+      s._onHitl({
+        approvalId: 'test',
+        sessionId: s.activeId,
+        toolName: 'query_notes',
+        args: { subject_id: '10006' },
+        serverName: 'mimic',
+        description: 'Test HITL request',
+        ...partial
+      } as Parameters<typeof s._onHitl>[0])
+    }
+  }, [])
+
   // 首次啟動自動開啟特色導覽（之後可從 header 鈕／命令面板手動再開）。
   useEffect(() => {
     if (localStorage.getItem('ns.tourSeen') === '1') return

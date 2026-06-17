@@ -297,6 +297,7 @@ function SoapForm(): React.JSX.Element {
       </Field>
       <Field label={t('soap.keywords')}>
         <Textarea
+          data-testid="apps-field-soap"
           rows={4}
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
@@ -360,6 +361,7 @@ function PharmacyForm(): React.JSX.Element {
       <SampleToolbar onLoad={loadPreset} onAi={() => void aiGenerate()} loading={genLoading} />
       <Field label={t('pharmacy.drugs')}>
         <Textarea
+          data-testid="apps-field-pharmacy"
           rows={2}
           value={drugs}
           onChange={(e) => setDrugs(e.target.value)}
@@ -462,7 +464,7 @@ function FhirForm(): React.JSX.Element {
         </Field>
       </div>
       <Field label={t('fhir.subjectId')}>
-        <Input value={v.subjectId} onChange={set('subjectId')} placeholder="10006" />
+        <Input data-testid="apps-field-fhir" value={v.subjectId} onChange={set('subjectId')} placeholder="10006" />
       </Field>
       <Button onClick={submit} disabled={!canSubmit} className="w-full">
         <Send className="h-4 w-4" />

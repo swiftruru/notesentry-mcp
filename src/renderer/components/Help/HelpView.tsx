@@ -45,7 +45,7 @@ export function HelpView(): React.JSX.Element {
   const faq = Array.isArray(faqRaw) ? (faqRaw as { q: string; a: string }[]) : []
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div data-testid="help-view" className="h-full overflow-y-auto">
       {/* Hero */}
       <div className="border-b border-border bg-gradient-to-br from-brand to-brand-secondary px-8 py-8 text-white">
         <div className="mx-auto max-w-2xl">
