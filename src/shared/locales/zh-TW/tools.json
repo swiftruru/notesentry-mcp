@@ -1,5 +1,5 @@
 {
-  "title": "MCP 工具",
+  "title": "工具與資料字典",
   "summary": "· {{servers}} 個 server · {{tools}} 個工具",
   "reconnectTooltip": "重新連線所有 MCP server",
   "state": {
@@ -11,6 +11,43 @@
   "emptyServers": "尚未連上任何 MCP server。請至設定確認 Python 與腳本路徑後重新連線。",
   "noTools": "（此 server 無工具）",
   "noDesc": "（無說明）",
+  "noMatch": "沒有符合的項目。",
+  "searchPlaceholder": "搜尋工具／參數／欄位…",
+  "tabs": {
+    "catalog": "工具目錄",
+    "schema": "資料字典"
+  },
+  "param": {
+    "name": "參數",
+    "type": "型別",
+    "required": "必填",
+    "desc": "說明",
+    "yes": "是",
+    "no": "否",
+    "noParams": "（此工具無參數）"
+  },
+  "schema": {
+    "title": "MIMIC notes 資料表",
+    "intro": "以下為本機 mimic_notes.db 的 notes 資料表結構（來源：NOTEEVENTS）；僅為公開 schema 文件，不含任何病患資料。",
+    "cols": {
+      "name": "欄位",
+      "type": "型別",
+      "desc": "說明"
+    },
+    "col": {
+      "ROW_ID": "列識別碼（主鍵）",
+      "SUBJECT_ID": "病患唯一識別碼（已去識別化）",
+      "HADM_ID": "住院就診識別碼",
+      "CHARTDATE": "記錄日期",
+      "CHARTTIME": "記錄時間",
+      "STORETIME": "存檔／歸檔時間",
+      "CATEGORY": "紀錄類別（如 Nursing、Physician、Discharge summary）",
+      "DESCRIPTION": "紀錄子類型／標題",
+      "CGID": "記錄者（caregiver）識別碼",
+      "ISERROR": "是否標記為錯誤紀錄（1＝是）",
+      "TEXT": "臨床紀錄全文"
+    }
+  },
   "toast": {
     "reconnected_other": "已重新連線：{{connected}}/{{total}} 個 server"
   }

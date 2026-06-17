@@ -1,5 +1,5 @@
 {
-  "title": "MCP tools",
+  "title": "Tools & data dictionary",
   "summary": "· {{servers}} servers · {{tools}} tools",
   "reconnectTooltip": "Reconnect all MCP servers",
   "state": {
@@ -11,6 +11,43 @@
   "emptyServers": "No MCP server connected. Check the Python and script paths in Settings, then reconnect.",
   "noTools": "(this server has no tools)",
   "noDesc": "(no description)",
+  "noMatch": "No matching items.",
+  "searchPlaceholder": "Search tools / params / columns…",
+  "tabs": {
+    "catalog": "Tool catalog",
+    "schema": "Data dictionary"
+  },
+  "param": {
+    "name": "Parameter",
+    "type": "Type",
+    "required": "Required",
+    "desc": "Description",
+    "yes": "Yes",
+    "no": "No",
+    "noParams": "(this tool takes no parameters)"
+  },
+  "schema": {
+    "title": "MIMIC notes table",
+    "intro": "Structure of the local mimic_notes.db `notes` table (source: NOTEEVENTS). Public schema documentation only — contains no patient data.",
+    "cols": {
+      "name": "Column",
+      "type": "Type",
+      "desc": "Description"
+    },
+    "col": {
+      "ROW_ID": "Row identifier (primary key)",
+      "SUBJECT_ID": "Unique patient identifier (de-identified)",
+      "HADM_ID": "Hospital admission identifier",
+      "CHARTDATE": "Date the note was charted",
+      "CHARTTIME": "Time the note was charted",
+      "STORETIME": "Time the note was stored / archived",
+      "CATEGORY": "Note category (e.g. Nursing, Physician, Discharge summary)",
+      "DESCRIPTION": "Note subtype / title",
+      "CGID": "Caregiver identifier",
+      "ISERROR": "Flagged as an erroneous note (1 = yes)",
+      "TEXT": "Full clinical note text"
+    }
+  },
   "toast": {
     "reconnected_one": "Reconnected: {{connected}}/{{total}} server",
     "reconnected_other": "Reconnected: {{connected}}/{{total}} servers"
