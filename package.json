@@ -1,7 +1,7 @@
 {
   "name": "notesentry",
   "productName": "NoteSentry",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "本機端 MIMIC-III 臨床紀錄探索助理（資料全程留在本機）",
   "main": "./out/main/index.js",
   "author": "YU-RU, PAN",
