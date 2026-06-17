@@ -12,7 +12,7 @@ import {
   Heart
 } from 'lucide-react'
 
-const APP_VERSION = '0.3.6'
+const APP_VERSION = '0.3.7'
 
 const TECH = [
   'Electron',
