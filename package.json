@@ -20,6 +20,12 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "pretest": "npm run build",
+    "test": "playwright test --project=offline",
+    "test:headed": "playwright test --project=offline --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "PWDEBUG=1 playwright test --project=offline",
+    "test:report": "playwright show-report",
     "package:dir": "electron-vite build && electron-builder --dir",
     "package": "electron-vite build && electron-builder"
   },
@@ -139,6 +145,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

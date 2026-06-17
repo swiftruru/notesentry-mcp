@@ -26,17 +26,19 @@ export function ConversationList(): React.JSX.Element {
 
   return (
     <aside
+      data-testid="conversation-list"
       aria-label={t('listLabel')}
       className="flex h-full w-72 shrink-0 flex-col border-r border-border bg-surface"
     >
       <div className="space-y-2 p-3">
-        <Button className="w-full" onClick={newConversation}>
+        <Button data-testid="conversation-new" className="w-full" onClick={newConversation}>
           <Plus className="h-4 w-4" />
           {t('newChat')}
         </Button>
         <div className="relative">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-muted" />
           <Input
+            data-testid="conversation-search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t('searchPlaceholder')}

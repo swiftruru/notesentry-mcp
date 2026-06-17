@@ -17,6 +17,7 @@ export function LanguageToggle(): React.JSX.Element {
 
   return (
     <button
+      data-testid="lang-toggle"
       onClick={cycle}
       title={t('language.switchTooltip')}
       className="no-drag inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-ink transition-colors hover:border-brand hover:text-brand"

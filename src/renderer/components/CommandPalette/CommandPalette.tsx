@@ -148,6 +148,7 @@ export function CommandPalette(): React.JSX.Element | null {
       }}
     >
       <div
+        data-testid="command-palette"
         role="dialog"
         aria-modal="true"
         aria-label={t('title')}
@@ -163,6 +164,7 @@ export function CommandPalette(): React.JSX.Element | null {
               setSel(0)
             }}
             onKeyDown={onKeyDown}
+            data-testid="command-input"
             placeholder={t('placeholder')}
             aria-label={t('placeholder')}
             role="combobox"
@@ -187,7 +189,7 @@ export function CommandPalette(): React.JSX.Element | null {
                 const active = idx === selClamped
                 const myIdx = idx
                 return (
-                  <Row key={c.id} id={`cmdk-opt-${myIdx}`} active={active} onClick={() => run(myIdx)}>
+                  <Row key={c.id} id={`cmdk-opt-${myIdx}`} testid={`command-item-${c.id}`} active={active} onClick={() => run(myIdx)}>
                     <Icon className="h-4 w-4 shrink-0 text-brand" />
                     <span className="min-w-0 flex-1 truncate">{c.label}</span>
                     {c.hint && <kbd className="shrink-0 rounded border border-border bg-card px-1.5 py-0.5 text-[10px] font-medium text-ink-muted">{c.hint}</kbd>}
@@ -204,7 +206,7 @@ export function CommandPalette(): React.JSX.Element | null {
                 const active = idx === selClamped
                 const myIdx = idx
                 return (
-                  <Row key={c.id} id={`cmdk-opt-${myIdx}`} active={active} onClick={() => run(myIdx)}>
+                  <Row key={c.id} id={`cmdk-opt-${myIdx}`} testid={`command-item-conv-${c.id}`} active={active} onClick={() => run(myIdx)}>
                     <MessagesSquare className="h-4 w-4 shrink-0 text-ink-muted" />
                     <span className="min-w-0 flex-1 truncate">{c.title}</span>
                   </Row>
@@ -245,11 +247,13 @@ function Section({
 
 function Row({
   id,
+  testid,
   active,
   onClick,
   children
 }: {
   id: string
+  testid?: string
   active: boolean
   onClick: () => void
   children: React.ReactNode
@@ -257,6 +261,7 @@ function Row({
   return (
     <button
       id={id}
+      data-testid={testid}
       role="option"
       aria-selected={active}
       tabIndex={-1}

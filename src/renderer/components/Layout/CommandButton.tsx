@@ -10,6 +10,7 @@ export function CommandButton(): React.JSX.Element {
 
   return (
     <button
+      data-testid="command-button"
       onClick={() => setPaletteOpen(true)}
       title={t('openTooltip')}
       aria-label={t('openTooltip')}

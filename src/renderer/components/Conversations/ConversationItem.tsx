@@ -46,6 +46,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
       <div className="flex items-center gap-1 rounded-md border border-ring bg-surface px-2 py-1.5">
         <input
           ref={inputRef}
+          data-testid="conversation-rename-input"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKey}
@@ -67,6 +68,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
 
   return (
     <div
+      data-testid={`conversation-item-${meta.id}`}
       className={cn(
         'group relative rounded-md transition-colors',
         active ? 'bg-card' : 'hover:bg-card/60'
@@ -74,6 +76,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
     >
       {/* 全區主要動作：載入對話（鍵盤可聚焦、Enter/空白開啟、整列任意處點擊也會觸發）。 */}
       <button
+        data-testid="conversation-open"
         onClick={() => void load(meta.id)}
         aria-label={t('conversations:openConversation', { title: meta.title })}
         className="absolute inset-0 z-0 cursor-pointer rounded-md"
@@ -89,6 +92,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
           {!confirmDel && (
             <div className="pointer-events-auto hidden shrink-0 items-center gap-0.5 group-hover:flex group-focus-within:flex">
             <button
+              data-testid="conversation-rename"
               onClick={(e) => {
                 e.stopPropagation()
                 setDraft(meta.title)
@@ -101,6 +105,7 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
               <Pencil className="h-3.5 w-3.5" />
             </button>
             <button
+              data-testid="conversation-delete"
               onClick={(e) => {
                 e.stopPropagation()
                 setConfirmDel(true)
@@ -114,8 +119,9 @@ export function ConversationItem({ meta }: Props): React.JSX.Element {
           </div>
         )}
         {confirmDel && (
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="pointer-events-auto flex shrink-0 items-center gap-1">
             <button
+              data-testid="conversation-delete-confirm"
               onClick={(e) => {
                 e.stopPropagation()
                 void del(meta.id)

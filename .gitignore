@@ -7,6 +7,11 @@ dist-electron
 *.tsbuildinfo
 __pycache__/
 
+# Playwright UI 測試輸出
+/playwright-report/
+/test-results/
+/e2e/**/*-actual.png
+
 # 執行期產生（含本機設定、稽核紀錄、對話紀錄與匯出檔，禁止外流）
 # 一律「錨定根目錄」（前導斜線），以免誤傷 src 內的同名原始碼資料夾
 # （例如 src/main/conversations/）。

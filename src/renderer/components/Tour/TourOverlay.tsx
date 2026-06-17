@@ -137,6 +137,7 @@ export function TourOverlay(): React.JSX.Element | null {
 
       {/* 提示卡 */}
       <div
+        data-testid="tour-overlay"
         role="dialog"
         aria-label={t('title')}
         className={cn(
@@ -152,16 +153,17 @@ export function TourOverlay(): React.JSX.Element | null {
         <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">{texts[step]?.desc}</p>
         <div className="mt-4 flex items-center justify-between gap-2">
           <button
+            data-testid="tour-end"
             onClick={finish}
             className="rounded px-1.5 py-1 text-xs text-ink-muted transition-colors hover:text-ink"
           >
             {t('buttons.end')}
           </button>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handlePrev} disabled={isFirst}>
+            <Button data-testid="tour-prev" variant="outline" size="sm" onClick={handlePrev} disabled={isFirst}>
               {t('buttons.prev')}
             </Button>
-            <Button size="sm" onClick={handleNext}>
+            <Button data-testid="tour-next" size="sm" onClick={handleNext}>
               {isLast ? t('buttons.done') : t('buttons.next')}
             </Button>
           </div>

@@ -19,6 +19,7 @@ export function ThemeToggle(): React.JSX.Element {
 
   return (
     <button
+      data-testid="theme-toggle"
       onClick={cycle}
       title={t('theme.tooltip', { mode: t(`theme.${theme}`) })}
       aria-label={t('theme.tooltip', { mode: t(`theme.${theme}`) })}

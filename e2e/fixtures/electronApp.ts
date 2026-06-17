@@ -1,0 +1,59 @@
+import { _electron as electron, type ElectronApplication, type Page } from '@playwright/test'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+
+/** 打包後主程式進入點（pretest 會先 `npm run build` 產生 out/）。 */
+const MAIN_ENTRY = resolve(__dirname, '../../out/main/index.js')
+
+export interface AppHandle {
+  app: ElectronApplication
+  page: Page
+  /** 本次執行的隔離資料根（config/對話/日誌都在這；測試結束會刪）。 */
+  dataDir: string
+}
+
+/**
+ * 啟動隔離的 NoteSentry 實例：
+ * - 移除 ELECTRON_RUN_AS_NODE（dev shell 常設 =1，會讓 electron 當純 Node 跑、app undefined）。
+ * - 設 NS_DATA_DIR 指向暫存資料夾，乾淨隔離、不污染專案根 config.json。
+ * - 抑制首啟自動導覽（設 localStorage 旗標並關掉已開啟的導覽遮罩）。
+ */
+export async function launchApp(): Promise<AppHandle> {
+  const dataDir = await mkdtemp(join(tmpdir(), 'ns-e2e-'))
+
+  const env: Record<string, string> = {}
+  for (const [k, v] of Object.entries(process.env)) if (v != null) env[k] = v
+  delete env.ELECTRON_RUN_AS_NODE
+  env.NS_DATA_DIR = dataDir
+
+  const app = await electron.launch({ args: [MAIN_ENTRY], env })
+  const page = await app.firstWindow()
+  await page.waitForLoadState('domcontentloaded')
+  await page.getByTestId('rail-item-dashboard').waitFor({ state: 'visible', timeout: 20_000 })
+
+  await suppressTour(page)
+  return { app, page, dataDir }
+}
+
+/** 關閉 app 並清掉暫存資料根。 */
+export async function closeApp(handle: AppHandle): Promise<void> {
+  await handle.app.close()
+  await rm(handle.dataDir, { recursive: true, force: true })
+}
+
+/**
+ * 首啟導覽會在載入約 700ms 後自動彈出、其全螢幕遮罩會吃掉點擊。
+ * 這裡設下 ns.tourSeen 旗標（避免之後 reload 再次自動開），並把已彈出的導覽關掉。
+ */
+async function suppressTour(page: Page): Promise<void> {
+  await page.evaluate(() => localStorage.setItem('ns.tourSeen', '1'))
+  const overlay = page.getByTestId('tour-overlay')
+  try {
+    await overlay.waitFor({ state: 'visible', timeout: 2500 })
+    await page.getByTestId('tour-end').click()
+    await overlay.waitFor({ state: 'hidden', timeout: 3000 })
+  } catch {
+    // 導覽沒彈出（例如同一 worker 的後續測試），略過即可。
+  }
+}

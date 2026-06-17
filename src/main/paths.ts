@@ -16,6 +16,10 @@ import { resolve, isAbsolute } from 'node:path'
 
 /** 含臨床文本/設定/日誌的資料根。 */
 export function getDataRoot(): string {
+  // 測試/自動化用：明確指定資料根，隔離 config/對話/日誌到暫存資料夾，
+  // 避免污染專案根或 userData（沿用 NS_EXPORT_TEST_DIR 的同款思路）。
+  const override = process.env.NS_DATA_DIR
+  if (override) return override
   return app.isPackaged ? app.getPath('userData') : process.cwd()
 }
 

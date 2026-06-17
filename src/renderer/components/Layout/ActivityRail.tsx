@@ -42,6 +42,7 @@ export function ActivityRail(): React.JSX.Element {
     return (
       <button
         key={it.key}
+        data-testid={`rail-item-${it.key}`}
         onClick={onClick}
         title={it.key === 'chat' && active ? t('conversations:toggleSidebarHint') : label}
         aria-label={label}
