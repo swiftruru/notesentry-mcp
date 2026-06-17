@@ -7,7 +7,17 @@
     "runtimeDesc": "Python interpreter and database path used to launch MCP servers.",
     "mcp": "MCP servers",
     "agent": "AI behavior",
-    "agentDesc": "Tune model sampling and the tool-call limit, and inspect the actual system prompt."
+    "agentDesc": "Tune model sampling and the tool-call limit, and inspect the actual system prompt.",
+    "appearance": "Appearance",
+    "appearanceDesc": "Accessibility display settings: font size and high contrast (theme and language are in the top-right header)."
+  },
+  "appearance": {
+    "fontSize": "Font size",
+    "sizes": { "sm": "Small", "md": "Medium", "lg": "Large", "xl": "Extra large" },
+    "highContrast": "High-contrast mode",
+    "highContrastHint": "Increases the contrast of borders, secondary text, and focus rings for readability.",
+    "instantNote": "Changes apply immediately and are saved automatically.",
+    "previewText": "Sample text Aa 123"
   },
   "agent": {
     "temperatureLabel": "Sampling temperature",

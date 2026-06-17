@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import i18n, { applyHtmlLang } from '@/i18n'
 import { applyTheme } from '@/lib/theme'
+import { applyAppearance } from '@/lib/appearance'
 import {
   AppConfig,
   AuditEntry,
@@ -12,6 +13,7 @@ import {
   HitlRequestEvent,
   McpServerStatus,
   ThemeMode,
+  FontScale,
   ToolInfo
 } from '@shared/types'
 
@@ -121,6 +123,8 @@ interface AppState {
   reconnectMcp: () => Promise<void>
   setTheme: (mode: ThemeMode) => void
   setLanguage: (lng: string) => void
+  setFontScale: (scale: FontScale) => void
+  setHighContrast: (on: boolean) => void
   loadConversation: (id: string) => Promise<void>
   renameConversation: (id: string, title: string) => Promise<void>
   deleteConversation: (id: string) => Promise<void>
@@ -487,6 +491,20 @@ export const useAppStore = create<AppState>((set, get) => {
       applyTheme(mode)
       void window.api.setTheme(mode)
       set((s) => ({ config: s.config ? { ...s.config, theme: mode } : s.config }))
+    },
+
+    // 字級／高對比：即時套用 + 存設定（不重連 MCP），比照主題。
+    setFontScale: (scale) => {
+      const hc = get().config?.highContrast ?? false
+      applyAppearance(scale, hc)
+      void window.api.setAppearance({ fontScale: scale })
+      set((s) => ({ config: s.config ? { ...s.config, fontScale: scale } : s.config }))
+    },
+    setHighContrast: (on) => {
+      const scale = get().config?.fontScale ?? 'md'
+      applyAppearance(scale, on)
+      void window.api.setAppearance({ highContrast: on })
+      set((s) => ({ config: s.config ? { ...s.config, highContrast: on } : s.config }))
     },
 
     // 語言切換：i18n + 存設定 + 同步 <html lang>（LanguageToggle 與命令面板共用）。

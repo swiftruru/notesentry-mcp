@@ -36,6 +36,23 @@
     --brand-accent: 230 177 126;
   }
 
+  /* 高對比模式（無障礙）：拉近次要文字與本文、加深邊框、加強焦點環。純覆寫 CSS 變數即全站生效。 */
+  .high-contrast {
+    --ink-muted: 38 54 56;
+    --border: 84 112 112;
+    --ring: 13 92 99;
+  }
+  .high-contrast.dark {
+    --ink-muted: 214 230 229;
+    --border: 120 152 150;
+    --ring: 120 205 197;
+  }
+  /* 高對比時加粗全域焦點外框。 */
+  .high-contrast
+    :where(a, button, input, textarea, select, [tabindex]:not([tabindex='-1'])):focus-visible {
+    outline-width: 3px;
+  }
+
   html,
   body,
   #root {

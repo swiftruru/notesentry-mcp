@@ -59,6 +59,10 @@ function normalize(raw: Record<string, unknown>): AppConfig {
     maxTurns: Math.round(clampNum(merged.maxTurns, 1, 20, DEFAULT_CONFIG.maxTurns as number)),
     language: merged.language ?? DEFAULT_CONFIG.language,
     theme: merged.theme ?? DEFAULT_CONFIG.theme,
+    fontScale: (['sm', 'md', 'lg', 'xl'] as const).includes(merged.fontScale as 'md')
+      ? merged.fontScale
+      : DEFAULT_CONFIG.fontScale,
+    highContrast: typeof merged.highContrast === 'boolean' ? merged.highContrast : false,
     // 保留「上次匯出資料夾」與「上次視窗幾何」偏好（undefined 會被 JSON.stringify 自動略過）。
     lastExportDir: merged.lastExportDir,
     windowBounds: merged.windowBounds

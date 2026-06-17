@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { Button } from '@/components/ui/button'
 import { Input, Label, Textarea } from '@/components/ui/primitives'
 import { cn } from '@/lib/utils'
-import { AppConfig, McpServerConfig, McpServerStatus, EnvCheck, DEFAULT_CONFIG } from '@shared/types'
+import {
+  AppConfig,
+  McpServerConfig,
+  McpServerStatus,
+  EnvCheck,
+  DEFAULT_CONFIG,
+  FontScale
+} from '@shared/types'
 import {
   Settings as SettingsIcon,
   Save,
@@ -20,7 +27,8 @@ import {
   Trash2,
   Cpu,
   Database,
-  Bot
+  Bot,
+  Accessibility
 } from 'lucide-react'
 
 type FieldKey = 'ollamaUrl' | 'model' | 'pythonPath' | 'dbPath'
@@ -37,13 +45,16 @@ const FIELDS: { key: FieldKey; placeholder: string }[] = [
 const BUILTIN_IDS = new Set(DEFAULT_CONFIG.mcpServers.map((s) => s.id))
 
 // 設定分頁：依功能橫向切換，避免一頁塞太多。
-type SettingsTab = 'inference' | 'runtime' | 'mcp' | 'agent'
+type SettingsTab = 'inference' | 'runtime' | 'mcp' | 'agent' | 'appearance'
 const SETTINGS_TABS: { key: SettingsTab; icon: typeof Cpu }[] = [
   { key: 'inference', icon: Cpu },
   { key: 'runtime', icon: Database },
   { key: 'mcp', icon: Server },
-  { key: 'agent', icon: Bot }
+  { key: 'agent', icon: Bot },
+  { key: 'appearance', icon: Accessibility }
 ]
+
+const FONT_SIZES: FontScale[] = ['sm', 'md', 'lg', 'xl']
 
 /** env 物件 ⇄ 文字（每行 KEY=VALUE）的雙向轉換。 */
 function serializeEnv(env?: Record<string, string>): string {
@@ -70,6 +81,8 @@ export function SettingsView(): React.JSX.Element {
   const setMcpStatus = useAppStore((s) => s._setMcpStatus)
   const setTools = useAppStore((s) => s._setTools)
   const liveStatus = useAppStore((s) => s.mcpServers)
+  const setFontScale = useAppStore((s) => s.setFontScale)
+  const setHighContrast = useAppStore((s) => s.setHighContrast)
   const [tab, setTab] = useState<SettingsTab>('inference')
   const [draft, setDraft] = useState<AppConfig | null>(config)
   const [saving, setSaving] = useState(false)
@@ -86,13 +99,26 @@ export function SettingsView(): React.JSX.Element {
     servers: McpServerStatus[]
   } | null>(null)
 
+  // 只在「設定頁可編輯欄位」變動（初次載入、存檔後）時重置 draft；忽略即時設定（外觀／主題／語言）
+  // 造成的 config 變動，避免清掉使用者在其他分頁尚未存檔的編輯。
+  const draftSigRef = useRef<string>('')
   useEffect(() => {
+    if (!config) return
+    const sig = JSON.stringify({
+      ollamaUrl: config.ollamaUrl,
+      model: config.model,
+      pythonPath: config.pythonPath,
+      dbPath: config.dbPath,
+      temperature: config.temperature,
+      maxTurns: config.maxTurns,
+      mcpServers: config.mcpServers
+    })
+    if (sig === draftSigRef.current) return
+    draftSigRef.current = sig
     setDraft(config)
-    if (config) {
-      const e: Record<string, string> = {}
-      for (const s of config.mcpServers) if (s.env) e[s.id] = serializeEnv(s.env)
-      setEnvText(e)
-    }
+    const e: Record<string, string> = {}
+    for (const s of config.mcpServers) if (s.env) e[s.id] = serializeEnv(s.env)
+    setEnvText(e)
   }, [config])
 
   // 進入「AI 行為」分頁時抓取實際系統提示（語言／工具清單變動後重抓）。
@@ -415,6 +441,56 @@ export function SettingsView(): React.JSX.Element {
                 />
                 <p className="text-xs text-ink-muted">{t('agent.systemPromptHint')}</p>
               </div>
+            </div>
+          )}
+
+          {tab === 'appearance' && (
+            <div className="space-y-4">
+              <p className="text-xs text-ink-muted">{t('section.appearanceDesc')}</p>
+              {/* 字級 */}
+              <div className="space-y-1.5">
+                <Label>{t('appearance.fontSize')}</Label>
+                <div className="inline-flex overflow-hidden rounded-md border border-border">
+                  {FONT_SIZES.map((s, i) => {
+                    const active = (config?.fontScale ?? 'md') === s
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setFontScale(s)}
+                        aria-pressed={active}
+                        className={cn(
+                          'px-3 py-1.5 text-sm transition-colors',
+                          i > 0 && 'border-l border-border',
+                          active ? 'bg-brand text-white' : 'text-ink-muted hover:bg-card hover:text-ink'
+                        )}
+                      >
+                        {t(`appearance.sizes.${s}`)}
+                      </button>
+                    )
+                  })}
+                </div>
+                <p
+                  className="text-ink"
+                  style={{ fontSize: { sm: 14, md: 16, lg: 18, xl: 20 }[config?.fontScale ?? 'md'] }}
+                >
+                  {t('appearance.previewText')}
+                </p>
+              </div>
+              {/* 高對比 */}
+              <div className="space-y-1.5">
+                <label className="flex items-center gap-2 text-sm text-ink">
+                  <input
+                    type="checkbox"
+                    checked={config?.highContrast ?? false}
+                    onChange={(e) => setHighContrast(e.target.checked)}
+                    className="accent-brand"
+                  />
+                  {t('appearance.highContrast')}
+                </label>
+                <p className="text-xs text-ink-muted">{t('appearance.highContrastHint')}</p>
+              </div>
+              <p className="text-xs text-ink-muted">{t('appearance.instantNote')}</p>
             </div>
           )}
 

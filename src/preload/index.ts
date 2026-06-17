@@ -31,6 +31,7 @@ const api: NoteSentryApi = {
   setConfig: (config: AppConfig) => ipcRenderer.invoke(IPC.CONFIG_SET, config),
   setLanguage: (language: string) => ipcRenderer.invoke(IPC.LANG_SET, language),
   setTheme: (theme) => ipcRenderer.invoke(IPC.THEME_SET, theme),
+  setAppearance: (a) => ipcRenderer.invoke(IPC.APPEARANCE_SET, a),
   listModels: () => ipcRenderer.invoke(IPC.OLLAMA_MODELS),
   checkEnvironment: () => ipcRenderer.invoke(IPC.ENV_CHECK),
   listAudit: () => ipcRenderer.invoke(IPC.AUDIT_LIST),

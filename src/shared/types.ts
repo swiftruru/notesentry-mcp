@@ -31,6 +31,7 @@ export const IPC = {
   SAMPLE_GENERATE: 'sample:generate',
   LANG_SET: 'lang:set',
   THEME_SET: 'theme:set',
+  APPEARANCE_SET: 'appearance:set',
 
   // main -> renderer（send / on）
   EVT_CHAT_TOKEN: 'evt:chat:token',
@@ -81,6 +82,10 @@ export interface AppConfig {
   language?: string
   /** 介面主題：light / dark / system（跟隨作業系統） */
   theme?: ThemeMode
+  /** 字級縮放（無障礙）：sm/md/lg/xl，預設 md */
+  fontScale?: FontScale
+  /** 高對比模式（無障礙），預設 false */
+  highContrast?: boolean
   /** 上次匯出 Markdown 所選的資料夾（記住偏好，非設定頁欄位） */
   lastExportDir?: string
   /** 上次的視窗大小／位置（下次開啟還原；非設定頁欄位） */
@@ -88,6 +93,9 @@ export interface AppConfig {
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system'
+
+/** 字級縮放級別（無障礙）。 */
+export type FontScale = 'sm' | 'md' | 'lg' | 'xl'
 
 /** 視窗幾何（記住大小/位置/最大化狀態） */
 export interface WindowBounds {
@@ -108,6 +116,8 @@ export const DEFAULT_CONFIG: AppConfig = {
   maxTurns: 12,
   language: 'zh-TW',
   theme: 'system',
+  fontScale: 'md',
+  highContrast: false,
   mcpServers: [
     {
       id: 'mimic',
@@ -303,6 +313,7 @@ export interface NoteSentryApi {
   setConfig: (config: AppConfig) => Promise<AppConfig>
   setLanguage: (language: string) => Promise<void>
   setTheme: (theme: ThemeMode) => Promise<void>
+  setAppearance: (a: { fontScale?: FontScale; highContrast?: boolean }) => Promise<void>
   listModels: () => Promise<string[]>
   checkEnvironment: () => Promise<EnvCheck>
   listAudit: () => Promise<AuditEntry[]>

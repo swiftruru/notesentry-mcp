@@ -9,7 +9,17 @@
     "runtimeDesc": "啟動 MCP server 的 Python 與資料庫路徑。",
     "mcp": "MCP server",
     "agent": "AI 行為",
-    "agentDesc": "調整模型取樣與工具呼叫上限，並檢視實際送出的系統提示。"
+    "agentDesc": "調整模型取樣與工具呼叫上限，並檢視實際送出的系統提示。",
+    "appearance": "外觀",
+    "appearanceDesc": "無障礙顯示設定：字級與高對比（主題與語言在右上角標題列切換）。"
+  },
+  "appearance": {
+    "fontSize": "字級",
+    "sizes": { "sm": "小", "md": "中", "lg": "大", "xl": "特大" },
+    "highContrast": "高對比模式",
+    "highContrastHint": "提高邊框、次要文字與焦點外框的對比，提升可讀性。",
+    "instantNote": "變更即時生效並自動儲存。",
+    "previewText": "範例文字 Aa 123"
   },
   "agent": {
     "temperatureLabel": "取樣溫度 temperature",

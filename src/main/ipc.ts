@@ -105,6 +105,14 @@ export function registerIpc(getWindow: () => BrowserWindow | null): void {
     saveConfig({ ...loadConfig(), theme })
   })
 
+  // --- 外觀（字級／高對比，只存設定，不重連 MCP） ---
+  ipcMain.handle(
+    IPC.APPEARANCE_SET,
+    async (_e, a: { fontScale?: AppConfig['fontScale']; highContrast?: boolean }) => {
+      saveConfig({ ...loadConfig(), ...a })
+    }
+  )
+
   // --- 模型偵測 ---
   ipcMain.handle(IPC.OLLAMA_MODELS, async () => listModels())
 
