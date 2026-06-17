@@ -15,9 +15,10 @@
 from __future__ import annotations
 
 import json
-from typing import List, Optional
+from typing import Annotated, List, Optional
 
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 mcp = FastMCP("pharmacy-support")
 
@@ -110,7 +111,11 @@ def _canon(name: str) -> str:
 
 
 @mcp.tool()
-def check_drug_interactions(drugs: List[str]) -> str:
+def check_drug_interactions(
+    drugs: Annotated[
+        List[str], Field(description="藥物名稱清單（學名或常見品名），例：[\"warfarin\", \"aspirin\"]。")
+    ],
+) -> str:
     """檢查一份藥物清單中是否有已知的藥物交互作用（確定性查表，零幻覺）。
 
     對應老師例子的「分析→警示」：給定病患用藥清單，回傳兩兩之間的交互作用警示。
@@ -162,7 +167,14 @@ _ALLERGY_CLASSES = {
 
 
 @mcp.tool()
-def check_allergy_conflict(prescribed: List[str], allergies: List[str]) -> str:
+def check_allergy_conflict(
+    prescribed: Annotated[
+        List[str], Field(description="擬開立的處方藥清單，例：[\"amoxicillin\"]。")
+    ],
+    allergies: Annotated[
+        List[str], Field(description="病患已知過敏史（藥名或藥物類別），例：[\"penicillin\"]。")
+    ],
+) -> str:
     """比對「擬開立處方」與「已知過敏史」，標出可能的過敏/交叉反應衝突（查表，零幻覺）。
 
     參數：
@@ -218,7 +230,9 @@ _DRUG_REF = {
 
 
 @mcp.tool()
-def get_drug_reference(drug: str) -> str:
+def get_drug_reference(
+    drug: Annotated[str, Field(description="單一藥物名稱（學名或常見品名），例：warfarin。")],
+) -> str:
     """查單一藥物的類別與注意事項（內建知識；未收錄就明說，不臆造）。
 
     參數：

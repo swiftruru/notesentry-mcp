@@ -18,9 +18,10 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
-from typing import Optional
+from typing import Annotated, Optional
 
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 DB_PATH = os.environ.get("MIMIC_DB_PATH", "mimic_notes.db")
 
@@ -66,10 +67,20 @@ def list_note_categories() -> str:
 
 @mcp.tool()
 def count_notes(
-    category: Optional[str] = None,
-    subject_id: Optional[int] = None,
-    description: Optional[str] = None,
-    exclude_errors: bool = True,
+    category: Annotated[
+        Optional[str],
+        Field(description="紀錄類別，精確比對（不分大小寫與前後空白），例：Nursing、Radiology。省略則不限類別。"),
+    ] = None,
+    subject_id: Annotated[
+        Optional[int], Field(description="病患識別碼 SUBJECT_ID。省略則不限病患。")
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Field(description="DESCRIPTION 欄位關鍵字，模糊比對（LIKE %關鍵字%）。省略則不限。"),
+    ] = None,
+    exclude_errors: Annotated[
+        bool, Field(description="是否排除被標記為錯誤（ISERROR=1）的紀錄。預設 True。")
+    ] = True,
 ) -> str:
     """依條件計算紀錄筆數。
 
@@ -111,7 +122,9 @@ def count_notes(
 
 
 @mcp.tool()
-def get_patient_overview(subject_id: int) -> str:
+def get_patient_overview(
+    subject_id: Annotated[int, Field(description="病患識別碼 SUBJECT_ID（必填）。")],
+) -> str:
     """取得單一病患（SUBJECT_ID）的紀錄摘要。
 
     內容包含：總筆數、各類別筆數、住院次數（不重複 HADM_ID）、
@@ -195,10 +208,18 @@ def _to_match_expr(query: str) -> str:
 
 @mcp.tool()
 def search_notes(
-    query: str,
-    category: Optional[str] = None,
-    limit: int = 10,
-    exclude_errors: bool = True,
+    query: Annotated[
+        str, Field(description="全文檢索關鍵字，多個詞以空白分隔（皆需出現），例：pneumonia chest pain。")
+    ],
+    category: Annotated[
+        Optional[str], Field(description="限定紀錄類別（可選），例：Radiology、Nursing。省略則不限。")
+    ] = None,
+    limit: Annotated[
+        int, Field(description="回傳筆數上限（預設 10、上限 50；超過會被截到 50）。")
+    ] = 10,
+    exclude_errors: Annotated[
+        bool, Field(description="是否排除被標記為錯誤（ISERROR=1）的紀錄。預設 True。")
+    ] = True,
 ) -> str:
     """全文檢索：在所有臨床紀錄的內文（TEXT）中搜尋關鍵字，回傳最相關的數筆。
 
@@ -268,7 +289,12 @@ def search_notes(
 
 
 @mcp.tool()
-def get_note_text(row_id: int, max_chars: int = 8000) -> str:
+def get_note_text(
+    row_id: Annotated[int, Field(description="紀錄列識別碼 ROW_ID（由 search_notes／get_patient_overview 取得）。")],
+    max_chars: Annotated[
+        int, Field(description="回傳內文的最大字元數（預設 8000；過長會截斷）。")
+    ] = 8000,
+) -> str:
     """依 ROW_ID 取得單筆紀錄的完整內文與中繼資料。
 
     參數：

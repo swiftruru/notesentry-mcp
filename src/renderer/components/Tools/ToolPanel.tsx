@@ -20,6 +20,23 @@ type Tab = 'catalog' | 'schema'
 interface SchemaProp {
   type?: unknown
   description?: string
+  anyOf?: { type?: string }[]
+  items?: { type?: string }
+}
+
+/** 由 JSON Schema 屬性推導可讀型別：處理選填的 anyOf:[T,null] 與陣列 array<item>。 */
+function typeLabel(meta: SchemaProp): string {
+  if (typeof meta.type === 'string') {
+    if (meta.type === 'array' && meta.items?.type) return `array<${meta.items.type}>`
+    return meta.type
+  }
+  if (Array.isArray(meta.anyOf)) {
+    const types = meta.anyOf
+      .map((a) => a?.type)
+      .filter((x): x is string => typeof x === 'string' && x !== 'null')
+    if (types.length) return types.join(' | ')
+  }
+  return '—'
 }
 
 export function ToolPanel(): React.JSX.Element {
@@ -244,11 +261,10 @@ function ToolCard({
           <tbody>
             {paramNames.map((p) => {
               const meta = props[p] ?? {}
-              const type = typeof meta.type === 'string' ? meta.type : meta.type ? String(meta.type) : '—'
               return (
                 <tr key={p}>
                   <Td className="font-mono text-ink">{p}</Td>
-                  <Td className="font-mono text-ink-muted">{type}</Td>
+                  <Td className="font-mono text-ink-muted">{typeLabel(meta)}</Td>
                   <Td className="text-ink-muted">{required.includes(p) ? t('param.yes') : t('param.no')}</Td>
                   <Td className="text-ink-muted">{meta.description || t('noDesc')}</Td>
                 </tr>

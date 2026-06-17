@@ -16,9 +16,10 @@
 from __future__ import annotations
 
 import json
-from typing import Optional
+from typing import Annotated, Optional
 
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 mcp = FastMCP("clinical-support")
 
@@ -37,14 +38,14 @@ def _flag(parameter, value, unit, severity, note):
 
 @mcp.tool()
 def assess_vital_signs(
-    temperature_c: Optional[float] = None,
-    heart_rate: Optional[int] = None,
-    resp_rate: Optional[int] = None,
-    spo2: Optional[int] = None,
-    sbp: Optional[int] = None,
-    dbp: Optional[int] = None,
-    gcs: Optional[int] = None,
-    age_years: Optional[int] = None,
+    temperature_c: Annotated[Optional[float], Field(description="體溫（攝氏 °C）。")] = None,
+    heart_rate: Annotated[Optional[int], Field(description="心跳（次/分，bpm）。")] = None,
+    resp_rate: Annotated[Optional[int], Field(description="呼吸速率（次/分）。")] = None,
+    spo2: Annotated[Optional[int], Field(description="血氧飽和度 SpO₂（%）。")] = None,
+    sbp: Annotated[Optional[int], Field(description="收縮壓 SBP（mmHg）。")] = None,
+    dbp: Annotated[Optional[int], Field(description="舒張壓 DBP（mmHg）。")] = None,
+    gcs: Annotated[Optional[int], Field(description="昏迷指數 GCS（3–15）。")] = None,
+    age_years: Annotated[Optional[int], Field(description="年齡（歲）；目前依成人界值判讀。")] = None,
 ) -> str:
     """純規則判讀成人生命徵象,標出異常與危急紅旗(deterministic,無 LLM、可重現)。
 
@@ -178,7 +179,12 @@ _COMPLAINT_FLAGS = {
 
 
 @mcp.tool()
-def get_ttas_reference(chief_complaint: Optional[str] = None) -> str:
+def get_ttas_reference(
+    chief_complaint: Annotated[
+        Optional[str],
+        Field(description="主訴（可選），例：胸痛、呼吸困難。提供後回傳更貼近該主訴的檢傷判定原則。"),
+    ] = None,
+) -> str:
     """回傳 TTAS 五級檢傷的判定原則(內建參考知識)。供 LLM 建議級別時依循,而非空想。
 
     參數:
@@ -197,7 +203,12 @@ def get_ttas_reference(chief_complaint: Optional[str] = None) -> str:
 # --- 應用 B：SOAP 病歷 ------------------------------------------------------
 
 @mcp.tool()
-def get_soap_template(note_type: str = "急診醫師病歷") -> str:
+def get_soap_template(
+    note_type: Annotated[
+        str,
+        Field(description="病歷類型，例：急診醫師病歷、護理紀錄、出院摘要。預設「急診醫師病歷」。"),
+    ] = "急診醫師病歷",
+) -> str:
     """回傳 SOAP 病歷的結構與各段內容指引,確保 LLM 擴寫的病歷格式一致、欄位齊全。
 
     LLM 負責把醫師輸入的關鍵字擴寫成各段內容;本工具只提供骨架與檢核要點。

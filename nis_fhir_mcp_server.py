@@ -14,9 +14,10 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Annotated, Optional
 
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 mcp = FastMCP("nis-fhir")
 
@@ -57,13 +58,15 @@ def _observation(loinc: str, display: str, value: float, unit: str, ucum: str,
 
 @mcp.tool()
 def vitals_to_fhir(
-    temperature_c: Optional[float] = None,
-    heart_rate: Optional[int] = None,
-    resp_rate: Optional[int] = None,
-    spo2: Optional[int] = None,
-    sbp: Optional[int] = None,
-    dbp: Optional[int] = None,
-    subject_id: Optional[int] = None,
+    temperature_c: Annotated[Optional[float], Field(description="體溫（攝氏 °C）。")] = None,
+    heart_rate: Annotated[Optional[int], Field(description="心跳（次/分，bpm）。")] = None,
+    resp_rate: Annotated[Optional[int], Field(description="呼吸速率（次/分）。")] = None,
+    spo2: Annotated[Optional[int], Field(description="血氧飽和度 SpO₂（%）。")] = None,
+    sbp: Annotated[Optional[int], Field(description="收縮壓 SBP（mmHg）。")] = None,
+    dbp: Annotated[Optional[int], Field(description="舒張壓 DBP（mmHg）。")] = None,
+    subject_id: Annotated[
+        Optional[int], Field(description="病患識別碼 SUBJECT_ID（可選），寫入 FHIR 的 subject 參照。")
+    ] = None,
 ) -> str:
     """把生命徵象轉成 HL7 FHIR R4 的 Observation（含 LOINC 代碼），以標準格式回傳一個 Bundle。
 
@@ -149,7 +152,11 @@ _FHIR_RESOURCES = {
 
 
 @mcp.tool()
-def get_fhir_reference(resource_type: str = "Observation") -> str:
+def get_fhir_reference(
+    resource_type: Annotated[
+        str, Field(description="FHIR 資源型別，例：Observation、Patient。預設 Observation。")
+    ] = "Observation",
+) -> str:
     """回傳某個 FHIR 資源的用途與關鍵欄位，並對應到四支柱（HIS/NIS/LIS/藥事）。
 
     用來說明任務三「如何與醫院系統以 FHIR 標準對接」。
