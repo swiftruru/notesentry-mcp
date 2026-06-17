@@ -25,6 +25,11 @@
     "test:headed": "playwright test --project=offline --headed",
     "test:ui": "playwright test --ui",
     "test:debug": "PWDEBUG=1 playwright test --project=offline",
+    "pretest:live": "npm run build",
+    "test:live": "playwright test --project=live",
+    "pretest:visual": "npm run build",
+    "test:visual": "playwright test --project=visual",
+    "test:visual:update": "npm run build && playwright test --project=visual --update-snapshots",
     "test:report": "playwright show-report",
     "package:dir": "electron-vite build && electron-builder --dir",
     "package": "electron-vite build && electron-builder"

@@ -63,7 +63,7 @@ export function MessageList(): React.JSX.Element {
 
         {/* 即時串流中的 assistant 文字（以 Markdown 呈現） */}
         {streaming && streaming.content && (
-          <div className="flex animate-fade-in justify-start gap-3">
+          <div data-testid="chat-streaming" className="flex animate-fade-in justify-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-secondary text-white">
               <Bot className="h-4 w-4" />
             </div>

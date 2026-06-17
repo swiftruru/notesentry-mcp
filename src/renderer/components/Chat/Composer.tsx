@@ -36,6 +36,7 @@ export function Composer(): React.JSX.Element {
       <div className="mx-auto flex max-w-3xl items-end gap-2">
         <Textarea
           ref={taRef}
+          data-testid="composer-input"
           rows={1}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -50,6 +51,7 @@ export function Composer(): React.JSX.Element {
         />
         {isStreaming ? (
           <Button
+            data-testid="composer-send"
             variant="danger"
             size="icon"
             onClick={abort}
@@ -60,6 +62,7 @@ export function Composer(): React.JSX.Element {
           </Button>
         ) : (
           <Button
+            data-testid="composer-send"
             size="icon"
             onClick={submit}
             disabled={disabled || !text.trim()}

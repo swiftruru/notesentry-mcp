@@ -53,7 +53,7 @@ export function HealthStatus(): React.JSX.Element {
   const levelLabel = t(`level.${health.level}`)
 
   return (
-    <div ref={ref} className="no-drag relative">
+    <div ref={ref} data-testid="health-status" className="no-drag relative">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label={`${t('title')}: ${levelLabel}`}

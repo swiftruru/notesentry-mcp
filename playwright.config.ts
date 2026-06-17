@@ -19,9 +19,11 @@ export default defineConfig({
   expect: { timeout: 8_000 },
   reporter: [['list'], ['html', { open: 'never' }]],
   projects: [
-    // 預設：離線功能互動測試（排除 @live）。
-    { name: 'offline', grepInvert: /@live/ },
-    // 保留：需本機 Ollama/MCP 的流程（第二階段）。
-    { name: 'live', grep: /@live/ }
+    // 預設：離線功能互動測試（排除 @live 與 @visual）。
+    { name: 'offline', grepInvert: /@live|@visual/ },
+    // 需本機 Ollama 的流程（偵測不到模型會自動跳過）；模型較慢，逾時放寬。
+    { name: 'live', grep: /@live/, timeout: 120_000 },
+    // 視覺回歸截圖（本機 opt-in、不擋 CI）。
+    { name: 'visual', grep: /@visual/ }
   ]
 })

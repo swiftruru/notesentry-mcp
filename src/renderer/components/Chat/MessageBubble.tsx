@@ -29,7 +29,7 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
 
   if (role === 'user') {
     return (
-      <div className="flex animate-fade-in justify-end gap-3">
+      <div data-testid="message-user" className="flex animate-fade-in justify-end gap-3">
         <div className="max-w-[78%] whitespace-pre-wrap rounded-2xl rounded-tr-sm bg-brand px-4 py-2.5 text-sm leading-relaxed text-white">
           {message.content}
         </div>
@@ -62,7 +62,7 @@ export function MessageBubble({ message, isLastAssistant }: Props): React.JSX.El
 
   // assistant
   return (
-    <div className="flex animate-fade-in justify-start gap-3">
+    <div data-testid="message-assistant" className="flex animate-fade-in justify-start gap-3">
       <Avatar className="bg-brand-secondary text-white">
         <Bot className="h-4 w-4" />
       </Avatar>

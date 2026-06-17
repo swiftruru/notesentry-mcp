@@ -1,5 +1,5 @@
 import { _electron as electron, type ElectronApplication, type Page } from '@playwright/test'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -13,21 +13,34 @@ export interface AppHandle {
   dataDir: string
 }
 
+export interface LaunchOptions {
+  /** 啟動前寫入 dataDir/config.json 的部分設定（configStore 會載入並補預設）。 */
+  seedConfig?: Record<string, unknown>
+}
+
 /**
  * 啟動隔離的 NoteSentry 實例：
  * - 移除 ELECTRON_RUN_AS_NODE（dev shell 常設 =1，會讓 electron 當純 Node 跑、app undefined）。
  * - 設 NS_DATA_DIR 指向暫存資料夾，乾淨隔離、不污染專案根 config.json。
+ * - CI（Linux runner 以 root 跑）需 --no-sandbox 才能啟動 Electron。
+ * - 可選 seedConfig：先寫入 config.json 給需要特定設定的測試（live/visual）。
  * - 抑制首啟自動導覽（設 localStorage 旗標並關掉已開啟的導覽遮罩）。
  */
-export async function launchApp(): Promise<AppHandle> {
+export async function launchApp(opts: LaunchOptions = {}): Promise<AppHandle> {
   const dataDir = await mkdtemp(join(tmpdir(), 'ns-e2e-'))
+  if (opts.seedConfig) {
+    await writeFile(join(dataDir, 'config.json'), JSON.stringify(opts.seedConfig, null, 2), 'utf-8')
+  }
 
   const env: Record<string, string> = {}
   for (const [k, v] of Object.entries(process.env)) if (v != null) env[k] = v
   delete env.ELECTRON_RUN_AS_NODE
   env.NS_DATA_DIR = dataDir
 
-  const app = await electron.launch({ args: [MAIN_ENTRY], env })
+  const args = [MAIN_ENTRY]
+  if (process.env.CI) args.push('--no-sandbox')
+
+  const app = await electron.launch({ args, env })
   const page = await app.firstWindow()
   await page.waitForLoadState('domcontentloaded')
   await page.getByTestId('rail-item-dashboard').waitFor({ state: 'visible', timeout: 20_000 })

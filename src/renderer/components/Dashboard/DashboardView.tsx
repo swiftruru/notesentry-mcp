@@ -85,7 +85,7 @@ export function DashboardView(): React.JSX.Element {
 
       <div className="mx-auto max-w-4xl space-y-7 px-8 py-7">
         {/* 系統健康列 */}
-        <section>
+        <section data-testid="dashboard-health">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
               {t('healthTitle')}
@@ -112,7 +112,7 @@ export function DashboardView(): React.JSX.Element {
         </section>
 
         {/* KPI 卡片 */}
-        <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <section data-testid="dashboard-kpis" className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <Kpi label={t('kpi.totalCalls')} value={m.total} />
           <Kpi label={t('kpi.approvalRate')} value={`${m.approvalRate}%`} tone="brand" />
           <Kpi label={t('kpi.rejected')} value={m.rejected} tone={m.rejected ? 'warn' : 'muted'} />
@@ -174,7 +174,7 @@ export function DashboardView(): React.JSX.Element {
 
         {/* 近期工具呼叫 */}
         {!isEmpty && (
-          <section>
+          <section data-testid="dashboard-recent">
             <h2 className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-ink-muted">
               <History className="h-3.5 w-3.5" />
               {t('recent')}

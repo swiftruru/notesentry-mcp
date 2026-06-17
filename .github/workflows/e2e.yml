@@ -1,0 +1,44 @@
+name: E2E (offline)
+
+# 每次推送/PR 到 main：在 ubuntu 用 xvfb 跑 Playwright 離線 UI 測試套件。
+# 完全離線（runner 無 Ollama/MCP，只跑 offline project）；與 ci.yml / release.yml 互不影響。
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e:
+    name: Playwright (offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Electron 在 Linux 執行所需的系統函式庫（libnss3、libgbm…）。
+      - name: Install OS deps for Electron
+        run: npx playwright install-deps
+
+      - name: Build (electron-vite)
+        run: npm run build
+
+      # Electron 需要顯示伺服器；xvfb 提供虛擬 framebuffer。
+      # launchApp 偵測到 CI 會自動加 --no-sandbox（root runner 必要）。
+      - name: Run offline E2E under xvfb
+        run: xvfb-run -a npm test
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

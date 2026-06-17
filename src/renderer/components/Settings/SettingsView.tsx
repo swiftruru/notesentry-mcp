@@ -683,11 +683,11 @@ export function SettingsView(): React.JSX.Element {
 
           {/* 連線測試結果 */}
           {test && (
-            <div className="space-y-1.5 rounded-md border border-border bg-card/40 p-3">
+            <div data-testid="settings-test-result" className="space-y-1.5 rounded-md border border-border bg-card/40 p-3">
               <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
                 {t('test.resultTitle')}
               </div>
-              <TestRow ok={test.ollama.ok} label="Ollama" msg={test.ollama.msg} />
+              <TestRow testid="settings-test-ollama" ok={test.ollama.ok} label="Ollama" msg={test.ollama.msg} />
               {test.env && (
                 <>
                   <TestRow
@@ -798,14 +798,16 @@ function ServerStatus({
 function TestRow({
   ok,
   label,
-  msg
+  msg,
+  testid
 }: {
   ok: boolean
   label: string
   msg: string
+  testid?: string
 }): React.JSX.Element {
   return (
-    <div className="flex items-start gap-2 text-sm">
+    <div data-testid={testid} data-ok={ok} className="flex items-start gap-2 text-sm">
       <Circle
         className={`mt-1 h-2.5 w-2.5 shrink-0 fill-current ${
           ok ? 'text-emerald-600' : 'text-red-600'

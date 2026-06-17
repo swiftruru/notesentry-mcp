@@ -45,7 +45,7 @@ export function AboutView(): React.JSX.Element {
           </div>
           <h1 className="text-3xl font-bold tracking-tight">NoteSentry</h1>
           <p className="mt-2 max-w-md text-sm text-white/85">{t('tagline')}</p>
-          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/20">
+          <span data-testid="app-version" className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/20">
             <ShieldCheck className="h-3.5 w-3.5 text-brand-accent" />
             {t('versionBadge', { version: APP_VERSION })}
           </span>

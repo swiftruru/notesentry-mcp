@@ -43,11 +43,11 @@ function SampleToolbar({
   const { t } = useTranslation('apps')
   return (
     <div className="flex flex-wrap gap-2">
-      <Button type="button" variant="outline" size="sm" onClick={onLoad}>
+      <Button data-testid="apps-load-sample" type="button" variant="outline" size="sm" onClick={onLoad}>
         <ListPlus className="h-3.5 w-3.5" />
         {t('loadSample')}
       </Button>
-      <Button type="button" variant="secondary" size="sm" onClick={onAi} disabled={loading}>
+      <Button data-testid="apps-ai-generate" type="button" variant="secondary" size="sm" onClick={onAi} disabled={loading}>
         <Sparkles className={cn('h-3.5 w-3.5', loading && 'animate-spin')} />
         {loading ? t('generating') : t('aiGenerate')}
       </Button>
@@ -68,19 +68,19 @@ export function AppsView(): React.JSX.Element {
 
       {/* 分頁 */}
       <div className="flex gap-1 border-b border-border px-4 pt-2">
-        <TabButton active={tab === 'triage'} onClick={() => setTab('triage')}>
+        <TabButton testid="apps-tab-triage" active={tab === 'triage'} onClick={() => setTab('triage')}>
           <Stethoscope className="h-4 w-4" />
           {t('triage.tab')}
         </TabButton>
-        <TabButton active={tab === 'soap'} onClick={() => setTab('soap')}>
+        <TabButton testid="apps-tab-soap" active={tab === 'soap'} onClick={() => setTab('soap')}>
           <FileText className="h-4 w-4" />
           {t('soap.tab')}
         </TabButton>
-        <TabButton active={tab === 'pharmacy'} onClick={() => setTab('pharmacy')}>
+        <TabButton testid="apps-tab-pharmacy" active={tab === 'pharmacy'} onClick={() => setTab('pharmacy')}>
           <Pill className="h-4 w-4" />
           {t('pharmacy.tab')}
         </TabButton>
-        <TabButton active={tab === 'fhir'} onClick={() => setTab('fhir')}>
+        <TabButton testid="apps-tab-fhir" active={tab === 'fhir'} onClick={() => setTab('fhir')}>
           <HeartPulse className="h-4 w-4" />
           {t('fhir.tab')}
         </TabButton>
@@ -101,14 +101,17 @@ export function AppsView(): React.JSX.Element {
 function TabButton({
   active,
   onClick,
-  children
+  children,
+  testid
 }: {
   active: boolean
   onClick: () => void
   children: React.ReactNode
+  testid?: string
 }): React.JSX.Element {
   return (
     <button
+      data-testid={testid}
       onClick={onClick}
       aria-current={active ? 'page' : undefined}
       className={cn(
@@ -199,6 +202,7 @@ function TriageForm(): React.JSX.Element {
       <SampleToolbar onLoad={loadPreset} onAi={() => void aiGenerate()} loading={genLoading} />
       <Field label={t('triage.complaint')}>
         <Input
+          data-testid="apps-field-triage"
           value={v.complaint}
           onChange={set('complaint')}
           placeholder={t('triage.complaintPlaceholder')}

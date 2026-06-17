@@ -50,10 +50,19 @@ e2e/
 2. 在 `e2e/pages/` 新增或擴充一個 POM，方法以使用者意圖命名（`open()` / `setX()` / `expectY()`）。
 3. 在 `e2e/specs/` 寫一支短 spec，`import { test, expect } from '../fixtures/test'`，用 POM 安排→操作→斷言。
 
-## 範圍與後續
+## 三個 project（playwright.config.ts）
 
-- 第一版只做**離線功能互動**：導覽、外觀（字級／高對比）、主題、語言、命令面板、特色導覽、對話清單。
-- 後續（第二階段）：
-  - `@live` 測試（聊天串流、產生範例…需本機 Ollama/MCP）——標記 `@live`、放 `specs/live/`、用 `npm run test:live`。
-  - 視覺回歸截圖（`toHaveScreenshot`）——建議以 CI 單一 OS 產基準圖、opt-in。
-  - GitHub Actions（ubuntu + xvfb 跑離線套件）。
+- **offline**（預設，`npm test`）：離線功能互動，排除 `@live`／`@visual`。CI 也只跑這個。
+- **live**（`npm run test:live`）：需本機 **Ollama**；標題加 `@live`、放 `e2e/specs/live/`。
+  啟動時種入「停用所有 MCP」的設定（純 Ollama、不觸發 HITL）。
+  worker 啟動先偵測 Ollama／模型，**偵測不到就整批自動 skip**（不 fail）。逾時放寬到 120s。
+  涵蓋：連線測試（`settings-test-ollama` 的 `data-ok`）、純問答聊天串流、triage 範例生成。
+- **visual**（`npm run test:visual`）：視覺回歸截圖（`toHaveScreenshot`），標題加 `@visual`、放 `e2e/specs/visual/`。
+  固定主題/語言/字級/視窗大小；動態區塊（`health-status`、`dashboard-kpis`、`dashboard-recent`、`app-version`）以 `mask` 遮掉。
+  - 首次或刻意更新版面：`npm run test:visual:update` 產生基準圖（依 OS 自動分檔 `-darwin`/`-linux`，committed）。
+  - **本機 opt-in、不納入 CI 閘門**（跨 OS 渲染差異大）。
+
+## CI
+
+[.github/workflows/e2e.yml](../.github/workflows/e2e.yml)：push/PR 到 main 時，於 ubuntu 用 `xvfb-run` 跑 **offline** 套件
+（`launchApp` 偵測到 `CI` 會自動加 `--no-sandbox`）。與 `ci.yml`／`release.yml` 並存、互不影響；失敗會上傳 `playwright-report`。
