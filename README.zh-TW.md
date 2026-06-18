@@ -41,6 +41,25 @@
 > 所有推論一律走本機 Ollama；每次工具呼叫前都需你親自核可（HITL）；不上傳、
 > 不遙測，所有 App 資料（設定、日誌、對話）都只存在你本機。
 
+## 程式畫面
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots-1/01-home-dashboard.png" alt="治理總覽儀表板" /><br><b>治理總覽儀表板</b>　即時核可率、工具使用與各支柱活動</td>
+<td width="50%"><img src="docs/screenshots-1/05-hitl-approval.png" alt="人類覆核（HITL）" /><br><b>人類覆核（HITL）</b>　每次工具呼叫都需你親自核可（無旁路）</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots-1/04-chat-conversation.png" alt="接地對話" /><br><b>接地對話</b>　答案來自本機資料庫的真實查詢結果</td>
+<td width="50%"><img src="docs/screenshots-1/11-tools-catalog.png" alt="工具與資料字典" /><br><b>工具與資料字典</b>　即時工具參數 ＋ MIMIC 欄位字典</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots-1/24-case-report.png" alt="個案報告（含 FHIR）" /><br><b>個案報告</b>　確定性組裝，含 <b>FHIR R4</b> Observation 表（LOINC/UCUM）</td>
+<td width="50%"><img src="docs/screenshots-1/23-governance-report.png" alt="治理稽核報表" /><br><b>治理稽核報表</b>　可匯出、自包含 HTML</td>
+</tr>
+</table>
+
+<sub>以內建的 Playwright 擷取腳本（<code>npm run capture</code>）從實機操作擷取。更多畫面見<a href="docs/screenshots-1/system-analysis-specification.md">系統分析與規格文件</a>。</sub>
+
 ## 下載
 
 > 📖 **第一次使用？請看[安裝與首次使用指引](docs/INSTALL.zh-TW.md)** ——

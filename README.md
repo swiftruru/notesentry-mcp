@@ -44,6 +44,25 @@ server is pure addition and HITL, audit, routing, and the agent loop apply autom
 > every tool call requires your explicit approval (HITL); nothing is uploaded, no telemetry,
 > and all app data (config, logs, conversations) is stored locally on your machine.
 
+## Screenshots
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots-1/01-home-dashboard.png" alt="Governance dashboard" /><br><b>Governance dashboard</b> — live HITL approval rate, tool usage & per‑pillar activity</td>
+<td width="50%"><img src="docs/screenshots-1/05-hitl-approval.png" alt="Human-in-the-loop approval" /><br><b>Human‑in‑the‑loop</b> — every tool call is approved by you (no bypass)</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots-1/04-chat-conversation.png" alt="Grounded chat" /><br><b>Grounded chat</b> — answers backed by real on‑device DB queries</td>
+<td width="50%"><img src="docs/screenshots-1/11-tools-catalog.png" alt="Tools & data dictionary" /><br><b>Tools & data dictionary</b> — live tool parameters + MIMIC schema</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots-1/24-case-report.png" alt="Case report with FHIR" /><br><b>Case report</b> — deterministic, incl. <b>FHIR R4</b> Observation (LOINC/UCUM)</td>
+<td width="50%"><img src="docs/screenshots-1/23-governance-report.png" alt="Governance & audit report" /><br><b>Governance & audit report</b> — exportable, self‑contained HTML</td>
+</tr>
+</table>
+
+<sub>Captured from the running app via the bundled Playwright capture harness (`npm run capture`). More in <a href="docs/screenshots-1/system-analysis-specification.md">the system‑analysis document</a>.</sub>
+
 ## Download
 
 > 📖 **New here? Follow the [Installation & First‑Run Guide](docs/INSTALL.md)** —
