@@ -2,6 +2,12 @@
   "tagline": "本機端 MIMIC-III 臨床紀錄探索助理 · 以 MCP 架構整合人機協作的臨床流程",
   "versionBadge": "版本 {{version}} · 資料全程留在本機",
   "intro": "NoteSentry 是一套完全在本機運作的臨床紀錄探索與輔助工具。使用者以自然語言提問，由本機的大型語言模型透過 Model Context Protocol（MCP）工具查詢本機 SQLite 資料庫，並把結果整理成回答。所有推論一律走本機 Ollama，過程不上傳、不遙測、不對外連線——讓臨床文本在不離開本機的前提下，仍能被高效探索與運用。",
+  "name": {
+    "title": "命名由來",
+    "note": "病歷紀錄 —— MIMIC-III 臨床 notes，是本系統探索的核心資料。",
+    "sentry": "哨兵、守門人 —— 把關每一次對資料的存取。",
+    "summary": "Sentry 正對應「人類覆核（HITL）」這層防線：每一次工具呼叫都需你親自放行；同時也暗示病歷被「看守」在本機、不外流。整個 app 的精神，就藏在名字裡。"
+  },
   "privacyTitle": "資料全程留在本機",
   "privacyDesc": "本資料受 PhysioNet Credentialed 資料使用協議（DUA）規範，禁止傳給任何第三方。NoteSentry 以「地端推論、人類覆核、完整稽核」三層防線確保資料安全與臨床責任。",
   "principlesTitle": "設計原則",

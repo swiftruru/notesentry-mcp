@@ -9,7 +9,8 @@ import {
   ScrollText,
   Cpu,
   Lock,
-  Heart
+  Heart,
+  FileText
 } from 'lucide-react'
 
 const APP_VERSION = '0.3.7'
@@ -55,6 +56,38 @@ export function AboutView(): React.JSX.Element {
       <div className="mx-auto max-w-2xl space-y-7 px-8 py-8">
         {/* 介紹 */}
         <p className="text-sm leading-relaxed text-ink">{t('intro')}</p>
+
+        {/* 命名由來 */}
+        <section>
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+            {t('name.title')}
+          </h2>
+          <div className="rounded-xl border border-border bg-surface p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+              <div className="flex-1 rounded-lg border border-border bg-card/60 p-3.5">
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-brand">
+                  <FileText className="h-4 w-4" />
+                  Note
+                </div>
+                <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">{t('name.note')}</p>
+              </div>
+              <div
+                aria-hidden="true"
+                className="flex items-center justify-center text-lg font-semibold text-ink-muted sm:px-1"
+              >
+                +
+              </div>
+              <div className="flex-1 rounded-lg border border-border bg-card/60 p-3.5">
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-brand">
+                  <ShieldCheck className="h-4 w-4" />
+                  Sentry
+                </div>
+                <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">{t('name.sentry')}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-relaxed text-ink">{t('name.summary')}</p>
+          </div>
+        </section>
 
         {/* 隱私核心 */}
         <div className="rounded-xl border border-brand/15 bg-card p-5">
