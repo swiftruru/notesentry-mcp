@@ -2,6 +2,17 @@
   "title": "設定",
   "desc": "設定會儲存於專案資料夾的 config.json；變更後會自動重新連線所有 MCP server。",
   "loading": "載入設定中…",
+  "help": {
+    "aria": "顯示說明",
+    "ollamaUrl": "本機 Ollama 服務的位址。為確保資料不外流，只允許 localhost／127.0.0.1；填非本機位址會被阻擋。",
+    "model": "回答與呼叫工具用的本機模型，需支援工具呼叫（tool calling）。可按「偵測」列出已安裝模型；模型越強，工具呼叫越穩定。",
+    "pythonPath": "用來啟動 4 支 MCP server 子行程的 Python 直譯器。請使用已安裝 mcp、pydantic 套件的環境（venv 可填其 python 路徑）。",
+    "dbPath": "MIMIC notes 的 SQLite 資料庫路徑，會以環境變數 MIMIC_DB_PATH 傳給需要它的 server。可用 mcp/scripts/build_db.py 從 NOTEEVENTS.csv 建立。",
+    "temperature": "控制輸出的隨機程度。模型每步會從「下一個字」的機率分布中取樣；softmax 前先把分數除以溫度 T——T 越低分布越尖銳、越確定（趨近於選最高分），T 越高越分散、越有創意。名稱借自物理的波茲曼分布（溫度＝隨機程度）。臨床預設 0.3，求穩定、可重現、少臆造。",
+    "maxTurns": "一次回答中，模型最多可「呼叫工具→看結果→再呼叫」的連續回合上限。太低可能查不完；太高在模型反覆呼叫時會拖長並耗資源。預設 12，兼顧深度與避免無限迴圈。",
+    "systemPrompt": "每次送出前自動組成、注入給模型的最高層指令（唯讀）。內含「取得資料的唯一方式是發出工具呼叫」「禁止杜撰資料表／工具」與目前連上的工具清單等規則。公開讓你檢視＝透明性。",
+    "fontSize": "調整全站文字大小（以根字級連動 rem），不影響圖示。屬無障礙設定，變更即時生效並自動儲存。"
+  },
   "section": {
     "inference": "本機推論",
     "inferenceDesc": "本機 Ollama 連線與回答用的模型。",

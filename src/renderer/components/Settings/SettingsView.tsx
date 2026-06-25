@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store/useAppStore'
 import { Button } from '@/components/ui/button'
 import { Input, Label, Textarea } from '@/components/ui/primitives'
+import { InfoTip } from '@/components/ui/InfoTip'
 import { cn } from '@/lib/utils'
 import {
   AppConfig,
@@ -317,7 +318,10 @@ export function SettingsView(): React.JSX.Element {
     const f = FIELDS.find((x) => x.key === key)!
     return (
       <div key={key} className="space-y-1.5">
-        <Label htmlFor={key}>{t(`fields.${key}.label`)}</Label>
+        <div className="flex items-center gap-1.5">
+          <Label htmlFor={key}>{t(`fields.${key}.label`)}</Label>
+          <InfoTip contentKey={`help.${key}`} testid={`info-${key}`} />
+        </div>
         {key === 'model' ? (
           <ModelSelect value={draft.model} onChange={(v) => setDraft({ ...draft, model: v })} />
         ) : (
@@ -395,7 +399,10 @@ export function SettingsView(): React.JSX.Element {
             <div className="space-y-4">
               <p className="text-xs text-ink-muted">{t('section.agentDesc')}</p>
               <div className="space-y-1.5">
-                <Label htmlFor="temperature">{t('agent.temperatureLabel')}</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label htmlFor="temperature">{t('agent.temperatureLabel')}</Label>
+                  <InfoTip contentKey="help.temperature" testid="info-temperature" />
+                </div>
                 <Input
                   id="temperature"
                   type="number"
@@ -414,7 +421,10 @@ export function SettingsView(): React.JSX.Element {
                 <p className="text-xs text-ink-muted">{t('agent.temperatureHint')}</p>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="maxTurns">{t('agent.maxTurnsLabel')}</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label htmlFor="maxTurns">{t('agent.maxTurnsLabel')}</Label>
+                  <InfoTip contentKey="help.maxTurns" testid="info-maxTurns" />
+                </div>
                 <Input
                   id="maxTurns"
                   type="number"
@@ -433,7 +443,10 @@ export function SettingsView(): React.JSX.Element {
                 <p className="text-xs text-ink-muted">{t('agent.maxTurnsHint')}</p>
               </div>
               <div className="space-y-1.5">
-                <Label>{t('agent.systemPromptLabel')}</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label>{t('agent.systemPromptLabel')}</Label>
+                  <InfoTip contentKey="help.systemPrompt" testid="info-systemPrompt" />
+                </div>
                 <Textarea
                   readOnly
                   rows={12}
@@ -454,6 +467,7 @@ export function SettingsView(): React.JSX.Element {
                 <div className="flex items-center gap-2">
                   <Accessibility className="h-4 w-4 text-brand" />
                   <Label className="text-sm">{t('appearance.fontSize')}</Label>
+                  <InfoTip contentKey="help.fontSize" testid="info-fontScale" />
                 </div>
                 {/* 全寬分段控制 */}
                 <div className="grid grid-cols-4 overflow-hidden rounded-lg border border-border">

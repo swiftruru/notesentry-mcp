@@ -31,6 +31,17 @@
   },
   "desc": "Settings are saved to config.json in the project folder. Changes automatically reconnect all MCP servers.",
   "loading": "Loading settings…",
+  "help": {
+    "aria": "Show help",
+    "ollamaUrl": "Address of the local Ollama service. To keep data on‑device, only localhost / 127.0.0.1 are allowed; non‑local URLs are blocked.",
+    "model": "The local model used to answer and call tools; it must support tool calling. Use \"Detect\" to list installed models — stronger models call tools more reliably.",
+    "pythonPath": "The Python interpreter used to launch the four MCP server subprocesses. Use an environment that has the mcp and pydantic packages installed (a venv's python path works).",
+    "dbPath": "Path to the MIMIC notes SQLite database, passed to servers that need it via the MIMIC_DB_PATH env var. Build it from NOTEEVENTS.csv with mcp/scripts/build_db.py.",
+    "temperature": "Controls output randomness. At each step the model samples from the next‑token probability distribution; before softmax the scores are divided by temperature T — lower T sharpens the distribution (more deterministic, closer to picking the top token), higher T flattens it (more creative). The name comes from the Boltzmann distribution in physics (temperature = randomness). Clinical default 0.3 for stable, reproducible answers.",
+    "maxTurns": "The cap on consecutive tool rounds (call → see result → call again) per answer. Too low may cut a query short; too high can drag on and waste resources when the model loops. Default 12 balances depth with avoiding infinite loops.",
+    "systemPrompt": "The top‑level instruction auto‑assembled and injected to the model before every request (read‑only). It enforces rules like \"the only way to get data is to emit a tool call\" and \"never fabricate tables/tools\", plus the live tool list. Shown for transparency.",
+    "fontSize": "Scales all text app‑wide (via the root rem size); icons are unaffected. An accessibility setting that applies immediately and is saved automatically."
+  },
   "fields": {
     "ollamaUrl": {
       "label": "Ollama URL",
