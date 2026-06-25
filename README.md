@@ -1,10 +1,8 @@
 <div align="center">
 
-<img src="resources/icon.png" width="120" alt="NoteSentry" />
+<img src="docs/social-preview.png" width="720" alt="NoteSentry — local-first MIMIC-III clinical-notes assistant · local LLM · MCP tools · human-in-the-loop · 100% local, no cloud, no upload" />
 
 # NoteSentry
-
-**Local‑first MIMIC‑III clinical‑notes assistant — explore clinical notes with a local LLM, MCP tools, and human‑in‑the‑loop approval. All data and inference stay on‑device.**
 
 [![Release](https://img.shields.io/github/v/release/swiftruru/notesentry-mcp?style=flat-square&color=0D5C63&label=release)](https://github.com/swiftruru/notesentry-mcp/releases)
 [![License](https://img.shields.io/github/license/swiftruru/notesentry-mcp?style=flat-square&color=0D5C63)](LICENSE)

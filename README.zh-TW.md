@@ -1,10 +1,8 @@
 <div align="center">
 
-<img src="resources/icon.png" width="120" alt="NoteSentry" />
+<img src="docs/social-preview.png" width="720" alt="NoteSentry — 本機端 MIMIC-III 臨床紀錄探索助理 · 本機 LLM · MCP 工具 · 人機協作 · 100% 本機，不上雲、不上傳" />
 
 # NoteSentry
-
-**本機端 MIMIC‑III 臨床紀錄探索助理 —— 以本機 LLM、MCP 工具與人機協作（HITL）探索臨床紀錄。資料與推論全程留在本機。**
 
 [![Release](https://img.shields.io/github/v/release/swiftruru/notesentry-mcp?style=flat-square&color=0D5C63&label=release)](https://github.com/swiftruru/notesentry-mcp/releases)
 [![License](https://img.shields.io/github/license/swiftruru/notesentry-mcp?style=flat-square&color=0D5C63)](LICENSE)
